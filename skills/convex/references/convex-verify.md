@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Prove a feature works — seed, drive, assert
 
 A green typecheck proves the code parses; it does not prove a non-owner is actually denied, that a query returns the right rows, or that a mutation has the effect it claims. This capability closes that gap with the loop the whole field is missing: seed → drive → assert, run in-process with `convex-test` so it needs no deployment. Its highest-value assertions are the NEGATIVE ones — the caller who should be refused — because those are exactly the authz defects the 30-app corpus shows are the #1 real bug and the ones a happy-path demo never catches.

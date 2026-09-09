@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Rehearse a schema change on a preview before prod
 
 A schema push on Convex validates every existing document against the new schema and FAILS the push if any row doesn't conform — a real data-conformance gate. The safe way to use that gate is to let it fail on a rehearsal copy, not on prod. This capability turns a preview deployment into that copy: seed it with a prod snapshot, push the new schema + run the backfill there, watch the gate, and only promote once it's green. It composes deploy-guard (target classification), migrate (the optional-then-tighten pattern), and @convex-dev/migrations (the batched, resumable backfill).

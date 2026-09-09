@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Manage env vars + secrets
 
 Store secrets as Convex deployment env vars (npx convex env set), read them with process.env in actions, never commit them.

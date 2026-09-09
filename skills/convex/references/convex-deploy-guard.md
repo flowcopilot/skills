@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Deployment target guard
 
 Deployments are not interchangeable, and most incidents start with a command aimed at the wrong one. Every Convex project has several (personal dev, preview, prod — often across multiple projects on one machine). This guard is the standing discipline: identify, announce, then act — and treat prod as consent-gated, per action, per session.

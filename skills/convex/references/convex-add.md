@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # add
 
 Add a named capability to an existing Convex app. Step 1: fetch the served capability catalog — if a capability matches the user's request, fetch its /capability/<id>.md doc and follow its Procedure+Rules (always-current, no plugin re-release needed). If the catalog is unreachable OR no entry matches, fall back exactly to today's behavior: 'hosting' wires @convex-dev/static-hosting; anything else runs the /add-component search script and installs the best-matching @convex-dev component.

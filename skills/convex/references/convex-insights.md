@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Query logs + health in natural language
 
 The deployment already records what happened; the agent just has to ask well. This capability is a disciplined wrapper over the official Convex MCP's read tools (`logs`, `insights`, `functionSpec`, `status`) that turns operational questions into narrow, evidence-returning queries and hands back answers a human can one-click verify in the dashboard. The discipline is copied from the observability MCP surface that works best in the wild: discover fields before querying, three views not fifteen tools, token-frugal output, and a dashboard deep link on every answer.

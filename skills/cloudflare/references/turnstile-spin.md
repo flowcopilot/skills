@@ -4,7 +4,7 @@
 
 Turns the prompt "set up Turnstile" into a working end-to-end integration: a widget, frontend snippets at every chosen insertion point, canonical server-side siteverify in the customer's existing backend, and a real validation pass before reporting success.
 
-You are the agent. Run the wizard below by invoking the scripts under `scripts/turnstile-spin/` and branching on their JSON output. The scripts hold the deterministic logic (API calls, retry/error handling); your job is orchestration, codebase reading, confirmation, and the frontend + backend edits.
+You are the agent. Run the wizard below by invoking the scripts under `scripts/` and branching on their JSON output. The scripts hold the deterministic logic (API calls, retry/error handling); your job is orchestration, codebase reading, confirmation, and the frontend + backend edits.
 
 This file is the canonical machine-readable behavior. Product requirements come from the [Turnstile documentation](https://developers.cloudflare.com/turnstile/), and the hosted prompt must mirror this behavior.
 

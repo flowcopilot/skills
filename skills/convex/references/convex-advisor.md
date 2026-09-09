@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Live-deployment advisor
 
 Static review guesses; the deployment KNOWS. The official Convex MCP ships an `insights` tool with typed 72h health events per function — documentsReadLimit / bytesReadLimit (hard limit hits), documentsReadThreshold / bytesReadThreshold (approaching), occFailedPermanently / occRetried (write contention) — each carrying evidence (table_name, bytes_read, documents_read, occ document id + retry count). The advisor turns each event into a root-caused finding by reading the flagged function's actual code, and emits findings on the findings bus (specs/finding.schema.json) so fixers can be dispatched and launch-readiness can score.

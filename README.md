@@ -16,3 +16,9 @@ The `convex` skill combines the upstream `get-convex/agent-skills` collection in
 The `cloudflare` skill applies the same structure to the upstream `cloudflare/skills` collection. It keeps Cloudflare's product directory, detailed guides, and Turnstile scripts behind one entry file.
 
 See [`NOTICE.md`](NOTICE.md) for the upstream revision and modification notice.
+
+## Updates
+
+Run `bun run sync` to fetch both upstream repositories and regenerate the combined skills. Run `bun run check` after the update.
+
+The weekly GitHub Action runs the same commands. When upstream content changes, it opens or updates `automation/sync-upstream-skills` as a pull request. The action does not merge the pull request.

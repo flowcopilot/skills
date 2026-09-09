@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Preview what this app will cost
 
 Cost surprises come from a handful of functions reading far more data than anyone realized — the same read-heavy patterns convex-advisor flags for perf, seen through the money lens. This capability makes spend legible: it reads the deployment's own bytes/documents-read evidence, attributes it to the functions driving it, projects how it grows with traffic, and names the cheapest fix. It also carries the confirm-cost discipline (Supabase's structural consent for paid actions): before anything metered, state the price and get an explicit yes.

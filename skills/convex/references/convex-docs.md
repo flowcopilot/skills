@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Pull version-current Convex docs
 
 convex-expert carries baked, plugin-versioned knowledge — excellent for stable idioms, but it goes stale exactly where it hurts: a component that gained a new export, a CLI flag that changed, an API renamed between versions. This capability is the freshness discipline layered on top: pin to the project's real version, fetch the live page cheaply as markdown, and never write an unfamiliar API from memory when the current source is one fetch away.

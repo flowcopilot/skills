@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Proactively suggest the right Convex component
 
 When you see code or intent that duplicates what a Convex component already does, surface a targeted suggestion: ONE component, WHY (anchored in the user's own code or ask), and a concrete install hint. Never install without explicit consent. Never suggest more than one component at a time unless the user asks.

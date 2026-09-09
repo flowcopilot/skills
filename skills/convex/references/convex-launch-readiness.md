@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Launch-readiness report
 
 Readiness is not one check — it's the union of the checks, deduped, ranked, and scored. This capability is pure composition over the findings bus (specs/finding.schema.json): it runs each audit capability, normalizes their outputs into one report (specs/finding-report.schema.json), computes an auditable score, and — because every finding names a fixCapability — hands the user a prioritized, actionable punch list instead of four separate reports. It fixes nothing itself; it decides WHAT to fix and in what order, then dispatches to the fixers.

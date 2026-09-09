@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Quickstart: a barebones Convex template, running
 
 Stand up a barebones Next.js + Convex template from the idea, locally, with an anonymous dev deployment. Minimal by design: local dev servers, no publish step, no pre-baked auth.

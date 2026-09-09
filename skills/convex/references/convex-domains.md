@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Set up a custom domain with your own provider
 
 Walk the user's own registrar through pointing their domain at the Convex app: identify the target (hosting or deployment URL), create the DNS records, attach the custom domain, and rebind the auth origin if the app uses auth.

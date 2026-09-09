@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Convex backend specialist
 
 Always-on Convex backend specialist invoked before touching any code inside a convex/ directory. Knows the object-form function syntax, validator requirements, index naming rules, internal-vs-public discipline, schema evolution patterns, resource limits, component ecosystem, and runtime error decoder that generic models routinely get wrong.

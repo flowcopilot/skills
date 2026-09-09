@@ -1,0 +1,8 @@
+{
+  "name": "@flowcopilot/skills",
+  "private": true,
+  "scripts": {
+    "check": "bun scripts/check.ts",
+    "sync": "bun scripts/sync-upstreams.ts"
+  }
+}

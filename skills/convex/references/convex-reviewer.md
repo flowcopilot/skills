@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Convex Code Reviewer
 
 Structured review of Convex code for security, authorization, validators, performance, and schema design. Applies a Convex-specific checklist and flags anti-patterns with severity (Critical / Important / Suggestion).

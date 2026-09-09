@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Gated production self-healing loop
 
 Sentry/Datadog/Vercel can go error→investigate→draft-PR, but they treat the backend as opaque and stop at the human merge gate with an unverified diff. Convex can do the step they can't: because the error rows live in the user's own deployment and the fix can be rehearsed on a preview of that deployment, the platform certifies the fix against real invariants before anyone reviews it. This capability is the composition capstone — it wires sentinel (capture) → the findings bus (diagnose) → the fixers (repair) → migrate-rehearse/tsc/probe (certify) → a human PR (decide) → deploy-guard (promote). The human keeps the merge button; the machine does everything up to and including proving the fix works.

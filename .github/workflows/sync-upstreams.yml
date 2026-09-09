@@ -1,0 +1,72 @@
+name: Sync upstream skills
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-upstream-skills
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: latest
+
+      - name: Regenerate skills
+        run: bun run sync
+
+      - name: Check generated files
+        run: |
+          bun run check
+          git diff --check
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the sync pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SYNC_BRANCH: automation/sync-upstream-skills
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          remote_sha=$(git ls-remote --heads origin "$SYNC_BRANCH" | awk '{print $1}')
+          git checkout -B "$SYNC_BRANCH"
+          git add NOTICE.md upstreams.json skills
+          git commit -m "chore(skills): sync upstream sources"
+          if [ -n "$remote_sha" ]; then
+            git push --force-with-lease="refs/heads/${SYNC_BRANCH}:${remote_sha}" origin "HEAD:${SYNC_BRANCH}"
+          else
+            git push origin "HEAD:${SYNC_BRANCH}"
+          fi
+
+          pull_request=$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')
+          if [ -z "$pull_request" ]; then
+            gh pr create \
+              --base main \
+              --head "$SYNC_BRANCH" \
+              --title "chore(skills): sync upstream sources" \
+              --body "Automated refresh from the pinned Convex and Cloudflare source repositories. Review the generated instruction changes before merge."
+          fi

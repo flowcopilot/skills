@@ -1,0 +1,59 @@
+{
+  "cloudflare": {
+    "repository": "https://github.com/cloudflare/skills.git",
+    "revision": "b052c32bab7dd493513260228a36c88294f343f1",
+    "workflows": [
+      "agents-sdk",
+      "cloudflare-email-service",
+      "cloudflare-one",
+      "cloudflare-one-migrations",
+      "durable-objects",
+      "nextjs-on-cloudflare",
+      "sandbox-migrate-to-next",
+      "sandbox-next",
+      "sandbox-stable",
+      "turnstile-spin",
+      "web-perf",
+      "workers-best-practices",
+      "wrangler"
+    ]
+  },
+  "convex": {
+    "repository": "https://github.com/get-convex/agent-skills.git",
+    "revision": "c41ece22681a50d326e54f30d24148a6d46d0c3c",
+    "workflows": [
+      "convex-add",
+      "convex-advisor",
+      "convex-agent",
+      "convex-auth",
+      "convex-authz",
+      "convex-backup",
+      "convex-billing",
+      "convex-cost",
+      "convex-create-component",
+      "convex-crons",
+      "convex-deploy-guard",
+      "convex-design",
+      "convex-docs",
+      "convex-domains",
+      "convex-env",
+      "convex-expert",
+      "convex-explain-app",
+      "convex-improve-convex-plugin",
+      "convex-insights",
+      "convex-launch-readiness",
+      "convex-migrate",
+      "convex-migrate-rehearse",
+      "convex-monitor",
+      "convex-optimize",
+      "convex-quickstart",
+      "convex-reviewer",
+      "convex-seed",
+      "convex-self-heal",
+      "convex-sentinel",
+      "convex-suggest",
+      "convex-test",
+      "convex-verify"
+    ]
+  }
+}

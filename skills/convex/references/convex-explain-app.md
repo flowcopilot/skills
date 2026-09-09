@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Explain this Convex app
 
 Before you can safely change an app you have to know what it is — and reading 15 function files top-to-bottom is slow and error-prone. This capability produces the map fast and accurately by reading the two sources that can't lie: the schema (the data model) and the function surface (`functionSpec` / the exported queries/mutations/actions). It is deliberately DESCRIPTIVE — it explains what IS, hands judgment to the audit capabilities and changes to the fixers. It is also the natural first step of an optimize or self-heal session, and the reusable 're-explain the current architecture' that 'change what you built' depends on.

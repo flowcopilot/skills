@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Audit and optimize an existing Convex app
 
 The remediation WORKFLOW for an existing app: open with a scored assessment, then act on it — upgrade stale components and set up observability — plan-then-confirm-then-apply. The assessment itself is delegated to launch-readiness (the findings-bus scorer); optimize's distinct value is the actions it takes on the result.

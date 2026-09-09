@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Back up — and prove the restore works
 
 Every backup story has two halves and most people only do the first: taking the backup, and proving you can get it back. This capability does both — it sets up regular snapshot exports and then runs a RESTORE DRILL that actually recovers the data into a disposable preview and asserts it's intact. The drill reuses migrate-rehearse's exact primitives (snapshot export → preview deploy → snapshot import) pointed at recovery instead of a forward change, so the safety net is tested, not assumed.

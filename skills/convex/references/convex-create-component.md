@@ -53,10 +53,10 @@ Ask the user, then pick one path:
 
 | Goal                                              | Shape            | Reference                           |
 | ------------------------------------------------- | ---------------- | ----------------------------------- |
-| Component for this app only                       | Local            | `component-local-components.md`    |
-| Publish or share across apps                      | Packaged         | `component-packaged-components.md` |
-| User explicitly needs local + shared library code | Hybrid           | `component-hybrid-components.md`   |
-| Not sure                                          | Default to local | `component-local-components.md`    |
+| Component for this app only                       | Local            | `convex-create-component/local-components.md`    |
+| Publish or share across apps                      | Packaged         | `convex-create-component/packaged-components.md` |
+| User explicitly needs local + shared library code | Hybrid           | `convex-create-component/hybrid-components.md`   |
+| Not sure                                          | Default to local | `convex-create-component/local-components.md`    |
 
 Read exactly one reference file before proceeding.
 
@@ -275,7 +275,7 @@ args: {
 
 For additional patterns including function handles for callbacks, deriving
 validators from schema, static configuration with a globals table, and
-class-based client wrappers, see `component-advanced-patterns.md`.
+class-based client wrappers, see `convex-create-component/advanced-patterns.md`.
 
 ## Validation
 
@@ -297,9 +297,9 @@ Important:
 
 Read exactly one of these after the user confirms the goal:
 
-- `component-local-components.md`
-- `component-packaged-components.md`
-- `component-hybrid-components.md`
+- `convex-create-component/local-components.md`
+- `convex-create-component/packaged-components.md`
+- `convex-create-component/hybrid-components.md`
 
 Official docs:
 [Authoring Components](https://docs.convex.dev/components/authoring)

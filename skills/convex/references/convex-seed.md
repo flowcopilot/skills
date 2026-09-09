@@ -1,6 +1,5 @@
 <!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
 
-
 # Seed / import data
 
 Populate tables via an internalMutation seed function (re-runnable) or `npx convex import`, matching the schema.
