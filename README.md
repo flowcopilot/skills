@@ -21,4 +21,4 @@ See [`NOTICE.md`](NOTICE.md) for the upstream revision and modification notice.
 
 Run `bun run sync` to fetch both upstream repositories and regenerate the combined skills. Run `bun run check` after the update.
 
-The weekly GitHub Action runs the same commands. When upstream content changes, it opens or updates `automation/sync-upstream-skills` as a pull request. The action does not merge the pull request.
+The weekly GitHub Action runs the same commands. When upstream content changes, it updates `automation/sync-upstream-skills`. It opens a pull request when the repository has a `SKILLS_SYNC_TOKEN` secret with Contents and Pull requests write access. The Flow Copilot organization currently blocks pull requests from the default `GITHUB_TOKEN`, so the Action otherwise provides a manual pull-request link in its run summary. The Action does not merge the pull request.

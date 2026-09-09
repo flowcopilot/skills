@@ -16,6 +16,8 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      SYNC_TOKEN: ${{ secrets.SKILLS_SYNC_TOKEN }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -44,10 +46,9 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Open or update the sync pull request
+      - name: Update the sync branch
         if: steps.changes.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
           SYNC_BRANCH: automation/sync-upstream-skills
         run: |
           git config user.name "github-actions[bot]"
@@ -62,6 +63,12 @@ jobs:
             git push origin "HEAD:${SYNC_BRANCH}"
           fi
 
+      - name: Open or update the sync pull request
+        if: steps.changes.outputs.changed == 'true' && env.SYNC_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ env.SYNC_TOKEN }}
+          SYNC_BRANCH: automation/sync-upstream-skills
+        run: |
           pull_request=$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')
           if [ -z "$pull_request" ]; then
             gh pr create \
@@ -70,3 +77,15 @@ jobs:
               --title "chore(skills): sync upstream sources" \
               --body "Automated refresh from the pinned Convex and Cloudflare source repositories. Review the generated instruction changes before merge."
           fi
+
+      - name: Report the organization token restriction
+        if: steps.changes.outputs.changed == 'true' && env.SYNC_TOKEN == ''
+        env:
+          COMPARE_URL: ${{ github.server_url }}/${{ github.repository }}/compare/main...automation/sync-upstream-skills?expand=1
+        run: |
+          {
+            echo "## Upstream skill changes are ready"
+            echo
+            echo "The update branch was pushed, but the organization blocks pull requests from GITHUB_TOKEN."
+            echo "[Open the pull request manually](${COMPARE_URL}), or add a SKILLS_SYNC_TOKEN repository secret."
+          } >> "$GITHUB_STEP_SUMMARY"
