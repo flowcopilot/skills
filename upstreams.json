@@ -1,4 +1,27 @@
 {
+  "ax": {
+    "repository": "https://github.com/ax-llm/ax.git",
+    "revision": "259bccfd8f681969a3d134ea4f5920757f22278f",
+    "workflows": [
+      "ax-agent",
+      "ax-agent-context",
+      "ax-agent-memory-skills",
+      "ax-agent-observability",
+      "ax-agent-optimize",
+      "ax-agent-rlm",
+      "ax-ai",
+      "ax-audio",
+      "ax-event-runtime",
+      "ax-flow",
+      "ax-gen",
+      "ax-gepa",
+      "ax-llm",
+      "ax-mcp",
+      "ax-playbook",
+      "ax-refine",
+      "ax-signature"
+    ]
+  },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
     "revision": "b052c32bab7dd493513260228a36c88294f343f1",

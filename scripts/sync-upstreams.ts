@@ -18,7 +18,7 @@ type SourceConfig = {
   revision: string;
   workflows: string[];
 };
-type Manifest = Record<"cloudflare" | "convex", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -78,6 +78,13 @@ function sourceSkills(root: string): SkillSource[] {
     .map((entry) => resolve(directory, entry.name, "SKILL.md"))
     .filter(existsSync)
     .map(parseSkill)
+    .sort((left, right) => left.name.localeCompare(right.name));
+}
+
+function sourceMarkdownSkills(directory: string): SkillSource[] {
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => parseSkill(resolve(directory, entry.name)))
     .sort((left, right) => left.name.localeCompare(right.name));
 }
 
@@ -172,8 +179,12 @@ function frontmatter(
   description: string,
   source: string,
   revision: string,
+  extraMetadata: Record<string, string> = {},
 ) {
-  return `---\nname: ${name}\ndescription: ${description}\nlicense: Apache-2.0\nmetadata:\n  author: flowcopilot\n  upstream: ${source}@${revision}\n---`;
+  const metadata = Object.entries(extraMetadata)
+    .map(([key, value]) => `  ${key}: ${JSON.stringify(value)}`)
+    .join("\n");
+  return `---\nname: ${name}\ndescription: ${description}\nlicense: Apache-2.0\nmetadata:\n  author: flowcopilot\n  upstream: ${source}@${revision}${metadata ? `\n${metadata}` : ""}\n---`;
 }
 
 function workflowList(skills: SkillSource[], referencePrefix = "references") {
@@ -183,6 +194,66 @@ function workflowList(skills: SkillSource[], referencePrefix = "references") {
         `- [${skill.name}](${referencePrefix}/${skill.name}.md): ${skill.description}`,
     )
     .join("\n");
+}
+
+function syncAx(checkout: Checkout): string[] {
+  const sourceName = "ax-llm/ax";
+  const target = resolve(repositoryRoot, "skills", "ax");
+  resetDirectory(target, "ax");
+  const version = JSON.parse(
+    readFileSync(resolve(checkout.root, "src", "ax", "package.json"), "utf8"),
+  ).version as unknown;
+  if (typeof version !== "string" || version.length === 0) {
+    throw new Error("Ax package version is missing");
+  }
+  const workflows = sourceMarkdownSkills(
+    resolve(checkout.root, "src", "ax", "skills"),
+  );
+  if (!workflows.some((skill) => skill.name === "ax-llm")) {
+    throw new Error("Ax source has no ax-llm skill");
+  }
+
+  const references = resolve(target, "references");
+  mkdirSync(references, { recursive: true });
+  for (const skill of workflows) {
+    writeMarkdown(
+      resolve(references, `${skill.name}.md`),
+      skill.body.replaceAll("__VERSION__", version),
+      sourceName,
+      checkout.revision,
+    );
+  }
+
+  const metadata = frontmatter(
+    "ax",
+    "Build, review, debug, and optimize TypeScript LLM applications with @ax-llm/ax. Use for Ax signatures, model providers, structured generation, agents, context, memory, MCP, workflows, events, audio, observability, GEPA, refinement, or playbooks.",
+    sourceName,
+    checkout.revision,
+    { upstream_version: version },
+  );
+  const body = `# Ax
+
+Use the installed \`@ax-llm/ax\` package and its types as the source of truth. Read only the references that match the task. A former \`ax-*\` skill name now refers to its file below. Do not expect separate Ax skills to be installed.
+
+## Workflows
+
+${workflowList(workflows)}
+
+## Common rules
+
+- Prefer the factory APIs used by the selected reference.
+- Match examples to the installed package version. Check package exports and type declarations when they differ from a reference.
+- Load more than one reference when a task crosses Ax subsystems. For example, an agent with MCP tools needs both the agent and MCP references.
+- Verify code with the target repository's typecheck and relevant tests.
+`;
+  writeSkill(
+    resolve(target, "SKILL.md"),
+    metadata,
+    body,
+    sourceName,
+    checkout.revision,
+  );
+  return workflows.map((skill) => skill.name);
 }
 
 function syncConvex(checkout: Checkout): string[] {
@@ -350,11 +421,15 @@ function assertApacheLicense(checkout: Checkout, name: string) {
 }
 
 try {
+  const ax = clone("ax");
   const convex = clone("convex");
   const cloudflare = clone("cloudflare");
+  assertApacheLicense(ax, "ax");
   assertApacheLicense(convex, "convex");
   assertApacheLicense(cloudflare, "cloudflare");
 
+  manifest.ax.revision = ax.revision;
+  manifest.ax.workflows = syncAx(ax);
   manifest.convex.revision = convex.revision;
   manifest.convex.workflows = syncConvex(convex);
   manifest.cloudflare.revision = cloudflare.revision;
@@ -362,6 +437,12 @@ try {
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
   const notices = `# Notices
+
+## Ax skill
+
+The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${ax.revision}\`, licensed under Apache License 2.0.
+
+The imported revision is dated ${ax.date}. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
 
 ## Convex skill
 
@@ -376,6 +457,7 @@ The files under \`skills/cloudflare/\` derive from [cloudflare/skills](https://g
 The imported revision is dated ${cloudflare.date}. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves specialized skill instructions into references, adjusts links for their new locations, and places bundled scripts under the combined skill.
 `;
   writeFileSync(resolve(repositoryRoot, "NOTICE.md"), normalized(notices));
+  console.log(`Ax: ${ax.revision}`);
   console.log(`Convex: ${convex.revision}`);
   console.log(`Cloudflare: ${cloudflare.revision}`);
 } finally {

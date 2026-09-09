@@ -16,7 +16,7 @@ Do not edit generated files under `skills/` by hand. Change `scripts/sync-upstre
 
 Confirm these points before code changes:
 
-- The repository has `skills/<name>/SKILL.md` directories.
+- The repository publishes skill folders or plain Markdown skill sources that the adapter can read.
 - Each `SKILL.md` has YAML frontmatter with string `name` and `description` fields.
 - The source license permits redistribution and modification.
 - One upstream skill can act as the combined router, or you can write a small router in the adapter.
@@ -41,7 +41,7 @@ The sync command replaces `revision` with the imported commit SHA. It also repla
 Add the new key to the `Manifest` type in `scripts/sync-upstreams.ts`:
 
 ```ts
-type Manifest = Record<"cloudflare" | "convex" | "example", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "example", SourceConfig>;
 ```
 
 ### 3. Add a source adapter
@@ -65,6 +65,7 @@ The package must contain only one file named `SKILL.md`. Convert each upstream s
 Use the shared helpers where they fit:
 
 - `sourceSkills` reads and sorts upstream skills.
+- `sourceMarkdownSkills` reads and sorts a directory of Markdown skill sources.
 - `resetDirectory` removes the previous generated package with a path guard.
 - `writeMarkdown` adds the source revision notice and normalizes Markdown.
 - `copyTree` copies nested references or scripts.
