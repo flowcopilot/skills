@@ -16,6 +16,7 @@ The `convex` skill combines the upstream `get-convex/agent-skills` collection in
 The `cloudflare` skill applies the same structure to the upstream `cloudflare/skills` collection. It keeps Cloudflare's product directory, detailed guides, and Turnstile scripts behind one entry file.
 
 See [`NOTICE.md`](NOTICE.md) for the upstream revision and modification notice.
+See [`DEVELOPMENT.md`](DEVELOPMENT.md) to add another upstream skill source.
 
 ## Updates
 
