@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "259bccfd8f681969a3d134ea4f5920757f22278f",
+    "revision": "5c43344f9ef3016db576fa2c3b59d48ef21b4d71",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -19,7 +19,8 @@
       "ax-mcp",
       "ax-playbook",
       "ax-refine",
-      "ax-signature"
+      "ax-signature",
+      "ax-typesafe"
     ]
   },
   "cloudflare": {
@@ -43,7 +44,7 @@
   },
   "convex": {
     "repository": "https://github.com/get-convex/agent-skills.git",
-    "revision": "c41ece22681a50d326e54f30d24148a6d46d0c3c",
+    "revision": "0aa10576821c6928f6a0f498c087af4ee231536e",
     "workflows": [
       "convex-add",
       "convex-advisor",

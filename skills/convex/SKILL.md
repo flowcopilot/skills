@@ -4,10 +4,10 @@ description: Build, review, test, secure, migrate, and operate Convex backends. 
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: get-convex/agent-skills@c41ece22681a50d326e54f30d24148a6d46d0c3c
+  upstream: get-convex/agent-skills@0aa10576821c6928f6a0f498c087af4ee231536e
 ---
 
-<!-- Modified by Flow Copilot from get-convex/agent-skills revision c41ece22681a50d326e54f30d24148a6d46d0c3c. -->
+<!-- Modified by Flow Copilot from get-convex/agent-skills revision 0aa10576821c6928f6a0f498c087af4ee231536e. -->
 
 # Convex
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 5c43344f9ef3016db576fa2c3b59d48ef21b4d71. -->
 
 # AxGen Codegen Rules (@ax-llm/ax)
 
@@ -324,6 +324,17 @@ Rules:
 - Set `showThoughts: true` to include the model's reasoning in `result.thought`.
 
 ## Structured Outputs
+
+In TypeScript, providers advertising `requiresStructuredOutput` (such as
+Typesafe) automatically receive a schema for scalar-only signatures too.
+Ax renders JSON instructions/examples and parses the resulting object without
+changing the program's signature. Typesafe accepts required boolean and class
+outputs; numeric scoring uses the provider-specific native client. Boolean/class
+value descriptions map to native criteria, while conventional providers receive
+readable descriptions in prompts and schemas. See the
+[ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
+for native questions, thresholds, and hybrid text generation. Providers that disable both native functions and
+`functionEmulation` reject tool-bearing programs before prompt rendering.
 
 ```typescript
 const sig = f()

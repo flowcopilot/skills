@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 5c43344f9ef3016db576fa2c3b59d48ef21b4d71. -->
 
 # AxAgent Codegen Rules (@ax-llm/ax)
 
@@ -15,6 +15,12 @@ Your job is to choose the smallest correct `AxAgent` shape for the user's needs:
   tasks, Apps, or event-driven wake/resume, use the `ax-mcp` skill.
 
 ## Use These Defaults
+
+For Typesafe/Jev decisions inside an agent, keep a generative model for the
+actor's tools/code/prose and call Typesafe in a separate decision step. See the
+[ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
+for supported signatures and native questions; Jev cannot supply a general
+tool-using actor's output contract.
 
 - Use `agent(...)`, not `new AxAgent(...)`.
 - Prefer string signatures or `f()` signatures over hand-written signature objects.

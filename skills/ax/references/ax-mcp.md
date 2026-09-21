@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 5c43344f9ef3016db576fa2c3b59d48ef21b4d71. -->
 
 # Native MCP With Ax
 
@@ -32,6 +32,12 @@ policy, and cancellation context intact through Ax execution.
 - Use `AxMCPStreamableHTTPTransport` for current remote MCP servers.
 - Use `AxMCPHTTPSSETransport` only for legacy HTTP/SSE servers.
 - Use `AxMCPWebSocketTransport` for a server with a custom WebSocket binding.
+  Python, Java, C++, Go, and Rust also expose this transport. Pending requests
+  are removed on send failure, abort, response, and close; concurrent active IDs
+  must be unique. Batch requests require negotiated MCP `2025-03-26`.
+  Python uses its `realtime` extra, C++ uses `AXLLM_ENABLE_REALTIME`, and Rust
+  uses its `realtime` feature for the built-in socket; custom socket factories
+  remain available without those optional dependencies.
 - Use `AxMCPStdioTransport` from `@ax-llm/ax-tools` for local Node processes.
 - Use a caller-defined `AxMCPTransport` for application-owned bindings.
 
