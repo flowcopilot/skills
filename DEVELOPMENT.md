@@ -8,7 +8,7 @@ Do not edit generated files under `skills/` by hand. Change `scripts/sync-upstre
 
 - Git
 - [Bun](https://bun.sh/)
-- Python 3.11 or later and the dependencies in `requirements-validation.txt`
+- [uv](https://docs.astral.sh/uv/) with Python 3.11 or later
 - `actionlint` for GitHub Actions checks
 
 ## Add an upstream source
@@ -101,7 +101,8 @@ Run:
 
 ```sh
 bun run sync
-bun run validate
+bun run check
+uv run --script scripts/validate.py
 git diff --check
 actionlint .github/workflows/*.yml
 ```
@@ -154,10 +155,10 @@ Run `bun run sync --only react-native` to update both sources together. The defa
 
 ## Repository validation
 
-Create `.venv` with `python3 -m venv .venv`, then install `requirements-validation.txt` with `.venv/bin/python -m pip install -r requirements-validation.txt`. Run `bun run validate` to run every validation layer without fetching or regenerating skill sources.
+Run `bun run check` and `uv run --script scripts/validate.py` to run every validation layer without fetching or regenerating skill sources. The Python script declares its pinned dependencies. `uv` installs them when it runs the script.
 
-The reference implementation is pinned to an exact `agentskills/agentskills` commit. `scripts/validate.py` calls `skills_ref.validate` for each bundle, then checks optional field types against the published specification. It reports all bundle errors and returns a nonzero exit code on failure, including an empty skill collection or a missing root entry file. `scripts/test_validate.py` tests valid and malformed skills, name and length limits, optional metadata, and repository discovery.
+The reference implementation is pinned to an exact `agentskills/agentskills` commit. `scripts/validate.py` calls `skills_ref.validate` for each bundle, then checks optional field types against the published specification. It reports all bundle errors and returns a nonzero exit code on failure, including an empty skill collection or a missing root entry file.
 
-`scripts/check.ts` adds repository rules: one root entry file per bundle, at most 500 lines, resolvable local Markdown links, manifest routes, source-specific provenance and license checks. These are separate from standards compliance. Markdown links inside code examples are ignored. This does not verify external URLs, execute imported helper scripts, or evaluate the accuracy or safety of imported instructions. Deep reference paths are permitted by the checker; the specification recommends keeping reference chains shallow.
+`scripts/check.ts` adds repository rules: one root entry file per bundle, at most 500 lines, manifest routes, source-specific provenance and license checks. Lychee checks local Markdown links in GitHub Actions. These are separate from standards compliance. This does not verify external URLs, execute imported helper scripts, or evaluate the accuracy or safety of imported instructions. Deep reference paths are permitted by the checker; the specification recommends keeping reference chains shallow.
 
-Both `.github/workflows/validate.yml` and the sync workflow run the full validation command. To update the reference validator, review its changes, update the pinned commit and dependency versions, reinstall dependencies, and run the full suite. Do not change the pin automatically during source sync.
+Both `.github/workflows/validate.yml` and the sync workflow run all validation commands. To update the reference validator, review its changes, update the pinned commit and dependency versions, and run the full suite. Do not change the pin automatically during source sync.

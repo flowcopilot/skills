@@ -1,6 +1,5 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import { markdownLinks } from "./markdown-links";
 
 type Manifest = Record<
   string,
@@ -59,23 +58,6 @@ for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {
     errors.push(String(error));
   }
 
-  for (const source of filesUnder(skillRoot).filter((path) => path.endsWith(".md"))) {
-    const text = readFileSync(source, "utf8");
-    for (const destination of markdownLinks(text)) {
-      const link = destination.split("#", 1)[0];
-      if (
-        !link ||
-        link.includes("://") ||
-        link.startsWith("mailto:") ||
-        link.startsWith("#") ||
-        link.startsWith("<")
-      ) {
-        continue;
-      }
-      const target = resolve(source, "..", decodeURIComponent(link));
-      if (!existsSync(target)) errors.push(`${source}: missing link target ${link}`);
-    }
-  }
 }
 
 for (const [skillName, source] of Object.entries(manifest)) {
@@ -159,4 +141,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log("All skill structures, routes, links, and bundled scripts are valid.");
+console.log("All skill structures, routes, and bundled scripts are valid.");

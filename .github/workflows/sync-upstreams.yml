@@ -29,18 +29,22 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+
       - name: Regenerate skills
         run: bun run sync
 
-      - name: Install validation dependencies
-        run: |
-          python3 -m venv .venv
-          .venv/bin/python -m pip install -r requirements-validation.txt
-
       - name: Check generated files
         run: |
-          bun run validate
+          bun run check
+          uv run --script scripts/validate.py
           git diff --check
+
+      - name: Check local Markdown links
+        uses: lycheeverse/lychee-action@649b0e4890508ea3e11ea6b3ee35ce899a25afd5
+        with:
+          args: --offline --no-progress './**/*.md'
 
       - name: Detect changes
         id: changes

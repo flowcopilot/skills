@@ -31,20 +31,19 @@ See [`DEVELOPMENT.md`](DEVELOPMENT.md) to add another upstream skill source.
 
 ## Updates
 
-Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, or `bun run sync --only react-native` to update both React Native sources together. Run `bun run validate` after the update.
+Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, or `bun run sync --only react-native` to update both React Native sources together. Then run the validation commands below.
 
 The weekly GitHub Action runs the same commands. When upstream content changes, it updates `automation/sync-upstream-skills`. It opens a pull request when the repository has a `SKILLS_SYNC_TOKEN` secret with Contents and Pull requests write access. The Flow Copilot organization currently blocks pull requests from the default `GITHUB_TOKEN`, so the Action otherwise provides a manual pull-request link in its run summary. The Action does not merge the pull request.
 
 ## Validation
 
-Set up the pinned Agent Skills reference validator once (Python 3.11 or later):
+Run the validation command with Python 3.11 or later and [uv](https://docs.astral.sh/uv/):
 
 ```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-validation.txt
-bun run validate
+bun run check
+uv run --script scripts/validate.py
 ```
 
-`bun run validate` discovers every bundle under `skills/`, runs the [Agent Skills reference validator](https://agentskills.io/specification#validation), checks frontmatter field types, and runs the repository checks and regression tests. Repository checks cover local Markdown links, workflow routes, source attribution, licenses, bundled script paths, and source separation. `bun run check` remains available for the Bun-only checks.
+The Python validation script declares its pinned dependencies. `uv` installs them when it runs the script. The script discovers every bundle under `skills/`, runs the [Agent Skills reference validator](https://agentskills.io/specification#validation), and checks frontmatter field types. `bun run check` covers workflow routes, source attribution, licenses, bundled script paths, and source separation. Lychee checks local Markdown links in GitHub Actions.
 
 Validation runs on pull requests, pushes to `main`, and after the weekly sync. Format validation does not test instruction accuracy or agent output quality. The 500-line limit and one entry file per bundle are repository rules; reference depth and token budgets remain authoring guidance.

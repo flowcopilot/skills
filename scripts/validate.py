@@ -1,16 +1,18 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "PyYAML==6.0.3",
+#   "skills-ref @ git+https://github.com/agentskills/agentskills.git@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref",
+# ]
+# ///
+
 """Validate every installable bundle with the Agent Skills reference library."""
 from pathlib import Path
 import re
 import sys
 
-try:
-    import yaml
-    from skills_ref import validate
-except ImportError:
-    raise SystemExit(
-        "Install validation dependencies first: python3 -m venv .venv && "
-        ".venv/bin/python -m pip install -r requirements-validation.txt"
-    )
+import yaml
+from skills_ref import validate
 
 
 def validate_bundle(directory: Path) -> list[str]:
