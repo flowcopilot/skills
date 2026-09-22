@@ -2,7 +2,8 @@
   "name": "@flowcopilot/skills",
   "private": true,
   "scripts": {
-    "check": "bun scripts/check.ts",
-    "sync": "bun scripts/sync-upstreams.ts"
+    "check": "bun test scripts/markdown-links.test.ts && bun scripts/check.ts",
+    "sync": "bun scripts/sync-upstreams.ts",
+    "validate": "bun scripts/validate.ts"
   }
 }

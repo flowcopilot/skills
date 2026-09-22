@@ -8,6 +8,7 @@ Do not edit generated files under `skills/` by hand. Change `scripts/sync-upstre
 
 - Git
 - [Bun](https://bun.sh/)
+- Python 3.11 or later and the dependencies in `requirements-validation.txt`
 - `actionlint` for GitHub Actions checks
 
 ## Add an upstream source
@@ -22,7 +23,7 @@ Confirm these points before code changes:
 - One upstream skill can act as the combined router, or you can write a small router in the adapter.
 - References and scripts can remain inside one Agent Skills package.
 
-The current generator accepts Apache License 2.0 sources. If a source uses another license, add explicit license handling before you import it. Update the generated frontmatter and `NOTICE.md` text for that license.
+The current generator accepts Apache License 2.0 sources and explicitly handles MIT for Expo, including its bundled copyright notices. If a source uses another license, add explicit license handling before you import it. Update the generated frontmatter and `NOTICE.md` text for that license.
 
 ### 2. Register the source
 
@@ -41,7 +42,7 @@ The sync command replaces `revision` with the imported commit SHA. It also repla
 Add the new key to the `Manifest` type in `scripts/sync-upstreams.ts`:
 
 ```ts
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "example", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "example", SourceConfig>;
 ```
 
 ### 3. Add a source adapter
@@ -78,13 +79,13 @@ Keep the combined router short. It must tell the agent when to load each workflo
 
 ### 4. Connect the adapter
 
-In the main `try` block:
+In `syncBundle` and the bundle registry:
 
-1. Clone the registered source with `clone("example")`.
+1. Add the bundle to `bundleNames`, then clone its registered source with `clone("example")`.
 2. Check its license.
 3. Run `syncExample`.
 4. Store its revision and workflow list in `manifest.example`.
-5. Add its attribution and modification statement to the generated `NOTICE.md` content.
+5. Return its attribution and modification section for `NOTICE.md`. The main loop replaces only the selected bundle’s notice.
 
 The general checker reads every entry in `upstreams.json`. It will then check that each recorded workflow has a reference and a router link. Add a source-specific check to `scripts/check.ts` when the source has required scripts, fixed files, or another rule that the general checks cannot prove.
 
@@ -100,9 +101,9 @@ Run:
 
 ```sh
 bun run sync
-bun run check
+bun run validate
 git diff --check
-actionlint .github/workflows/sync-upstreams.yml
+actionlint .github/workflows/*.yml
 ```
 
 Run `bun run sync` a second time. The second run must produce the same files as the first run. Review the complete generated diff, including deleted files and moved references.
@@ -134,3 +135,29 @@ chore(skills): sync upstream sources
 ```
 
 Push changes through a pull request. The scheduled workflow updates `automation/sync-upstream-skills` and opens the pull request with `SKILLS_SYNC_TOKEN`. It never merges the pull request.
+
+## Expo source
+
+Expo imports `plugins/expo/skills`. The adapter uses the skill directory README tables as the router and requires the index to match the discovered skills. It preserves helper scripts, standalone supporting files, and MIT license notices. Plugin metadata, hooks, and other plugin directories are excluded. Run `bun run sync --only expo` to update this source without updating the other collections.
+
+## Multiple sources in one bundle
+
+The `software-mansion` and `callstack` manifest entries both set `"bundle": "react-native"`. Each retains its repository, revision, and workflow list. The checker uses `bundle` as the output directory when present.
+
+The React Native adapter discovers every `SKILL.md` recursively under each source's `skills/` directory. It preserves each source tree under `references/<source>/`, converts entry files to `index.md`, and rewrites local entry-file references. It rejects filename collisions before replacing the package. Agent UI metadata is excluded; other supporting files are preserved. No helper scripts are currently present in these sources; any future scripts remain within their source tree so their relative dependencies stay valid.
+
+Both sources declare MIT. Callstack's license and copyright notice are copied. Software Mansion has no standalone license file; its plugin marketplace metadata, including the MIT declaration and author, is retained under `licenses/`.
+
+To add another community, register a separate manifest entry with `bundle: react-native`, add it to the adapter's source list, and implement its license validation and attribution. Keep paths qualified by source. Update the router's source selection guidance and the checker. Do not merge files based only on an upstream skill name.
+
+Run `bun run sync --only react-native` to update both sources together. The default sync and weekly workflow include this bundle. The `--only` option also accepts the other bundle names.
+
+## Repository validation
+
+Create `.venv` with `python3 -m venv .venv`, then install `requirements-validation.txt` with `.venv/bin/python -m pip install -r requirements-validation.txt`. Run `bun run validate` to run every validation layer without fetching or regenerating skill sources.
+
+The reference implementation is pinned to an exact `agentskills/agentskills` commit. `scripts/validate.py` calls `skills_ref.validate` for each bundle, then checks optional field types against the published specification. It reports all bundle errors and returns a nonzero exit code on failure, including an empty skill collection or a missing root entry file. `scripts/test_validate.py` tests valid and malformed skills, name and length limits, optional metadata, and repository discovery.
+
+`scripts/check.ts` adds repository rules: one root entry file per bundle, at most 500 lines, resolvable local Markdown links, manifest routes, source-specific provenance and license checks. These are separate from standards compliance. Markdown links inside code examples are ignored. This does not verify external URLs, execute imported helper scripts, or evaluate the accuracy or safety of imported instructions. Deep reference paths are permitted by the checker; the specification recommends keeping reference chains shallow.
+
+Both `.github/workflows/validate.yml` and the sync workflow run the full validation command. To update the reference validator, review its changes, update the pinned commit and dependency versions, reinstall dependencies, and run the full suite. Do not change the pin automatically during source sync.

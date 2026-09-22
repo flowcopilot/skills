@@ -32,9 +32,14 @@ jobs:
       - name: Regenerate skills
         run: bun run sync
 
+      - name: Install validation dependencies
+        run: |
+          python3 -m venv .venv
+          .venv/bin/python -m pip install -r requirements-validation.txt
+
       - name: Check generated files
         run: |
-          bun run check
+          bun run validate
           git diff --check
 
       - name: Detect changes
@@ -75,7 +80,7 @@ jobs:
               --base main \
               --head "$SYNC_BRANCH" \
               --title "chore(skills): sync upstream sources" \
-              --body "Automated refresh from the pinned Convex and Cloudflare source repositories. Review the generated instruction changes before merge."
+              --body "Automated refresh from the registered upstream source repositories. Review the generated instruction changes before merge."
           fi
 
       - name: Report the organization token restriction
