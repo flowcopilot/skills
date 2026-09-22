@@ -78,5 +78,83 @@
       "convex-test",
       "convex-verify"
     ]
+  },
+  "expo": {
+    "repository": "https://github.com/expo/skills.git",
+    "revision": "39708666ce7014def1f8e34f3d8c93e8d3f588bb",
+    "workflows": [
+      "eas-app-stores",
+      "eas-hosting",
+      "eas-observe",
+      "eas-simulator",
+      "eas-update",
+      "eas-update-insights",
+      "eas-workflows",
+      "expo-animation",
+      "expo-app-clip",
+      "expo-brownfield",
+      "expo-data-fetching",
+      "expo-design-system",
+      "expo-dev-client",
+      "expo-dom",
+      "expo-examples",
+      "expo-module",
+      "expo-native-ui",
+      "expo-overview",
+      "expo-project-structure",
+      "expo-router",
+      "expo-skill-feedback",
+      "expo-ui",
+      "expo-upgrade",
+      "expo-web-to-native"
+    ]
+  },
+  "software-mansion": {
+    "repository": "https://github.com/software-mansion-labs/skills.git",
+    "bundle": "react-native",
+    "revision": "e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9",
+    "workflows": [
+      "software-mansion/detour/detour-onboarding/index",
+      "software-mansion/detour/migrate-to-detour/index",
+      "software-mansion/expo-horizon/index",
+      "software-mansion/fishjam/index",
+      "software-mansion/fishjam/references/js-server-sdk/index",
+      "software-mansion/fishjam/references/platform/index",
+      "software-mansion/fishjam/references/python-server-sdk/index",
+      "software-mansion/fishjam/references/react-client/index",
+      "software-mansion/fishjam/references/react-native-client/index",
+      "software-mansion/moq-kit/index",
+      "software-mansion/pulsar-haptics/index",
+      "software-mansion/radon-mcp/index",
+      "software-mansion/react-native-best-practices/index",
+      "software-mansion/react-native-best-practices/references/animations/index",
+      "software-mansion/react-native-best-practices/references/audio/index",
+      "software-mansion/react-native-best-practices/references/enable-worklets-bundle-mode/index",
+      "software-mansion/react-native-best-practices/references/gestures/index",
+      "software-mansion/react-native-best-practices/references/jsi/index",
+      "software-mansion/react-native-best-practices/references/multithreading/index",
+      "software-mansion/react-native-best-practices/references/on-device-ai/index",
+      "software-mansion/react-native-best-practices/references/rich-text/index",
+      "software-mansion/react-native-best-practices/references/svg/index",
+      "software-mansion/react-native-moq/index",
+      "software-mansion/rnrepo/index",
+      "software-mansion/typegpu/index"
+    ]
+  },
+  "callstack": {
+    "repository": "https://github.com/callstackincubator/agent-skills.git",
+    "bundle": "react-native",
+    "revision": "61e6e7dfdf3a8ee862254c200d751fcb1fb863dc",
+    "workflows": [
+      "callstack/assess-react-native-migration/index",
+      "callstack/create-react-native-library/index",
+      "callstack/github-actions/index",
+      "callstack/react-native-best-practices/index",
+      "callstack/react-native-brownfield-migration/index",
+      "callstack/react-native-tv-best-practices/index",
+      "callstack/react-navigation/index",
+      "callstack/upgrading-react-native/index",
+      "callstack/writing-user-docs/index"
+    ]
   }
 }
