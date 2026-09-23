@@ -329,6 +329,18 @@ function syncCloudflare(checkout: Checkout): string[] {
   const rootSkill = allSkills.find((skill) => skill.name === "cloudflare");
   if (!rootSkill) throw new Error("Cloudflare source has no cloudflare skill");
   const workflows = allSkills.filter((skill) => skill.name !== "cloudflare");
+  const workflowNames = new Set(workflows.map((skill) => skill.name));
+  // Former sibling skill names are not installable skills here; link their references instead.
+  const linkWorkflowMentions = (text: string, prefix: string) =>
+    text
+      .replace(/\[([a-z0-9-]+) skill\]\(/g, (match, name: string) =>
+        workflowNames.has(name) ? `[${name}](` : match)
+      .replace(/`([a-z0-9-]+)` skill\b/g, (match, name: string) =>
+        workflowNames.has(name) ? `[${name}](${prefix}${name}.md) reference` : match);
+  const replaceExact = (text: string, from: string, to: string) => {
+    if (!text.includes(from)) throw new Error(`Cloudflare text changed upstream: ${from}`);
+    return text.replace(from, to);
+  };
   const references = resolve(target, "references");
   mkdirSync(references, { recursive: true });
 
@@ -345,9 +357,9 @@ function syncCloudflare(checkout: Checkout): string[] {
   );
 
   for (const skill of workflows) {
-    let body = skill.body.replace(
-      /(?:\.\/)?references\//g,
-      `${skill.name}/`,
+    let body = linkWorkflowMentions(
+      skill.body.replace(/(?:\.\/)?references\//g, `${skill.name}/`),
+      "",
     );
     if (skill.name === "turnstile-spin") {
       body = body
@@ -396,6 +408,30 @@ function syncCloudflare(checkout: Checkout): string[] {
       "`agents-sdk` skill, its `references/mcp.md`",
       "[Agents SDK MCP](references/agents-sdk/mcp.md)",
     );
+  rootBody = linkWorkflowMentions(rootBody, "references/");
+  rootBody = replaceExact(
+    rootBody,
+    "`sandbox-next` for new or preview projects; `sandbox-stable` for existing stable apps",
+    "[sandbox-next](references/sandbox-next.md) for new or preview projects; [sandbox-stable](references/sandbox-stable.md) for existing stable apps",
+  );
+  rootBody = replaceExact(
+    rootBody,
+    "then load the relevant skills or documentation for implementation",
+    "then read the relevant references or documentation for implementation",
+  );
+  rootBody = replaceExact(
+    rootBody,
+    "Read the linked reference or docs before implementing; load named skills when installed.",
+    "Read the linked reference or docs before implementing.",
+  );
+  rootBody = replaceExact(
+    rootBody,
+    "If a named skill is unavailable, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/); sibling skills are optional.",
+    "If no bundled reference covers the product, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/).",
+  );
+  rootBody = replaceExact(rootBody, "| Skill or reference |", "| Reference |");
+  const staleMention = rootBody.match(/`([a-z0-9-]+)` skill|named skill/);
+  if (staleMention) throw new Error(`Cloudflare router still names a skill: ${staleMention[0]}`);
   const insertion = rootBody.indexOf("\n## Help the user find the right product");
   if (insertion < 0) throw new Error("Cloudflare router heading changed upstream");
   rootBody = `${rootBody.slice(0, insertion).trimEnd()}\n\n## Specialized workflows\n\n${workflowList(workflows)}${rootBody.slice(insertion)}`;

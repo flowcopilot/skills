@@ -1,0 +1,559 @@
+{
+  "codex_cli": "0.155.1",
+  "model": "CLI default, not pinned",
+  "task_runs": [
+    {
+      "bundle": "ax",
+      "mode": "direct",
+      "layout": "combined",
+      "prompt": "In a TypeScript app using @ax-llm/ax, I need an agent that calls MCP tools. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short implementation plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 104702,
+        "cached_input_tokens": 85376,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 687,
+        "reasoning_output_tokens": 43
+      },
+      "commands": [
+        "/bin/zsh -c 'ls -la .agents/skills; cat .agents/skills/ax/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/ax/references/ax-mcp.md'",
+        "/bin/zsh -c 'cat .agents/skills/ax/references/ax-agent.md'"
+      ],
+      "final": "I used these local files:\n\n- [`.agents/skills/ax/SKILL.md`](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/SKILL.md)\n- [`.agents/skills/ax/references/ax-agent.md`](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-agent.md)\n- [`.agents/skills/ax/references/ax-mcp.md`](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-mcp.md)\n\nImplementation plan:\n\n1. Check the installed package types before implementation. The skill records version `24.0.18`.\n2. Create an `AxMCPClient` with a unique namespace. Use `AxMCPStreamableHTTPTransport` for a remote server, or `AxMCPStdioTransport` from `@ax-llm/ax-tools` for a local process.\n3. Create `agent('query:string -> answer:string', { mcp: [client], contextFields: [] })`. Attach the client through `mcp`. Do not use `functions` or `toFunction()`.\n4. For tool discovery, enable `functionDiscovery: true`. The agent must discover tool definitions before it calls unknown tools through `mcp.<namespace>.tools.<tool>`.\n5. Apply `authorizeToolCall` before tools change external state. Call `assistant.forward(llm, { query })`. Close the client in `finally`; also terminate a local stdio transport.\n6. Check TypeScript types. Use a replay transport to test tool calls, authorization failures, cancellation, and cleanup.\n\nNo files were changed. No network requests were made.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "ax",
+      "mode": "direct",
+      "layout": "upstream",
+      "prompt": "In a TypeScript app using @ax-llm/ax, I need an agent that calls MCP tools. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short implementation plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 84828,
+        "cached_input_tokens": 58240,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 559,
+        "reasoning_output_tokens": 16
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/ax-llm/SKILL.md .agents/skills/ax-agent/SKILL.md .agents/skills/ax-mcp/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/ax-agent/SKILL.md'"
+      ],
+      "final": "I used these local files:\n\n- [.agents/skills/ax-llm/SKILL.md](/private/tmp/flow-skills-eval/cases/ax-upstream/.agents/skills/ax-llm/SKILL.md) \u2014 general Ax API instructions.\n- [.agents/skills/ax-agent/SKILL.md](/private/tmp/flow-skills-eval/cases/ax-upstream/.agents/skills/ax-agent/SKILL.md) \u2014 agent configuration and tool discovery.\n- [.agents/skills/ax-mcp/SKILL.md](/private/tmp/flow-skills-eval/cases/ax-upstream/.agents/skills/ax-mcp/SKILL.md) \u2014 MCP connection, authorization, and cleanup.\n\nImplementation plan:\n\n1. Select `AxMCPStreamableHTTPTransport` for a remote server, or `AxMCPStdioTransport` from `@ax-llm/ax-tools` for a local process.\n2. Create an `AxMCPClient` with a stable, unique `namespace`. Use `authorizeToolCall` to check permission before tools change external state.\n3. Create `agent('query:string -> answer:string', { mcp: client, functionDiscovery: true, contextFields: [] })`. Pass the client through `mcp`. Do not use `functions` or `toFunction()`.\n4. Discover tool definitions before use. The agent calls tools through `mcp.<namespace>.tools.<tool>`. Run the agent with `forward(llm, { query })`.\n5. Test successful calls, authorization failures, and cancellation with a replay transport. Close the client in `finally`. For stdio, also call `terminate()` on the transport.\n\nI did not edit files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "ax",
+      "mode": "implicit",
+      "layout": "combined",
+      "prompt": "I am adding MCP tools to an @ax-llm/ax TypeScript agent. Give a short implementation plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 70858,
+        "cached_input_tokens": 44416,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 703,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/ax/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/ax/references/ax-mcp.md .agents/skills/ax/references/ax-agent.md'"
+      ],
+      "final": "1. Check the installed Ax version and types before implementation. The local [ax skill](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/SKILL.md) describes version `24.0.18`. I found no local package manifest to confirm compatibility.\n\n2. Create an `AxMCPClient` with a unique, stable `namespace`. Use `AxMCPStreamableHTTPTransport` for a remote server, or `AxMCPStdioTransport` from `@ax-llm/ax-tools` for a local process. Configure authentication as needed. See the [MCP reference](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-mcp.md).\n\n3. Pass the client to `agent(...)` through `mcp: [client]`. Do not use `functions` or `toFunction()` for MCP clients. Tools use `mcp.<namespace>.tools.<tool>`. Enable `functionDiscovery` for large tool catalogs. See the [MCP reference](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-mcp.md) and [agent reference](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-agent.md).\n\n4. Add `authorizeToolCall` checks for tools that change external state. Preserve structured results. Pass cancellation signals through execution. Close clients in `finally`; also terminate local stdio processes. Test tool calls, denied access, errors, cancellation, and cleanup with a replay transport. See the [MCP reference](/private/tmp/flow-skills-eval/cases/ax-combined/.agents/skills/ax/references/ax-mcp.md).\n\nI used the [unslop skill](/Users/tudor/.agents/skills/unslop/SKILL.md) for clear wording. I did not change files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "ax",
+      "mode": "implicit",
+      "layout": "upstream",
+      "prompt": "I am adding MCP tools to an @ax-llm/ax TypeScript agent. Give a short implementation plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 92319,
+        "cached_input_tokens": 71808,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 511,
+        "reasoning_output_tokens": 17
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/ax-mcp/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -lc \"rg -n 'mcp:|AxMCPClient|functionDiscovery|\\\\.close\\\\(' src/examples/*mcp* src/ax/ai/mcp* 2>/dev/null\""
+      ],
+      "final": "Use this short plan, based on the local [ax-mcp skill](/private/tmp/flow-skills-eval/cases/ax-upstream/.agents/skills/ax-mcp/SKILL.md):\n\n1. Select the transport. Use `AxMCPStreamableHTTPTransport` for a remote server, or `AxMCPStdioTransport` from `@ax-llm/ax-tools` for a local process.\n2. Create an `AxMCPClient` with a unique `namespace`. Set authentication and `authorizeToolCall` as needed.\n3. Attach the client with `agent(signature, { mcp: [client] })`. Use `mcp`, not `functions` or `toFunction()`. Agent tools use `mcp.<namespace>.tools.<tool>`.\n4. Use `inspectCatalog()` to check available tools. For large catalogs, set `functionDiscovery: true`. Set `mcpInheritance` if child agents need restricted access.\n5. Test tool calls, authorization denial, and cancellation with a replay transport. Close the client in `finally`. For stdio, also call `terminate()` on the transport.\n\nI also applied the local [writing skill](/Users/tudor/.agents/skills/unslop/SKILL.md). I did not edit files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "cloudflare",
+      "mode": "direct",
+      "layout": "combined",
+      "prompt": "I need a Cloudflare Worker that accepts image uploads, stores originals, and processes images in the background. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short product and implementation plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 96686,
+        "cached_input_tokens": 79104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 699,
+        "reasoning_output_tokens": 11
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/cloudflare/references/images/README.md'",
+        "/bin/zsh -c 'cat .agents/skills/cloudflare/references/r2/README.md'",
+        "/bin/zsh -c 'cat .agents/skills/cloudflare/references/queues/README.md'",
+        "/bin/zsh -c 'cat .agents/skills/cloudflare/references/workers-best-practices.md'",
+        "/bin/sh -c 'cat .agents/skills/cloudflare/references/r2/patterns.md'",
+        "/bin/sh -c 'cat .agents/skills/cloudflare/references/queues/patterns.md'",
+        "/bin/sh -c 'cat .agents/skills/cloudflare/references/images/patterns.md'",
+        "/bin/sh -c 'cat .agents/skills/cloudflare/references/images/api.md'"
+      ],
+      "final": "Use **Workers + R2 + Queues + Cloudflare Images**.\n\nProduct plan: Accept an image upload, preserve the original, and create smaller image versions in the background. Return an image ID after storage succeeds. Let the user check processing status and retrieve completed images.\n\nImplementation plan:\n\n1. Use a Worker to check access, file type, and upload size. Stream accepted uploads into R2 with unique object keys.\n2. Use R2 object events to send processing jobs to Queues. Keep originals and generated images separate to prevent processing loops.\n3. Use a consumer Worker and the Images optimization binding to resize and compress images. Store results in R2.\n4. Use stable output keys so repeated jobs produce the same result. Confirm job completion only after storage succeeds. Retry temporary failures; send exhausted jobs to a dead-letter queue.\n5. Test uploads, invalid images, duplicate jobs, partial failures, and recovery. Add processing logs.\n\nThis plan uses local references only. Current API details, limits, and prices remain unverified. No files were changed and no network requests were made.\n\nExact files used, all under `.agents/skills/cloudflare/`:\n\n- `SKILL.md`\n- `references/workers-best-practices.md`\n- `references/r2/README.md`\n- `references/r2/patterns.md`\n- `references/queues/README.md`\n- `references/queues/patterns.md`\n- `references/images/README.md`\n- `references/images/patterns.md`\n- `references/images/api.md`",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "cloudflare",
+      "mode": "direct",
+      "layout": "upstream",
+      "prompt": "I need a Cloudflare Worker that accepts image uploads, stores originals, and processes images in the background. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short product and implementation plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 171054,
+        "cached_input_tokens": 146176,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 947,
+        "reasoning_output_tokens": 20
+      },
+      "commands": [
+        "/bin/bash -c 'ls -la .agents/skills\nfind -L .agents/skills -name SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/cloudflare/SKILL.md .agents/skills/workers-best-practices/SKILL.md .agents/skills/wrangler/SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/cloudflare/references/r2/README.md .agents/skills/cloudflare/references/queues/README.md .agents/skills/cloudflare/references/images/README.md .agents/skills/workers-best-practices/references/runtime-patterns.md .agents/skills/workers-best-practices/references/configuration.md'",
+        "/bin/bash -c 'cat .agents/skills/cloudflare/references/r2/patterns.md .agents/skills/cloudflare/references/queues/patterns.md .agents/skills/cloudflare/references/images/api.md .agents/skills/cloudflare/references/images/patterns.md'"
+      ],
+      "final": "Use **Workers + R2 + Queues + Cloudflare Images**. Assume image processing means resizing and format conversion.\n\n- **Workers:** Accept uploads and check user access, file size, and file type. Stream uploads to storage.\n- **R2:** Store originals in a private bucket. Store processed images under separate keys.\n- **Queues:** Start background processing from R2 object creation events. Limit events to original uploads to prevent processing loops.\n- **Cloudflare Images:** Transform image bytes through its Workers binding.\n\nImplementation plan:\n\n1. Add an upload endpoint. Assign a unique image ID. Return the ID after R2 confirms storage.\n2. Add a queue consumer. Read the original, create the required image variants, and save them to R2.\n3. Use fixed output keys for each original and processing version. Repeated messages must produce the same stored results.\n4. Acknowledge each message only after storage succeeds. Retry temporary failures. Send exhausted retries to a dead-letter queue.\n5. Configure bindings, generated types, secrets, logs, and traces with Wrangler. Test valid uploads, invalid images, access checks, repeated messages, and recovery after failure.\n\nI used these exact local files. Paths are relative to `.agents/skills/`:\n\n- `cloudflare/SKILL.md`\n- `cloudflare/references/r2/README.md`\n- `cloudflare/references/r2/patterns.md`\n- `cloudflare/references/queues/README.md`\n- `cloudflare/references/queues/patterns.md`\n- `cloudflare/references/images/README.md`\n- `cloudflare/references/images/api.md`\n- `cloudflare/references/images/patterns.md`\n- `workers-best-practices/SKILL.md`\n- `workers-best-practices/references/runtime-patterns.md`\n- `workers-best-practices/references/configuration.md`\n- `wrangler/SKILL.md`\n\nNo files were changed. No network access was used. Current API details, service limits, and prices remain unverified.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "cloudflare",
+      "mode": "implicit",
+      "layout": "combined",
+      "prompt": "I need to accept image uploads in a Cloudflare Worker, keep the originals, and process them later. Give a short product plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 96459,
+        "cached_input_tokens": 80128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 547,
+        "reasoning_output_tokens": 7
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/references/r2/README.md .agents/skills/cloudflare/references/queues/README.md .agents/skills/cloudflare/references/images/README.md'",
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/references/r2/patterns.md .agents/skills/cloudflare/references/images/patterns.md'"
+      ],
+      "final": "Use Workers, R2, and Queues. Add Cloudflare Images for image processing.\n\n1. Accept uploads in a Worker. Check user access, file type, and file size. Store each original in R2 with a unique object key. Return success after storage completes. See the local [R2 guidance](/private/tmp/flow-skills-eval/cases/cloudflare-combined/.agents/skills/cloudflare/references/r2/README.md).\n\n2. Use R2 event notifications to send processing jobs to Queues after upload. Keep image data in R2. See [R2 patterns](/private/tmp/flow-skills-eval/cases/cloudflare-combined/.agents/skills/cloudflare/references/r2/patterns.md).\n\n3. Use a consumer Worker to process each job. Make repeated jobs safe, because Queues can deliver duplicates. Plan for retries and failed jobs. See [Queues guidance](/private/tmp/flow-skills-eval/cases/cloudflare-combined/.agents/skills/cloudflare/references/queues/README.md).\n\n4. Use Cloudflare Images to resize or optimize images. Store results under separate R2 keys to preserve the originals. See [Images patterns](/private/tmp/flow-skills-eval/cases/cloudflare-combined/.agents/skills/cloudflare/references/images/patterns.md).\n\nBefore release, test original recovery, duplicate jobs, and processing failures.\n\nThis plan uses local guidance only. I did not edit files or use the network. Current limits, prices, and API details remain unverified.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "cloudflare",
+      "mode": "implicit",
+      "layout": "upstream",
+      "prompt": "I need to accept image uploads in a Cloudflare Worker, keep the originals, and process them later. Give a short product plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 92314,
+        "cached_input_tokens": 77568,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 621,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/references/r2/README.md .agents/skills/cloudflare/references/queues/README.md'",
+        "/bin/zsh -lc 'cat .agents/skills/cloudflare/references/r2/patterns.md .agents/skills/cloudflare/references/queues/patterns.md'"
+      ],
+      "final": "Use a Worker for uploads, R2 for original images, and Queues for later processing.\n\n1. The upload Worker checks user access, file type, and file size. It stores each original in a private R2 bucket with a unique key. It returns the image ID after storage succeeds. See the local [R2 guide](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/references/r2/README.md) and [upload patterns](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/references/r2/patterns.md).\n2. R2 object events send processing jobs to Queues. Apply the event rule only to originals to prevent output files from starting more jobs. See [event processing patterns](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/references/queues/patterns.md).\n3. A consumer Worker reads each original and stores processed images under separate keys. Keep originals unchanged. Choose the image processor after you define the required operations and image sizes.\n4. Make repeated jobs safe. Confirm each job only after its output is stored. Retry failures and send jobs that still fail to a dead-letter queue for recovery. See the [Queues guide](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/references/queues/README.md) and [retry patterns](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/references/queues/patterns.md).\n\nThis plan uses local references only. Current limits and prices remain unchecked. I did not edit files or use the network. Text guidance came from [unslop](/Users/tudor/.agents/skills/unslop/SKILL.md); product selection came from the [Cloudflare skill](/private/tmp/flow-skills-eval/cases/cloudflare-upstream/.agents/skills/cloudflare/SKILL.md).",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "convex",
+      "mode": "direct",
+      "layout": "combined",
+      "prompt": "I need to add a scheduled job to a Convex app. Which skill instructions apply? Read the relevant local skill files, then give the exact file paths you used and a short plan. Do not edit files.",
+      "usage": {
+        "input_tokens": 85912,
+        "cached_input_tokens": 72832,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 657,
+        "reasoning_output_tokens": 25
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/convex/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -lc \"pwd; rg --files -g AGENTS.md -g package.json -g 'convex-crons.md' -g 'convex-add.md' -g 'convex-docs.md' -g 'convex-deploy-guard.md' --hidden; cat .agents/skills/convex/references/convex-crons.md .agents/skills/convex/references/convex-add.md\"",
+        "/bin/zsh -c 'cat .agents/skills/convex/references/convex-docs.md .agents/skills/convex/references/convex-deploy-guard.md'"
+      ],
+      "final": "The `convex` skill applies. For a recurring scheduled job, its main reference is `convex-crons.md`.\n\nI read these files:\n\n- `/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/SKILL.md` \u2014 main Convex rules.\n- `/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/references/convex-crons.md` \u2014 recurring job instructions.\n- `/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/references/convex-add.md` \u2014 instructions for adding a capability.\n- `/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/references/convex-docs.md` \u2014 checks against the installed version.\n- `/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/references/convex-deploy-guard.md` \u2014 deployment controls.\n- `/Users/tudor/.agents/skills/unslop/SKILL.md` \u2014 plain writing rules.\n\nThe short implementation plan is:\n\n1. Establish whether the job runs once or repeats. Define its task and schedule.\n2. Check repository instructions, installed Convex versions, and the served capability catalog.\n3. For a recurring job, use `convex/crons.ts` with `cronJobs()`. Target `internal.*` functions. Keep each run small and safe to repeat.\n4. Run the project type check and relevant tests.\n5. Identify the deployment target before deployment work. After an authorized deployment, check the dashboard schedule.\n\nI did not change files or run deployment commands.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "convex",
+      "mode": "direct",
+      "layout": "upstream",
+      "prompt": "I need to add a scheduled job to a Convex app. Which skill instructions apply? Read the relevant local skill files, then give the exact file paths you used and a short plan. Do not edit files.",
+      "usage": {
+        "input_tokens": 68106,
+        "cached_input_tokens": 46208,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 704,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc 'pwd; rg --files -g AGENTS.md -g SKILL.md .agents/skills /Users/tudor/.agents/skills/unslop'",
+        "/bin/zsh -lc 'cat .agents/skills/convex/SKILL.md .agents/skills/convex-add/SKILL.md .agents/skills/convex-crons/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/convex-expert/SKILL.md .agents/skills/convex-docs/SKILL.md .agents/skills/convex-deploy-guard/SKILL.md'"
+      ],
+      "final": "The main skill is `convex-crons` for a job that repeats. I read these exact files:\n\n- [convex/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex/SKILL.md): Selects the applicable Convex skills.\n- [convex-add/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-add/SKILL.md): Requires a check of the current capability catalog before implementation.\n- [convex-crons/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-crons/SKILL.md): Defines recurring jobs and their rules.\n- [convex-expert/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-expert/SKILL.md): Applies before changes to code in `convex/`.\n- [convex-docs/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-docs/SKILL.md): Checks APIs against the installed version.\n- [convex-deploy-guard/SKILL.md](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-deploy-guard/SKILL.md): Controls deployment actions.\n- [unslop/SKILL.md](/Users/tudor/.agents/skills/unslop/SKILL.md): Requires clear text.\n\nThe short implementation plan is:\n\n1. Establish whether the job runs once or repeats. Define its work and schedule.\n2. Check the current capability catalog, installed Convex version, schema, and local guidelines.\n3. For a recurring job, use `cronJobs()` in `convex/crons.ts`. Target `internal.*` functions. Keep each run small and safe to repeat.\n4. Check types and job behavior. Before deployment, identify the target and apply the deployment rules. After deployment, check the dashboard schedule.\n\nI did not edit files or deploy changes.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "convex",
+      "mode": "implicit",
+      "layout": "combined",
+      "prompt": "I need a recurring scheduled job in a Convex app. Give a short implementation plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 61705,
+        "cached_input_tokens": 50560,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 565,
+        "reasoning_output_tokens": 90
+      },
+      "commands": [
+        "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'package.json' -g '*cron*' -g 'schema.ts' -g 'convex.config.*' -g 'README*' -g 'SKILL.md' .agents; cat /private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/SKILL.md; cat /Users/tudor/.agents/skills/unslop/SKILL.md\"",
+        "/bin/zsh -c \"rg --files --hidden -g '\"'! .git'\"' -g '\"'!**/.git/**'\"' -g 'AGENTS.md' -g 'package.json' -g 'crons.ts' -g 'schema.ts'; cat .agents/skills/convex/references/convex-crons.md\""
+      ],
+      "final": "Use a recurring job with an internal function.\n\n1. Set the job purpose and repeat interval.\n2. Create `convex/crons.ts` with `cronJobs()`. Schedule an `internal.*` function, not a public `api.*` function.\n3. Keep each run small. Make the function safe to run again without duplicate effects.\n4. Test the function. After deployment, check that the job appears in the dashboard schedule.\n\nThis plan follows the local [Convex skill](/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/SKILL.md) and [scheduled job guidance](/private/tmp/flow-skills-eval/cases/convex-combined/.agents/skills/convex/references/convex-crons.md). I also used the [writing guidance](/Users/tudor/.agents/skills/unslop/SKILL.md).\n\nI found no app files to check. I did not edit files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "convex",
+      "mode": "implicit",
+      "layout": "upstream",
+      "prompt": "I need a recurring scheduled job in a Convex app. Give a short implementation plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 83407,
+        "cached_input_tokens": 72192,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 633,
+        "reasoning_output_tokens": 43
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/convex-crons/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -c 'cat /Users/tudor/.agents/skills/plan/SKILL.md'"
+      ],
+      "final": "The workspace contains skill files, but no app code. Use this implementation plan:\n\n1. Define the job's task and repeat interval.\n2. Create `convex/crons.ts` with `cronJobs()`. Set the schedule to call an `internal.*` function.\n3. Keep each run small. Make repeated runs safe, with no duplicate effects.\n4. Test the task and repeated runs. After deployment, check the schedule in the Convex dashboard.\n\nThe technical steps follow the local [Convex cron skill](/private/tmp/flow-skills-eval/cases/convex-upstream/.agents/skills/convex-crons/SKILL.md). I also used the [plan skill](/Users/tudor/.agents/skills/plan/SKILL.md) and [writing skill](/Users/tudor/.agents/skills/unslop/SKILL.md).\n\nNo files changed. No network access used.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "expo",
+      "mode": "direct",
+      "layout": "combined",
+      "prompt": "I need to upgrade an existing Expo app to the next SDK and keep native dependencies compatible. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 116949,
+        "cached_input_tokens": 96512,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 745,
+        "reasoning_output_tokens": 26
+      },
+      "commands": [
+        "/bin/sh -c 'ls -la .agents/skills'",
+        "/bin/sh -c 'cat .agents/skills/expo/SKILL.md'",
+        "/bin/sh -c 'cat .agents/skills/expo/references/expo-overview.md .agents/skills/expo/references/expo-upgrade.md'",
+        "/bin/sh -c \"rg --files --hidden -g '\"'!node_modules'\"' -g '\"'!.git'\"' -g '\"'!.agents'\"' -g 'AGENTS.md' -g 'package.json' -g 'app.json' -g 'app.config.*' -g '*lock*'\""
+      ],
+      "final": "I used these local skill files:\n\n- [.agents/skills/expo/SKILL.md](.agents/skills/expo/SKILL.md)\n- [.agents/skills/expo/references/expo-overview.md](.agents/skills/expo/references/expo-overview.md)\n- [.agents/skills/expo/references/expo-upgrade.md](.agents/skills/expo/references/expo-upgrade.md)\n\nI found no app manifest in this workspace. Thus, I cannot identify the current SDK.\n\nProposed plan:\n\n1. Check the current SDK, package manager, app configuration, and native directories.\n2. Select the target SDK. The local instructions specify SDK 57 with `expo@57.0.9` or later for SDK 55 or earlier. They specify that SDK 56 must be skipped because of a stated Hermes memory problem.\n3. Install the selected Expo version. Run `npx expo install --fix` to align dependencies.\n4. Check required peer dependencies, package exclusions, and patches. Keep `expo-constants` when Expo Router is installed. Check Worklets compatibility when Reanimated is installed.\n5. Apply the required API and native project changes. Preserve manually maintained native code.\n6. Run `npx expo-doctor`, rebuild for iOS and Android, and test navigation and native features.\n\nI did not edit files or use the network. The SDK guidance above comes from the local instructions only.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "expo",
+      "mode": "direct",
+      "layout": "upstream",
+      "prompt": "I need to upgrade an existing Expo app to the next SDK and keep native dependencies compatible. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used, and give a short plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 62234,
+        "cached_input_tokens": 50560,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 377,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/expo-overview/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/expo-upgrade/SKILL.md'"
+      ],
+      "final": "I used these local skill files:\n\n- [.agents/skills/expo-overview/SKILL.md](.agents/skills/expo-overview/SKILL.md)\n- [.agents/skills/expo-upgrade/SKILL.md](.agents/skills/expo-upgrade/SKILL.md)\n\nPlan:\n\n1. Check the current Expo SDK, app configuration, dependencies, and native directories.\n2. Select the target SDK. The local upgrade skill says to skip SDK 56 when upgrading from SDK 55 or earlier, and use SDK 57 with `expo@57.0.9` or later. It identifies a Hermes memory regression as the reason. This claim was not checked online.\n3. Install the selected Expo version with `npx expo install expo@<target>`. Run `npx expo install --fix` to align dependencies.\n4. Review required peer dependencies, install exclusions, and patches. Keep `expo-constants` when using Expo Router. Check Worklets compatibility when using Reanimated.\n5. Apply the required API and native changes. Regenerate native directories only if they are generated projects. Preserve manual native changes in bare apps.\n6. Run `npx expo-doctor`. Rebuild iOS and Android, then test navigation and native features.\n\nNo files were changed. No network requests were made.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "expo",
+      "mode": "implicit",
+      "layout": "combined",
+      "prompt": "I need to upgrade an existing Expo app to the next SDK. Give a short plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 90218,
+        "cached_input_tokens": 75392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 663,
+        "reasoning_output_tokens": 12
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat /private/tmp/flow-skills-eval/cases/expo-combined/.agents/skills/expo/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/expo/references/expo-overview.md .agents/skills/expo/references/expo-upgrade.md'",
+        "/bin/zsh -c \"rg --files --hidden -g '\"'! .git'\"' -g '\"'!node_modules'\"' -g '\"'!**/.git/**'\"' | head -60\""
+      ],
+      "final": "I found no app manifest in this workspace. I cannot identify the current SDK. No files were changed. No network requests were made.\n\n1. Check the Expo version in `package.json`, the app configuration, and the native directories. See the local [setup rules](/private/tmp/flow-skills-eval/cases/expo-combined/.agents/skills/expo/references/expo-overview.md).\n2. Select the target SDK. The local [upgrade guide](/private/tmp/flow-skills-eval/cases/expo-combined/.agents/skills/expo/references/expo-upgrade.md) advises skipping SDK 56 and using SDK 57 with `expo@57.0.9` or later because of a memory regression. I could not verify this advice offline.\n3. Install the selected Expo version. Run `npx expo install --fix`, then `npx expo-doctor`. Check required peer dependencies and changed APIs.\n4. Update native projects as required. Preserve manual native changes before any regeneration.\n5. Build and test each supported platform. Check navigation, permissions, camera, audio, and video.\n\nSteps 3\u20135 follow the local upgrade guide. These are planned actions only.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "expo",
+      "mode": "implicit",
+      "layout": "upstream",
+      "prompt": "I need to upgrade an existing Expo app to the next SDK. Give a short plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 67767,
+        "cached_input_tokens": 54144,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 538,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc \"pwd; rg --files -g 'package.json' -g 'app.json' -g 'app.config.*' -g 'AGENTS.md' -g '*lock*' -g 'eas.json' -g 'SKILL.md' .agents/skills/expo-overview .agents/skills/expo-upgrade . 2>/dev/null\"",
+        "/bin/zsh -lc 'cat .agents/skills/expo-overview/SKILL.md .agents/skills/expo-upgrade/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md'",
+        "/bin/zsh -lc \"rg --files --hidden -g '\"'! .git'\"' -g '\"'!node_modules'\"' -g 'package.json' -g 'app.json' -g 'app.config.*' -g 'AGENTS.md' -g 'eas.json'; ls -a\""
+      ],
+      "final": "I found no app files in this workspace. I cannot identify the current SDK. No files were changed, and no network requests were made.\n\n1. Check the app\u2019s `package.json`, app configuration, and native folders to identify the SDK and build setup. See the local [Expo overview](/private/tmp/flow-skills-eval/cases/expo-upstream/.agents/skills/expo-overview/SKILL.md).\n2. Select the target SDK. The local [upgrade guide](/private/tmp/flow-skills-eval/cases/expo-upstream/.agents/skills/expo-upgrade/SKILL.md) says to skip SDK 56 and use SDK 57 with `expo@57.0.9` or later because of a memory fault. I have not verified this claim online.\n3. Install the selected Expo version. Run `npx expo install --fix`, then `npx expo-doctor`. Check required peer dependencies and API changes.\n4. Update native projects as required. Preserve manual native changes. Build and test navigation, camera, audio, and video.\n\nSteps 3 and 4 follow the same local upgrade guide. Writing follows the local [writing skill](/Users/tudor/.agents/skills/unslop/SKILL.md).",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "react-native",
+      "mode": "direct",
+      "layout": "combined",
+      "prompt": "A React Native app animation stutters while the JavaScript thread is busy. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used and their source, and give a short diagnosis plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 131087,
+        "cached_input_tokens": 110592,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 786,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/bash -c 'ls -la .agents/skills\ncat .agents/skills/react-native/SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/react-native/references/software-mansion/react-native-best-practices/index.md .agents/skills/react-native/references/callstack/react-native-best-practices/index.md .agents/skills/react-native/references/software-mansion/react-native-best-practices/references/animations/index.md'",
+        "/bin/bash -c 'cat .agents/skills/react-native/references/software-mansion/react-native-best-practices/references/animations/animations-performance.md .agents/skills/react-native/references/callstack/react-native-best-practices/references/js-animations-reanimated.md .agents/skills/react-native/references/callstack/react-native-best-practices/references/js-measure-fps.md'"
+      ],
+      "final": "The animation may depend on the busy JavaScript thread for each frame. This is a possible cause, not a confirmed diagnosis.\n\n1. Check the installed React Native and Reanimated versions and the app architecture before selecting a fix.\n2. Repeat the affected action on a real device with a release build. Record JavaScript and UI frame rates and dropped frames.\n3. Check which thread updates the animation. Look for JavaScript animation updates, React state updates on each frame, and frequent calls between threads.\n4. If JavaScript blocks the animation, consider UI-thread worklets or a supported native driver. Keep worklets small. If UI frames also drop, check layout work and animation complexity.\n5. Repeat the same measurements after each change. Keep only changes that improve the result.\n\nI used these exact files under `.agents/skills/react-native/`:\n\n| File | Source |\n|---|---|\n| `SKILL.md` | Flow Copilot combined skill |\n| `references/software-mansion/react-native-best-practices/index.md` | Software Mansion |\n| `references/software-mansion/react-native-best-practices/references/animations/index.md` | Software Mansion |\n| `references/software-mansion/react-native-best-practices/references/animations/animations-performance.md` | Software Mansion |\n| `references/callstack/react-native-best-practices/index.md` | Callstack |\n| `references/callstack/react-native-best-practices/references/js-animations-reanimated.md` | Callstack |\n| `references/callstack/react-native-best-practices/references/js-measure-fps.md` | Callstack |\n\nThe local files identify Flow Copilot modifications from Software Mansion revision `e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9` and Callstack revision `61e6e7dfdf3a8ee862254c200d751fcb1fb863dc`.\n\nI did not edit files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "react-native",
+      "mode": "direct",
+      "layout": "upstream",
+      "prompt": "A React Native app animation stutters while the JavaScript thread is busy. Use only the local skill files under .agents/skills. Read the applicable instructions, name the exact files you used and their source, and give a short diagnosis plan. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 135354,
+        "cached_input_tokens": 114048,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 835,
+        "reasoning_output_tokens": 31
+      },
+      "commands": [
+        "/bin/bash -c 'ls -la .agents/skills'",
+        "/bin/bash -c 'cat .agents/skills/react-native-best-practices/SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/callstack-react-native-best-practices/SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/animations/SKILL.md'",
+        "/bin/bash -c 'cat .agents/skills/callstack-react-native-best-practices/references/js-measure-fps.md'",
+        "/bin/bash -c 'cat .agents/skills/callstack-react-native-best-practices/references/js-animations-reanimated.md'",
+        "/bin/bash -c 'cat .agents/skills/animations/animations-performance.md'"
+      ],
+      "final": "The animation may depend on the JavaScript thread for each frame. Heavy JavaScript work can then delay animation updates. This cause is not yet confirmed.\n\n1. Reproduce the problem on a physical device with a release build. Record JavaScript and UI frame rates, dropped frames, and the device refresh rate.\n2. Check the animation driver and installed library versions. Find animation updates that depend on React state or JavaScript callbacks.\n3. Profile the same interaction. Find long JavaScript tasks and expensive React renders. If UI frames also drop, check layout work and heavy animation worklets.\n4. Test a targeted change: use a supported native driver or Reanimated UI worklets for frame updates. Keep worklets small. Prefer `transform` and `opacity` where suitable.\n5. Repeat the same measurements under the same JavaScript load. Compare the results.\n\nI used these exact local files. The local skill directories are symbolic links to the indicated source copies.\n\n| Source | Files under `.agents/skills/` |\n|---|---|\n| Software Mansion \u2014 local `upstream/software-mansion/skills/` copy | `react-native-best-practices/SKILL.md` |\n| Software Mansion \u2014 same source | `animations/SKILL.md` |\n| Software Mansion \u2014 same source | `animations/animations-performance.md` |\n| Callstack \u2014 local `upstream/callstack/skills/` copy; based on *The Ultimate Guide to React Native Optimization* | `callstack-react-native-best-practices/SKILL.md` |\n| Callstack \u2014 same source | `callstack-react-native-best-practices/references/js-animations-reanimated.md` |\n| Callstack \u2014 same source | `callstack-react-native-best-practices/references/js-measure-fps.md` |\n\nNo files were edited. No network requests were made.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "react-native",
+      "mode": "implicit",
+      "layout": "combined",
+      "prompt": "A React Native animation stutters when the JavaScript thread is busy. Give a short diagnosis plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 105558,
+        "cached_input_tokens": 75520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 750,
+        "reasoning_output_tokens": 0
+      },
+      "commands": [
+        "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g '*SKILL.md' -g 'package.json' -g '*anim*' -g '*Anim*' -g '*performance*' -g '*thread*' . /Users/tudor/.agents/skills/unslop /Users/tudor/.agents/skills/diagnosing-bugs\"",
+        "/bin/zsh -lc 'cat .agents/skills/react-native/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md /Users/tudor/.agents/skills/diagnosing-bugs/SKILL.md'",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/software-mansion/react-native-best-practices/references/animations/index.md'\"",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/software-mansion/react-native-best-practices/index.md'\"",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/callstack/react-native-best-practices/index.md'\"",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/software-mansion/react-native-best-practices/references/animations/animations-performance.md'\"",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/callstack/react-native-best-practices/references/js-measure-fps.md'\"",
+        "/bin/zsh -c \"cat '.agents/skills/react-native/references/callstack/react-native-best-practices/references/js-animations-reanimated.md'\""
+      ],
+      "final": "Check whether each animation frame depends on the JavaScript thread. The symptom suggests this cause, but measurements must confirm it.\n\n1. Repeat the same animation with JavaScript idle and busy. Use a real device and a release build. Record dropped frames and compare JavaScript and UI thread activity. See [Callstack measurement guidance](/private/tmp/flow-skills-eval/cases/react-native-combined/.agents/skills/react-native/references/callstack/react-native-best-practices/references/js-measure-fps.md).\n2. Check the installed library versions and animation driver. Look for JavaScript frame updates, React state updates, or callbacks that require JavaScript on each frame. Check whether a native driver or Reanimated UI worklet can remove that dependency. See [Callstack animation guidance](/private/tmp/flow-skills-eval/cases/react-native-combined/.agents/skills/react-native/references/callstack/react-native-best-practices/references/js-animations-reanimated.md).\n3. If the animation already runs on the UI thread, check for heavy worklets, shared-value reads from JavaScript, and layout changes on each frame. See [Software Mansion performance guidance](/private/tmp/flow-skills-eval/cases/react-native-combined/.agents/skills/react-native/references/software-mansion/react-native-best-practices/references/animations/animations-performance.md).\n4. After diagnosis, test one change at a time. Repeat the same workload and compare dropped frames.\n\nI did not edit files or use the network.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    },
+    {
+      "bundle": "react-native",
+      "mode": "implicit",
+      "layout": "upstream",
+      "prompt": "A React Native animation stutters when the JavaScript thread is busy. Give a short diagnosis plan and cite any local files you use. Do not edit files or use the network.",
+      "usage": {
+        "input_tokens": 104457,
+        "cached_input_tokens": 83584,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 615,
+        "reasoning_output_tokens": 13
+      },
+      "commands": [
+        "/bin/zsh -lc 'cat /Users/tudor/.agents/skills/diagnosing-bugs/SKILL.md /Users/tudor/.agents/skills/unslop/SKILL.md /private/tmp/flow-skills-eval/cases/react-native-upstream/.agents/skills/react-native-best-practices/SKILL.md /private/tmp/flow-skills-eval/cases/react-native-upstream/.agents/skills/animations/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/animations/animations-performance.md; cat .agents/skills/callstack-react-native-best-practices/SKILL.md'",
+        "/bin/zsh -c 'cat .agents/skills/callstack-react-native-best-practices/references/js-animations-reanimated.md'"
+      ],
+      "final": "Check whether each animation frame depends on the JavaScript thread. The symptom alone does not confirm the cause.\n\n1. Repeat the same animation with JavaScript idle and busy. Use a release build. Record frame times for both threads. See [performance guidance](.agents/skills/animations/animations-performance.md).\n2. Check the animation driver. For core `Animated`, check `useNativeDriver` and property support. For Reanimated, check that frame updates use UI-thread worklets. Look for React state updates or JavaScript callbacks on each frame. See [animation guidance](.agents/skills/callstack-react-native-best-practices/references/js-animations-reanimated.md).\n3. Profile the busy interval. Find long JavaScript tasks and repeated React renders. If UI frames also slow down, check heavy worklets and layout changes. See [profiling guidance](.agents/skills/callstack-react-native-best-practices/SKILL.md).\n4. Test one suspected cause at a time. Repeat the same measurement after each change. Confirm that the original stutter stops. See [diagnosis procedure](/Users/tudor/.agents/skills/diagnosing-bugs/SKILL.md).\n\nNo files were changed. No network access was used.",
+      "read_local_skill": true,
+      "rubric_pass": true
+    }
+  ],
+  "startup_runs": [
+    {
+      "bundle": "ax",
+      "layout": "combined",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 17733,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "ax",
+      "layout": "upstream",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 18362,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "cloudflare",
+      "layout": "combined",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 17732,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "cloudflare",
+      "layout": "upstream",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 18205,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "convex",
+      "layout": "combined",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 17741,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "convex",
+      "layout": "upstream",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 18444,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "expo",
+      "layout": "combined",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 17732,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "expo",
+      "layout": "upstream",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 18395,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "react-native",
+      "layout": "combined",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 17721,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "bundle": "react-native",
+      "layout": "upstream",
+      "prompt": "Reply with exactly: ready",
+      "usage": {
+        "input_tokens": 18377,
+        "cached_input_tokens": 11520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

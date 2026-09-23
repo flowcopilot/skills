@@ -1,0 +1,313 @@
+[
+ {
+  "id": "ax-mcp",
+  "bundle": "ax",
+  "prompt": "In my TypeScript project I use @ax-llm/ax. I want an agent that calls tools from a remote MCP server over HTTP, and I want a check before any tool call that writes data. Sketch the code.",
+  "upstream": [
+   "ax-mcp"
+  ],
+  "combined": [
+   "ax/references/ax-mcp.md"
+  ]
+ },
+ {
+  "id": "ax-gepa",
+  "bundle": "ax",
+  "prompt": "I have an @ax-llm/ax generator that classifies support tickets, and about 200 labeled examples. How do I optimize its prompt for both accuracy and short outputs at the same time? Show the code.",
+  "upstream": [
+   "ax-gepa"
+  ],
+  "combined": [
+   "ax/references/ax-gepa.md"
+  ]
+ },
+ {
+  "id": "ax-flow",
+  "bundle": "ax",
+  "prompt": "Using @ax-llm/ax, build a pipeline that summarizes three documents in parallel and then merges the summaries into one report. Show the code.",
+  "upstream": [
+   "ax-flow"
+  ],
+  "combined": [
+   "ax/references/ax-flow.md"
+  ]
+ },
+ {
+  "id": "ax-observability",
+  "bundle": "ax",
+  "prompt": "My SaaS runs many @ax-llm/ax agents for different customers. How do I record token usage per customer across all agent runs, and log each function call an agent makes? Show the code.",
+  "upstream": [
+   "ax-agent-observability"
+  ],
+  "combined": [
+   "ax/references/ax-agent-observability.md"
+  ]
+ },
+ {
+  "id": "cf-durable-objects",
+  "bundle": "cloudflare",
+  "prompt": "I'm building a multiplayer whiteboard on Cloudflare Workers. Each board needs one source of truth and WebSocket fan-out to all connected users, and idle boards should not cost money. How should I structure it? Show the key code.",
+  "upstream": [
+   "durable-objects"
+  ],
+  "combined": [
+   "cloudflare/references/durable-objects"
+  ]
+ },
+ {
+  "id": "cf-sandbox",
+  "bundle": "cloudflare",
+  "prompt": "My AI agent on Cloudflare must run Python scripts that users upload. The scripts need a shell and a filesystem. This is a new project. What should I use, and how do I wire it up?",
+  "upstream": [
+   "sandbox-next",
+   "sandbox-stable"
+  ],
+  "combined": [
+   "cloudflare/references/sandbox-next.md",
+   "cloudflare/references/sandbox-stable.md",
+   "cloudflare/references/sandbox"
+  ]
+ },
+ {
+  "id": "cf-nextjs",
+  "bundle": "cloudflare",
+  "prompt": "What is the recommended way to deploy a brand-new Next.js app to Cloudflare today? Give me the setup steps.",
+  "upstream": [
+   "nextjs-on-cloudflare"
+  ],
+  "combined": [
+   "cloudflare/references/nextjs-on-cloudflare.md"
+  ]
+ },
+ {
+  "id": "cf-agents",
+  "bundle": "cloudflare",
+  "prompt": "Build a chat agent on Cloudflare that keeps conversation state between sessions and can schedule a follow-up reminder message for the user tomorrow. Show the key code.",
+  "upstream": [
+   "agents-sdk"
+  ],
+  "combined": [
+   "cloudflare/references/agents-sdk"
+  ]
+ },
+ {
+  "id": "convex-crons",
+  "bundle": "convex",
+  "prompt": "Add a job to my Convex app that deletes expired sessions every hour. Show the code.",
+  "upstream": [
+   "convex-crons",
+   "convex-expert",
+   "convex-design"
+  ],
+  "combined": [
+   "convex/references/convex-crons.md",
+   "convex/references/convex-expert.md",
+   "convex/references/convex-design.md"
+  ]
+ },
+ {
+  "id": "convex-authz",
+  "bundle": "convex",
+  "prompt": "I worry that users of my Convex app can read other users' documents by passing a document ID to a query. What should I check in the convex/ folder, and how do I fix it?",
+  "upstream": [
+   "convex-authz",
+   "convex-reviewer"
+  ],
+  "combined": [
+   "convex/references/convex-authz.md",
+   "convex/references/convex-reviewer.md"
+  ]
+ },
+ {
+  "id": "convex-migrate",
+  "bundle": "convex",
+  "prompt": "I need to rename a field on a table with 2 million documents in my deployed Convex app, without downtime. What is the procedure? Show the code.",
+  "upstream": [
+   "convex-migrate",
+   "convex-migrate-rehearse"
+  ],
+  "combined": [
+   "convex/references/convex-migrate.md",
+   "convex/references/convex-migrate-rehearse.md"
+  ]
+ },
+ {
+  "id": "convex-test",
+  "bundle": "convex",
+  "prompt": "Write automated tests for my Convex mutations that create a todo and mark it complete, including a check that another user cannot complete my todo.",
+  "upstream": [
+   "convex-test",
+   "convex-verify"
+  ],
+  "combined": [
+   "convex/references/convex-test.md",
+   "convex/references/convex-verify.md"
+  ]
+ },
+ {
+  "id": "expo-upgrade",
+  "bundle": "expo",
+  "prompt": "Upgrade my Expo app from SDK 52 to the latest SDK. What is the procedure?",
+  "upstream": [
+   "expo-upgrade"
+  ],
+  "combined": [
+   "expo/references/expo-upgrade.md"
+  ]
+ },
+ {
+  "id": "expo-eas-update",
+  "bundle": "expo",
+  "prompt": "Set up over-the-air updates for my Expo app, with separate channels for staging and production. Give the config and commands.",
+  "upstream": [
+   "eas-update"
+  ],
+  "combined": [
+   "expo/references/eas-update.md"
+  ]
+ },
+ {
+  "id": "expo-native-tabs",
+  "bundle": "expo",
+  "prompt": "In my Expo Router app I want the real native iOS tab bar instead of the JavaScript tab bar. Show the layout code.",
+  "upstream": [
+   "expo-router"
+  ],
+  "combined": [
+   "expo/references/expo-router.md"
+  ]
+ },
+ {
+  "id": "expo-module",
+  "bundle": "expo",
+  "prompt": "Write a native module for my Expo app that returns the battery temperature, with Swift and Kotlin implementations and a TypeScript API.",
+  "upstream": [
+   "expo-module"
+  ],
+  "combined": [
+   "expo/references/expo-module.md"
+  ]
+ },
+ {
+  "id": "rn-perf",
+  "bundle": "react-native",
+  "prompt": "My React Native app's FlatList stutters when I scroll 1,000 rows, and cold start takes 4 seconds on Android. How do I find the causes and fix them?",
+  "upstream": [
+   "callstack-react-native-best-practices"
+  ],
+  "combined": [
+   "react-native/references/callstack/react-native-best-practices"
+  ]
+ },
+ {
+  "id": "rn-swipe",
+  "bundle": "react-native",
+  "prompt": "Implement a swipe-to-dismiss card in React Native with Reanimated 4 and Gesture Handler. Show the code.",
+  "upstream": [
+   "gestures",
+   "animations",
+   "react-native-best-practices",
+   "expo-animation"
+  ],
+  "combined": [
+   "react-native/references/software-mansion/react-native-best-practices",
+   "expo/references/expo-animation.md"
+  ]
+ },
+ {
+  "id": "rn-upgrade",
+  "bundle": "react-native",
+  "prompt": "Upgrade a bare React Native CLI app from 0.74 to 0.79. What is the procedure?",
+  "upstream": [
+   "upgrading-react-native"
+  ],
+  "combined": [
+   "react-native/references/callstack/upgrading-react-native"
+  ]
+ },
+ {
+  "id": "rn-tv",
+  "bundle": "react-native",
+  "prompt": "Review my React Native TV app plan: which D-pad focus and 10-foot UI problems should I check for, and how do I fix them?",
+  "upstream": [
+   "react-native-tv-best-practices"
+  ],
+  "combined": [
+   "react-native/references/callstack/react-native-tv-best-practices"
+  ]
+ },
+ {
+  "id": "neg-python",
+  "bundle": null,
+  "prompt": "Write a Python function that merges overlapping intervals.",
+  "upstream": [],
+  "combined": []
+ },
+ {
+  "id": "neg-supabase",
+  "bundle": null,
+  "prompt": "How do I write a Supabase row-level security policy so users only see their own rows?",
+  "upstream": [],
+  "combined": []
+ },
+ {
+  "id": "neg-vercel",
+  "bundle": null,
+  "prompt": "Deploy a Next.js app to Vercel with a preview environment for each branch.",
+  "upstream": [],
+  "combined": []
+ },
+ {
+  "id": "neg-flutter",
+  "bundle": null,
+  "prompt": "In a Flutter app, how do I add pull-to-refresh to a ListView?",
+  "upstream": [],
+  "combined": []
+ },
+ {
+  "id": "cf-turnstile",
+  "bundle": "cloudflare",
+  "prompt": "Add a bot check to the signup form of my app on Cloudflare, and verify the result on the server in my Worker. Show the key code.",
+  "upstream": [
+   "turnstile-spin"
+  ],
+  "combined": [
+   "cloudflare/references/turnstile-spin"
+  ]
+ },
+ {
+  "id": "cf-email",
+  "bundle": "cloudflare",
+  "prompt": "My Cloudflare Worker must send a password-reset email to users. How do I set that up? Show the key code and config.",
+  "upstream": [
+   "cloudflare-email-service"
+  ],
+  "combined": [
+   "cloudflare/references/cloudflare-email-service"
+  ]
+ },
+ {
+  "id": "cf-secrets",
+  "bundle": "cloudflare",
+  "prompt": "How do I give my Cloudflare Worker a Stripe API key without committing it to git, for both local development and production?",
+  "upstream": [
+   "wrangler",
+   "workers-best-practices"
+  ],
+  "combined": [
+   "cloudflare/references/wrangler",
+   "cloudflare/references/workers-best-practices"
+  ]
+ },
+ {
+  "id": "cf-access",
+  "bundle": "cloudflare",
+  "prompt": "Our internal admin dashboard is behind Cloudflare. Require employees to log in with our Okta before anyone can open it. What are the steps?",
+  "upstream": [
+   "cloudflare-one"
+  ],
+  "combined": [
+   "cloudflare/references/cloudflare-one"
+  ]
+ }
+]
