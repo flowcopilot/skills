@@ -52,6 +52,6 @@ Use the project's existing checks for affected Workers behavior: type-check bind
 
 This skill covers Workers-specific best practices and code review. For related topics:
 
-- **Durable Objects**: load the `durable-objects` skill
+- **Durable Objects**: load the [durable-objects](durable-objects.md) reference
 - **Workflows**: see [Rules of Workflows](https://developers.cloudflare.com/workflows/build/rules-of-workflows/)
-- **Wrangler CLI commands**: load the `wrangler` skill
+- **Wrangler CLI commands**: load the [wrangler](wrangler.md) reference
