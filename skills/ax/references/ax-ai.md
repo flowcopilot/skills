@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # AI Provider Codegen Rules (@ax-llm/ax)
 
@@ -41,6 +41,44 @@ Profile-only branded classes were removed in the major-version migration. Use
 `ai({ name: ... })` for Azure OpenAI, Cohere, DeepSeek, DeepSeek Responses,
 Mistral, Reka, and Grok. Retained low-level classes represent genuine
 transports/runtimes only; legacy model enum and catalog exports remain usable.
+
+## Typesafe / Jev (TypeScript)
+
+Use the [ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
+for Jev question design, rich criteria, native scoring, transport settings, and
+hybrid examples. The two interfaces serve different output contracts:
+
+| Need | Interface |
+|---|---|
+| Required boolean/class outputs with normal signature-shaped results | `ai({ name: 'typesafe', apiKey, trueThreshold: 0.9 })` and `ax(...).forward()` |
+| Native probabilities, structured state/criteria, or Score | `typesafe({ apiKey }).systemOne({ state, questions })` |
+
+Both default to `jev-latest`. Set the adapter's model with `config.model`; set
+native defaults with `model`. Native `listModels()` retrieves the provider's
+catalog without changing configured Ax model aliases.
+
+Boolean conversion uses `noul >= trueThreshold`; the default is `0.5`, and the
+finite threshold must be in `[0, 1]`. It applies to all booleans on that provider
+instance, is never sent to the server, and does not affect native probabilities.
+Choice preserves the selected label without an automatic confidence cutoff.
+
+Value descriptions from `boolean(true "...", false "...")` and
+`class "support, billing"(support "...", billing "...")` become native criteria.
+The same annotations render as readable descriptions for conventional providers.
+The [signature skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-signature.md)
+covers the string and fluent `.describeValues(...)` forms.
+
+Numeric outputs, including bounded numbers, are unsupported; scoring uses
+explicit native rubrics. Freeform text, optional/array/nested outputs, media,
+tools, and sampling controls are also unsupported. Ax sends its normal prompt
+as state. Use a separate generative program for prose or tools.
+
+Typesafe-only balancers retain schema-required generation. Mixed pools select
+Typesafe only when the actual request already contains a supported schema.
+Incompatible requests are excluded from fallbacks even with degradation enabled.
+Usage and raw adapter answers remain in the existing usage and chat-log APIs.
+Python, Java, C++, Go, and Rust also implement these interfaces. Each generated
+package includes a Typesafe/Jev skill with its native API syntax.
 
 ## Renewable Credentials
 
@@ -326,6 +364,20 @@ console.log(transcript.text);
 console.log(speech.data);
 ```
 
+Gemini's defaults are `gemini-3.8-flash-tts` for `speak()` and the dedicated
+`gemini-3.5-transcribe` model for `transcribe()`. Gemini takes no output
+format, so the returned mime type sets the label: 3.8 TTS returns WAV, while
+earlier TTS models return raw 24 kHz PCM, reported as `pcm16` with its
+`sampleRate` and `channels`.
+
+```typescript
+const gemini = ai({ name: 'google-gemini', apiKey: process.env.GOOGLE_APIKEY! });
+const speech = await gemini.speak({ text: 'Hello from Ax.', voice: 'Kore' });
+const heard = await gemini.transcribe({
+  audio: { data: speech.data, format: speech.format },
+});
+```
+
 Providers without the requested audio endpoint throw `AxMediaNotSupportedError`. Use `speech` forward options for signature audio artifacts and `modelConfig.audio` for conversational chat audio.
 
 ## Common Options
@@ -482,7 +534,7 @@ console.log(res.results[0]?.content);
 
 | Level | Anthropic (tokens) | Gemini 2.5 (tokens) | Gemini 3 level |
 |---|---|---|---|
-| `'none'` | disabled | 0 on Flash/Lite; minimum on Pro | lowest supported, thoughts hidden |
+| `'none'` | disabled; lowest effort where thinking is always on | 0 on Flash/Lite; minimum on Pro | lowest supported, thoughts hidden |
 | `'minimal'` | 1,024 | 200 | `minimal`, or `low` when `minimal` is unsupported |
 | `'low'` | 5,000 | 800 | `low` |
 | `'medium'` | 10,000 | 5,000 | `medium`, or the nearest image/legacy level |
@@ -495,23 +547,39 @@ preset to its real model. Gemini 3.8 Flash, Gemini 3.7 Flash, and Gemini 3.1 Pro
 clamp `minimal` to `low`; image and legacy Gemini 3 models clamp to their
 documented two-level sets. Numeric Gemini 3 budgets fail locally. `none` always hides returned
 thoughts, even when the model must still perform its minimum amount of thinking.
+Gemini 3.8 Live accepts no thinking settings, so Ax sends none. Gemini 3.8 Live
+Extended Thinking requires a level: Ax sends `medium` when none is requested and
+clamps `minimal` to `low`.
 
 The native `google-gemini` deployment profile and its aliases use these Gemini
 rules, including when configured for Vertex with `projectId` and `region`. The
 separate OpenAI-compatible `vertex-ai` profile keeps its own request rules and
 does not inherit native Gemini fields from a Gemini-looking model ID.
 
-For GPT-5.6, these map to `none`, `low`, `low`, `medium`, `high`, and a top rung
-that depends on the API surface: `xhigh` on Chat Completions, which rejects
-`max`, and `max` on the Responses API, which is the only place it is served.
+For GPT-5.6 and GPT-6 (Astra, Sol, Luna), these map to `none`, `low`, `low`,
+`medium`, `high`, and a top rung that depends on the API surface: `xhigh` on
+Chat Completions, which rejects `max`, and `max` on the Responses API, which is
+the only place it is served. These models default an omitted effort to
+`medium`, so `none` is sent explicitly; GPT-6 Astra refuses `none` and Ax throws.
 Earlier OpenAI models retain their existing mapping.
 
 ### Anthropic Model-Specific Behavior
 
-- Opus 4.8, 4.7, and 4.6 plus Sonnet 5: adaptive thinking, no manual
-  `budget_tokens`, and no `temperature` / `topP` / `topK`. When thoughts are
-  requested, Ax asks Anthropic for summarized display; when they are hidden,
-  Ax explicitly requests `display: 'omitted'`.
+- Opus 5.5, Fable 5.1, Fable 5, Opus 5, Opus 4.8, 4.7, and 4.6 plus Sonnet 5:
+  adaptive thinking, no manual `budget_tokens`, and no `temperature` / `topP` /
+  `topK`. When thoughts are requested, Ax asks Anthropic for summarized
+  display; when they are hidden, Ax explicitly requests `display: 'omitted'`.
+- Opus 5.5, Fable 5.1, and Fable 5 always think, so `thinkingTokenBudget:
+  'none'` sends the lowest effort with thoughts hidden instead of disabling it.
+- Opus 5 and Sonnet 5 think by default, so `'none'` sends
+  `thinking: { type: 'disabled' }`. Opus 5 only allows that at effort `'high'`
+  or below, so Ax rejects `'none'` combined with `'xhigh'` or `'max'`.
+- Opus 5.5 and Fable 5.1 refuse forced tool choice: Ax throws for
+  `functionCall: 'required'` or a named function, and structured output uses
+  the native `output_config.format` path.
+- Opus 4.8, Opus 5, Opus 5.5, Fable 5, and Fable 5.1 keep a later system
+  message in place on the first-party API; other models hoist it into the
+  system prompt.
 - Opus 4.5: budget_tokens + effort levels (capped at `'high'`)
 - Other thinking models: budget tokens only
 
@@ -609,11 +677,11 @@ Provider behavior:
   `promptCacheKey`; Responses also accepts `promptCacheRetention: 'in_memory' |
   '24h'`. Meta Messages has no cache marker or cache-key field, so Ax strips
   generic `cache_control` annotations on that profile.
-- OpenAI: explicit `prompt_cache_breakpoint` markers, **GPT-5.6+ only**. Earlier
-  families cache automatically and predate the parameters, so nothing is sent to
-  them. Only the `openai` provider opts in — Azure OpenAI shares the request
+- OpenAI: explicit `prompt_cache_breakpoint` markers, **GPT-5.6+ only**; GPT-6
+  also gets `ttl: '30m'` in `prompt_cache_options`. Earlier families cache
+  automatically and predate the parameters, so nothing is sent to them. Only the `openai` provider opts in — Azure OpenAI shares the request
   builder and the same model enum, so a `gpt-5.6-*` deployment sends nothing,
-  and `openai-responses` does not send breakpoints either (it does report
+  and `openai-responses` sends breakpoints for GPT-6 only (it does report
   `cacheCreationTokens`, which is provider-wide)
 
 ### OpenAI prompt cache keys
@@ -684,6 +752,27 @@ const bedrock = ai({
 });
 ```
 
+To reach OpenAI's GPT models on those endpoints through the `openai` or
+`openai-responses` provider, name them with Bedrock's IDs: `openai.gpt-6-sol`
+on bedrock-mantle, or a cross-Region inference profile such as
+`us.openai.gpt-6-sol` or `global.openai.gpt-6-astra` on bedrock-runtime. Ax
+applies the named model's contracts: its built-in model info (so `temperature`
+and `top_p` are not sent), the GPT-5.6 and GPT-6 effort ladders, Astra's rules,
+and, on `openai`, routing the GPT-6 family to `<apiURL>/responses`. It leaves
+off what Bedrock does not serve: prompt-cache breakpoints on Chat Completions
+(Bedrock caches these models on the Responses API only) and Astra chat
+sessions, since async tools, steering, and reasoning updates are not available
+there.
+
+```typescript
+const gpt = ai({
+  name: 'openai',
+  apiURL: 'https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1',
+  apiKey: process.env.BEDROCK_API_KEY!,
+  config: { model: 'us.openai.gpt-6-astra' as AxAIOpenAIModel },
+});
+```
+
 The separate AWS package remains available when native AWS SDK authentication,
 regional fallback, or non-Mantle Bedrock behavior is required:
 
@@ -699,10 +788,12 @@ const bedrock = new AxAIBedrock({
 
 The native client uses Bedrock `Converse` and `ConverseStream`. Claude models
 advertise native functions, streaming, image/document input, prompt-cache
-breakpoints, and their verified thinking modes. Structured-output and service-
-tier support remain model-specific; query `bedrock.getFeatures(model)` instead
-of assuming every Bedrock model has the same capabilities. The AWS SDK remains
-a dependency of `@ax-llm/ax-ai-aws-bedrock` only and is not pulled into
+breakpoints, and their verified thinking modes. GPT-6 Sol, Luna, and Astra
+(`AxAIBedrockModel.Gpt6Sol`, `Gpt6Luna`, `Gpt6Astra`) advertise native
+functions, streaming, image input, and reasoning effort. Structured-output and
+service-tier support remain model-specific; query `bedrock.getFeatures(model)`
+instead of assuming every Bedrock model has the same capabilities. The AWS SDK
+remains a dependency of `@ax-llm/ax-ai-aws-bedrock` only and is not pulled into
 `@ax-llm/ax`.
 
 Use `contextCache.ttlSeconds` for a 5-minute or supported 1-hour cache point,
@@ -725,8 +816,12 @@ const response = await bedrock.chat(
 );
 ```
 
-Claude Sonnet 5 always uses adaptive thinking and rejects
-`thinkingTokenBudget: 'none'`; Claude Opus 5 permits disabling it.
+On the native Bedrock client, Claude Sonnet 5 and Opus 5.5 always use adaptive
+thinking and reject `thinkingTokenBudget: 'none'`; Claude Opus 5 permits
+disabling it. On GPT-6, `thinkingTokenBudget` sets the reasoning effort
+(`minimal` → `low`, `highest` → `max`, `none` turns reasoning off), except
+that Astra rejects `'none'` before sending. GPT-6 requests omit `temperature`
+and `topP`, which these models do not accept.
 
 ## Vercel AI SDK Integration
 
@@ -820,6 +915,12 @@ Astra through Responses. Existing defaults are unchanged.
 Use `thinkingTokenBudget: 'low'` and `serviceTier: 'standard'`. Astra requires
 reasoning; `minimal` maps to `low` and `none` throws. Unsupported sampling and
 log-probability options are removed. EU residency does not support priority processing.
+
+GPT-6 Sol (`AxAIOpenAIModel.GPT6Sol`) and Luna (`AxAIOpenAIModel.GPT6Luna`) also
+route through Responses, since Chat Completions refuses their function tools
+while they reason. Unlike Astra they accept `thinkingTokenBudget: 'none'`, and
+chat sessions and `configuration_update` remain Astra-only. OpenAI reports a
+GPT-6 priority request's served tier as `fast`; Ax records it as `priority`.
 
 Keep calling `forward()` and `streamingForward()`. Declare independent tools with
 `fn('lookup').description('...').execution('background').handler(...).build()`.

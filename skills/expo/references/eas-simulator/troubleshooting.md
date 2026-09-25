@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision 39708666ce7014def1f8e34f3d8c93e8d3f588bb. -->
+<!-- Modified by Flow Copilot from expo/skills revision efa52f0a9d2176db75992736281c77da1b714fa3. -->
 
 # Troubleshooting
 
@@ -6,7 +6,7 @@ Concrete errors seen while validating this flow, and the fix.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Approval review rejects the Mode C Metro tunnel | Review needs the actual destination, development-code exposure, and user authorization; a signed URL alone does not establish private access | Follow [Tunnel scope and approvals](./run-your-app.md#tunnel-scope-and-approvals). Explain Expo's transport and preserve the requested live workflow while resolving approval. |
+| Approval review rejects the Mode C Metro tunnel or dev-client Connect action | Review may lack or misinterpret the transport details or existing authorization; a signed URL alone does not establish private access | Follow [Tunnel scope and approvals](./run-your-app.md#tunnel-scope-and-approvals). Include the original authorization source and verified transport in the request; use reconsideration only where the host permits it. Preserve the requested live workflow while resolving approval. |
 | Controller recording download fails or times out | The local transfer can fail even though EAS retains the recording | Fetch it from [EAS session artifacts](./controllers.md#recording-download-recovery) using the original EAS session id and the recording’s `downloadUrl`. |
 | `Command simulator:start not found` | `eas-cli` too old (commands are hidden but present from ≥ 20.3.0) | Run via `npx --yes eas-cli@latest …`, or upgrade `eas-cli`. |
 | `simulator:start` rejects `--name` (e.g. `Nonexistent flag: --name`) | `eas-cli` too old — `--name` was added after `simulator:start` itself | Run via `npx --yes eas-cli@latest …`, or upgrade `eas-cli`. If you can't upgrade, retry once **without** `--name`; the session starts unnamed. |
@@ -39,6 +39,7 @@ Concrete errors seen while validating this flow, and the fix.
 | `CommandError: WS-tunnel only supports tunneling over port 8081` | You're on the **legacy** ws-tunnel path — no v2 account URL (older CLI where `EXPO_UNSTABLE_TUNNEL_V2` is a no-op, not logged in, or `EXPO_FORCE_WEBCONTAINER_ENV` set) | Get onto the account-signed v2 path: set `EXPO_UNSTABLE_TUNNEL_V2=1` and log in / link the project — then any `--port` works. Otherwise use `--port 8081`, or the ngrok path (drop the flag; non-robot only). |
 | Unexpected charges / a session you forgot | `start --non-interactive` does NOT auto-stop | Always `npx --yes eas-cli@latest simulator:stop --id <id>`. List leftovers with `npx --yes eas-cli@latest simulator:list`. |
 | Screenshot shows **old content** / my recent edits don't appear | Running a **release build (Mode A/B)** whose JS was baked in *before* your edits — typically a reused/stale build | A/B reflect code at build time, not now. **Rebuild** (ensure the build's fingerprint matches current source), or use **Mode C** (dev + Metro) so live edits show via Fast Refresh. The screenshot itself is fresh — it's the build that's stale. (`9:41` in the status bar is the sim default, not staleness.) |
+| (Android) The emulator stopped, and `agent-device boot` times out (`Daemon request timed out`) while the device stays `booted=false` | Without `--headless`, agent-device starts the emulator with a window. The EAS Linux image cannot run the windowed emulator, so it exits at once | Boot headless. Set `AGENT_DEVICE_HEADLESS=1` for the whole run, or pass `--headless` on each `boot`: `AGENT_DEVICE_HEADLESS=1 npx --yes eas-cli@latest simulator:exec npx agent-device@latest boot --platform android --device <avd-name>`. Get the AVD name from `agent-device devices --platform android`. The variable is read by the local client, so set it where you run the command. |
 | (argent) Every `argent run`/`tools` call returns `401 Unauthorized` right after linking | `argent link` without `--yes` no-ops on an already-linked URL ("Already linked. No changes."), keeping a stale token from a previous session | Re-link with `--yes` so the new token is written — see the link command in [controllers.md](./controllers.md). |
 
 ## Performance expectations

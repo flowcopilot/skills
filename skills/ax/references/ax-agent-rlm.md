@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # AxAgent RLM Runtime Rules (@ax-llm/ax)
 
@@ -331,6 +331,7 @@ Implement `AxCodeRuntime` when the actor should write a language other than Java
 - Put language syntax, output behavior, persistence semantics, and completion-call examples in `getUsageInstructions()`.
 - Use `getPrimitiveOverrides()` to describe language-native calls for built-in primitives, and `formatCallable()` to describe language-native calls for tools and child agents.
 - Implement `inspectGlobals()` on sessions when `contextPolicy` should show live runtime state for non-JavaScript runtimes; otherwise AxAgent will not run JavaScript fallback inspection snippets.
+- If a session returns errors in the code as readable text instead of rejecting, also implement `executeWithStatus()` and return `{ value, isError: true }` for them. AxAgent then tags those turns as errors for failure learning and context pruning, while the actor reads the same text. `AxJSRuntime` does this for `ReferenceError`, `TypeError`, `SyntaxError`, and the other built-in error types.
 
 ## RLM Test Harness
 

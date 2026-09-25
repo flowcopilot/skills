@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # AxAgent Codegen Rules (@ax-llm/ax)
 
@@ -15,6 +15,12 @@ Your job is to choose the smallest correct `AxAgent` shape for the user's needs:
   tasks, Apps, or event-driven wake/resume, use the `ax-mcp` skill.
 
 ## Use These Defaults
+
+For Typesafe/Jev decisions inside an agent, keep a generative model for the
+actor's tools/code/prose and call Typesafe in a separate decision step. See the
+[ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
+for supported signatures and native questions; Jev cannot supply a general
+tool-using actor's output contract.
 
 - Use `agent(...)`, not `new AxAgent(...)`.
 - Prefer string signatures or `f()` signatures over hand-written signature objects.
@@ -602,7 +608,7 @@ Rules:
 These construction-time options are portable across TypeScript and the generated
 Python, Java, C++, Go, and Rust packages (both default off):
 
-- `playbook`: attach an ACE playbook at construction. `learn` is on by default — after each run that produced failure signals (error turns, dead-ends, failing tool calls) one bounded update curates durable avoidance rules that ride the next run's actor prompt; zero LLM cost on clean runs. TypeScript seeds a prior session with `playbook: { playbook: snapshot }`; generated packages accept their full `{ playbook, artifact }` snapshot under `seed`. Persist via `onUpdate`, read the live handle with `getPlaybook()` (or the language-shaped equivalent), gate with `learn: { minSignals, dedupe }`, or disable with `learn: false`. To grow the same playbook from a task set with a held-out verify gate, use the agent-bound playbook evolve method — see `ax-playbook`.
+- `playbook`: attach an ACE playbook at construction. `learn` is on by default — after each run that produced failure signals (error turns, dead-ends, failing tool calls) one bounded update curates durable avoidance rules that ride the next run's actor prompt; zero LLM cost on clean runs. TypeScript seeds a prior session with `playbook: { playbook: snapshot }`; generated packages accept their full `{ playbook, artifact }` snapshot under `seed`. Persist via `onUpdate`, read the live handle with `getPlaybook()` (or the language-shaped equivalent), gate with `learn: { minSignals, dedupe }`, or disable with `learn: false`. Reflection and curation run on `teacherAI`, which defaults to the agent's `judgeAI` and then its `ai`; a teacher marked `isExpensive` also needs `teacherOptions: { useExpensiveModel: 'yes' }`, or its updates curate nothing. To grow the same playbook from a task set with a held-out verify gate, use the agent-bound playbook evolve method — see `ax-playbook`.
 - `citations`: add an optional `evidenceCitations: string[]` responder output listing which evidence entries (top-level keys of the curated evidence, plus memory ids) the answer relied on. Validated in-pipeline — the model cannot cite evidence it never collected (existence, not entailment). Pass `true`, or `{ field?, surface?: 'output' | 'hidden', includeMemoryIds?, onCitations? }`.
 
 Stage guidance is portable too. `setInstruction` replaces the stage-owned actor

@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "259bccfd8f681969a3d134ea4f5920757f22278f",
+    "revision": "4f56e6ef96afbb597c8f469a07b42c80e57968a5",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -19,12 +19,13 @@
       "ax-mcp",
       "ax-playbook",
       "ax-refine",
-      "ax-signature"
+      "ax-signature",
+      "ax-typesafe"
     ]
   },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
-    "revision": "b052c32bab7dd493513260228a36c88294f343f1",
+    "revision": "6dc7604903127485e7e4cb26314651ebd4a4df19",
     "workflows": [
       "agents-sdk",
       "cloudflare-email-service",
@@ -43,7 +44,7 @@
   },
   "convex": {
     "repository": "https://github.com/get-convex/agent-skills.git",
-    "revision": "c41ece22681a50d326e54f30d24148a6d46d0c3c",
+    "revision": "0aa10576821c6928f6a0f498c087af4ee231536e",
     "workflows": [
       "convex-add",
       "convex-advisor",
@@ -81,7 +82,7 @@
   },
   "expo": {
     "repository": "https://github.com/expo/skills.git",
-    "revision": "39708666ce7014def1f8e34f3d8c93e8d3f588bb",
+    "revision": "efa52f0a9d2176db75992736281c77da1b714fa3",
     "workflows": [
       "eas-app-stores",
       "eas-hosting",
