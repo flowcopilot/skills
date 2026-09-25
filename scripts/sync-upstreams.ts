@@ -19,7 +19,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -621,6 +621,184 @@ ${sections.join("\n\n")}
   return `## React Native skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
 }
 
+// Clerk groups skills by category. "all" imports every skill in a category, including
+// future ones; a list imports only the named skills. New categories stop the sync.
+const clerkSelection: Record<string, "all" | string[]> = {
+  core: "all",
+  features: "all",
+  frameworks: ["clerk-react-patterns", "clerk-tanstack-patterns"],
+  mobile: ["clerk-expo"],
+};
+const clerkCategoryTitles: Record<string, string> = {
+  core: "Core",
+  features: "Features",
+  frameworks: "Frameworks",
+  mobile: "Mobile",
+};
+
+// Apply a rewrite outside fenced code blocks only.
+function outsideCode(text: string, rewrite: (prose: string) => string): string {
+  return text
+    .split(/(^```[\s\S]*?^```)/m)
+    .map((part, index) => (index % 2 === 1 ? part : rewrite(part)))
+    .join("");
+}
+
+// Rewrite skill-relative paths without touching the same path inside URLs.
+function rewriteLocalPaths(text: string, directory: string, target: string): string {
+  const pattern = new RegExp(`https?://[^\\s<>)]+|(?<![\\w./-])(?:\\./)?${directory}/`, "g");
+  return text.replace(pattern, (match) => (match.startsWith("http") ? match : `${target}/`));
+}
+
+function syncClerk(checkout: Checkout): string[] {
+  const sourceName = "clerk/skills";
+  const sourceRoot = resolve(checkout.root, "skills");
+  const categories = readdirSync(sourceRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  for (const category of categories) {
+    if (!(category in clerkSelection)) {
+      throw new Error(`Clerk added category ${category}; update clerkSelection`);
+    }
+  }
+  const selected = Object.entries(clerkSelection).flatMap(([category, choice]) => {
+    const skills = readdirSync(resolve(sourceRoot, category), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => resolve(sourceRoot, category, entry.name, "SKILL.md"))
+      .filter(existsSync)
+      .map(parseSkill);
+    const names = new Set(skills.map((skill) => skill.name));
+    if (choice !== "all") {
+      for (const name of choice) {
+        if (!names.has(name)) throw new Error(`Clerk ${category} no longer has ${name}`);
+      }
+    }
+    return skills
+      .filter((skill) => skill.name !== "clerk")
+      .filter((skill) => choice === "all" || choice.includes(skill.name))
+      .map((skill) => ({ ...skill, category }));
+  }).sort((left, right) => left.name.localeCompare(right.name));
+  const rootSkill = parseSkill(resolve(sourceRoot, "core", "clerk", "SKILL.md"));
+
+  // Clerk has no standalone LICENSE file; the README and plugin metadata declare MIT.
+  const plugin = JSON.parse(readFileSync(resolve(checkout.root, ".codex-plugin", "plugin.json"), "utf8"));
+  const readme = readFileSync(resolve(checkout.root, "README.md"), "utf8");
+  if (plugin.license !== "MIT" || !/^## License\n\nMIT\n/m.test(readme)) {
+    throw new Error("Clerk upstream license changed");
+  }
+  for (const skill of selected) {
+    const text = readFileSync(resolve(skill.root, "SKILL.md"), "utf8");
+    if (!/^license: MIT$/m.test(text)) throw new Error(`${skill.name}: skill license is not MIT`);
+  }
+
+  const names = new Set(selected.map((skill) => skill.name));
+  // Former sibling skill names are references here. Excluded skills stay plain text.
+  const linkSkills = (text: string, prefix: string) =>
+    outsideCode(text, (prose) =>
+      prose
+        .replace(/`clerk` skill\b/g, `[Clerk router](${prefix}../SKILL.md)`)
+        .replace(/(?<!\[)`(clerk-[a-z-]+)`/g, (match, name: string) =>
+          names.has(name) ? `[${name}](${prefix}${name}.md)` : match));
+  const replaceExact = (text: string, from: string, to: string) => {
+    if (!text.includes(from)) throw new Error(`Clerk text changed upstream: ${from}`);
+    return text.replaceAll(from, to);
+  };
+
+  const target = resolve(repositoryRoot, "skills", "clerk");
+  resetDirectory(target, "clerk");
+  const references = resolve(target, "references");
+  // Evals and starter templates are upstream development material that no imported instruction reads.
+  const excludedDirectories = new Set(["evals", "templates"]);
+  for (const skill of selected) {
+    const supportDirectories = readdirSync(skill.root, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && !excludedDirectories.has(entry.name))
+      .map((entry) => entry.name);
+    const unexpected = readdirSync(skill.root, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name !== "SKILL.md");
+    if (unexpected.length) {
+      throw new Error(`${skill.name}: unexpected supporting file ${unexpected[0].name}`);
+    }
+    // references/ is flattened into references/<skill>/; other directories keep their name.
+    const destinationOf = (directory: string) =>
+      directory === "scripts" ? `scripts/${skill.name}`
+        : directory === "references" ? skill.name
+          : `${skill.name}/${directory}`;
+    let body = skill.body;
+    for (const directory of supportDirectories) {
+      body = rewriteLocalPaths(body, directory, destinationOf(directory));
+    }
+    if (skill.name === "clerk-backend-api") {
+      body = replaceExact(body, "User Prompt: $ARGUMENTS", "User Prompt: the user's request that selected this reference.");
+    }
+    if (skill.name === "clerk-cli") {
+      body = replaceExact(body, "(../clerk-setup/SKILL.md)", "(clerk-setup.md)");
+    }
+    if (skill.name === "clerk-setup") {
+      body = replaceExact(body, "[clerk](../clerk/SKILL.md) skill's", "[Clerk router](../SKILL.md)'s");
+    }
+    body = linkSkills(body, "");
+    const metadata = readFileSync(resolve(skill.root, "SKILL.md"), "utf8").match(/^---\n([\s\S]*?)\n---\n/)!;
+    const compatibility = (Bun.YAML.parse(metadata[1]) as { compatibility?: unknown }).compatibility;
+    if (typeof compatibility === "string") body = `> **Requirements:** ${compatibility.trim()}\n\n${body}`;
+    if (/(?<!\(\.\.\/)SKILL\.md\b/.test(body)) throw new Error(`${skill.name}: unresolved SKILL.md link`);
+    writeMarkdown(resolve(references, `${skill.name}.md`), body, sourceName, checkout.revision);
+
+    for (const directory of supportDirectories) {
+      const destination = directory === "scripts"
+        ? resolve(target, "scripts", skill.name)
+        : resolve(references, destinationOf(directory));
+      const depth = directory === "references" ? 1 : 2;
+      const transform = (text: string) => {
+        // A bare SKILL.md in a supporting file means its own skill's instructions.
+        let rewritten = linkSkills(text, "../".repeat(depth))
+          .replace(/(?<!\]\()(?<![\w./])SKILL\.md\b/g, `[${skill.name}](${"../".repeat(depth)}${skill.name}.md)`);
+        // Custom UI version files name their sibling directory from the skill root.
+        if (skill.name === "clerk-custom-ui") rewritten = rewritten.replace(/`core-([23])\//g, "`../core-$1/");
+        return rewritten;
+      };
+      copyTree(resolve(skill.root, directory), destination, sourceName, checkout.revision, transform);
+    }
+  }
+
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  copyFileSync(resolve(checkout.root, ".codex-plugin", "plugin.json"), resolve(target, "licenses", "clerk-plugin.json"));
+
+  const versionSection = rootSkill.body.match(/^## Version Detection\n[\s\S]*?(?=\n---\n)/m);
+  if (!versionSection) throw new Error("Clerk router version section changed upstream");
+  const excluded = categories.flatMap((category) =>
+    readdirSync(resolve(sourceRoot, category), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && entry.name !== "clerk" && !names.has(entry.name))
+      .map((entry) => `\`${entry.name}\``));
+  const sections = Object.keys(clerkSelection).map((category) => {
+    const skills = selected.filter((skill) => skill.category === category);
+    return `### ${clerkCategoryTitles[category]}\n\n${workflowList(skills)}`;
+  }).join("\n\n");
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(
+    "clerk",
+    "Add, configure, and operate Clerk authentication. Use when a project uses Clerk or @clerk packages, or the task involves Clerk setup, the Clerk CLI or Backend API, custom sign-in UI, organizations, billing, webhooks, E2E auth testing, React SPA, TanStack Start, or Expo auth.",
+    sourceName, checkout.revision, {}, "MIT",
+  ), `# Clerk
+
+Detect the installed Clerk SDK version first, then read only the references that match the task. A former \`clerk-*\` skill name now refers to its file below. Do not expect separate Clerk skills to be installed. Script paths in references are relative to this skill directory.
+
+This bundle imports a subset of Clerk's skills. Not bundled: ${excluded.join(", ")}. When a reference points to one of these, use the current Clerk documentation for that framework instead.
+
+${linkSkills(versionSection[0], "references/").trim()}
+
+## Workflows
+
+${sections}
+
+## Common rules
+
+- Treat the installed \`@clerk/*\` packages, their type declarations, and current Clerk documentation as the source of truth when a reference differs.
+- Load more than one reference when a task crosses areas. For example, B2B billing needs both the organizations and billing references.
+- Confirm before any write to a Clerk instance, and never use production keys for tests.
+`, sourceName, checkout.revision);
+  return selected.map((skill) => skill.name);
+}
+
 function assertApacheLicense(checkout: Checkout, name: string) {
   const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
   if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
@@ -628,7 +806,7 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "react-native"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -642,8 +820,8 @@ function syncBundle(name: BundleName): string {
     return notice;
   }
   const checkout = clone(name);
-  if (name !== "expo") assertApacheLicense(checkout, name);
-  const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo };
+  if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
+  const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
@@ -671,6 +849,12 @@ The imported revision is dated ${checkout.date}. Flow Copilot combines the separ
 The files under \`skills/expo/\` derive from [expo/skills](https://github.com/expo/skills) revision \`${checkout.revision}\`, licensed under the MIT License, retained in \`skills/expo/LICENSE\`. The animation reference also retains its upstream copyright notice in \`skills/expo/references/expo-animation/LICENSE\`.
 
 The imported revision is dated ${checkout.date}. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. Plugin metadata and hooks are not imported.
+`,
+    clerk: `## Clerk skill
+
+The files under \`skills/clerk/\` derive from [clerk/skills](https://github.com/clerk/skills) revision \`${checkout.revision}\`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in \`skills/clerk/licenses/clerk-plugin.json\`.
+
+The imported revision is dated ${checkout.date}. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. Evaluation fixtures, starter templates, and plugin metadata are not imported.
 `,
   };
   return notices[name];

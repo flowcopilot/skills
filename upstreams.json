@@ -157,5 +157,22 @@
       "callstack/upgrading-react-native/index",
       "callstack/writing-user-docs/index"
     ]
+  },
+  "clerk": {
+    "repository": "https://github.com/clerk/skills.git",
+    "revision": "d01c99c0d8f608d6a51bf5a62c79e30d2395248a",
+    "workflows": [
+      "clerk-backend-api",
+      "clerk-billing",
+      "clerk-cli",
+      "clerk-custom-ui",
+      "clerk-expo",
+      "clerk-orgs",
+      "clerk-react-patterns",
+      "clerk-setup",
+      "clerk-tanstack-patterns",
+      "clerk-testing",
+      "clerk-webhooks"
+    ]
   }
 }

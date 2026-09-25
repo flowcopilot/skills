@@ -42,7 +42,7 @@ The sync command replaces `revision` with the imported commit SHA. It also repla
 Add the new key to the `Manifest` type in `scripts/sync-upstreams.ts`:
 
 ```ts
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "example", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "example", SourceConfig>;
 ```
 
 ### 3. Add a source adapter
@@ -140,6 +140,14 @@ Push changes through a pull request. The scheduled workflow updates `automation/
 ## Expo source
 
 Expo imports `plugins/expo/skills`. The adapter uses the skill directory README tables as the router and requires the index to match the discovered skills. It preserves helper scripts, standalone supporting files, and MIT license notices. Plugin metadata, hooks, and other plugin directories are excluded. Run `bun run sync --only expo` to update this source without updating the other collections.
+
+## Clerk source
+
+Clerk imports a subset of `skills/` from `clerk/skills`. The `clerkSelection` constant in `scripts/sync-upstreams.ts` chooses skills by category: `"all"` imports every current and future skill in that category, and a list imports only the named skills. The sync stops when Clerk adds a category or removes a listed skill. To bundle another Clerk skill, add it to that constant and run `bun run sync --only clerk`.
+
+The upstream `clerk` router is not imported as a workflow. The generated router keeps its version table and lists the skills this bundle excludes. Evaluation fixtures and starter templates are not imported because no imported instruction reads them. Backend API scripts move to `scripts/clerk-backend-api/` and keep their executable mode.
+
+The repository has no standalone LICENSE file. Its README and Codex plugin metadata declare MIT; the plugin metadata is retained under `licenses/`.
 
 ## Multiple sources in one bundle
 

@@ -35,3 +35,9 @@ Imported from [software-mansion-labs/skills](https://github.com/software-mansion
 ### Callstack
 
 Imported from [callstackincubator/agent-skills](https://github.com/callstackincubator/agent-skills) revision `61e6e7dfdf3a8ee862254c200d751fcb1fb863dc`, dated 2026-09-16. The upstream MIT license and copyright notice are retained in `skills/react-native/licenses/callstack-LICENSE`.
+
+## Clerk skill
+
+The files under `skills/clerk/` derive from [clerk/skills](https://github.com/clerk/skills) revision `d01c99c0d8f608d6a51bf5a62c79e30d2395248a`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in `skills/clerk/licenses/clerk-plugin.json`.
+
+The imported revision is dated 2026-09-24. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. Evaluation fixtures, starter templates, and plugin metadata are not imported.

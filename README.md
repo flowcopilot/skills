@@ -5,6 +5,7 @@ Agent skills maintained by Flow Copilot.
 ## Available skills
 
 - [`ax`](skills/ax/SKILL.md): Build and operate TypeScript LLM applications with `@ax-llm/ax` through one progressively disclosed skill.
+- [`clerk`](skills/clerk/SKILL.md): Add, configure, and operate Clerk authentication, organizations, billing, and webhooks through one progressively disclosed skill.
 - [`cloudflare`](skills/cloudflare/SKILL.md): Choose, build, review, and operate Cloudflare products through one progressively disclosed skill.
 - [`convex`](skills/convex/SKILL.md): Build, review, test, secure, migrate, and operate Convex backends through one progressively disclosed skill.
 
@@ -21,6 +22,8 @@ The `ax` skill combines the TypeScript skill set from `ax-llm/ax`. Its router se
 The `convex` skill combines the upstream `get-convex/agent-skills` collection into one skill. Its `SKILL.md` routes agents to focused reference files. This keeps one skill description in startup context instead of one description for each Convex workflow.
 
 The `cloudflare` skill applies the same structure to the upstream `cloudflare/skills` collection. It keeps Cloudflare's product directory, detailed guides, and Turnstile scripts behind one entry file.
+
+The `clerk` skill imports a selected subset of `clerk/skills`: every core and feature skill, the React and TanStack Start framework skills, and the Expo mobile skill. Other framework and native mobile skills are excluded until Flow Copilot uses them. The router keeps Clerk's SDK version table and names the excluded skills.
 
 The `expo` skill tracks all skills in `expo/skills` under `plugins/expo/skills`. Its router uses that directory’s README index and preserves the framework and paid-service groups. Experimental skills in other plugins are outside this source.
 

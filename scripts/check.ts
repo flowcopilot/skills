@@ -136,6 +136,22 @@ if (!readFileSync(resolve(reactNative, "licenses/callstack-LICENSE"), "utf8").in
   errors.push("callstack: missing upstream copyright notice");
 }
 
+const clerk = resolve(skillsRoot, "clerk");
+if (readSkill(resolve(clerk, "SKILL.md")).metadata.license !== "MIT") {
+  errors.push("clerk: expected MIT license metadata");
+}
+const clerkPlugin = JSON.parse(readFileSync(resolve(clerk, "licenses/clerk-plugin.json"), "utf8"));
+if (clerkPlugin.license !== "MIT") errors.push("clerk: missing upstream MIT declaration");
+for (const file of filesUnder(clerk).filter((path) => path.endsWith(".md"))) {
+  const text = readFileSync(file, "utf8");
+  if (!text.includes(`clerk/skills revision ${manifest.clerk.revision}`)) {
+    errors.push(`clerk: missing source revision in ${file}`);
+  }
+  for (const match of text.matchAll(/scripts\/clerk-backend-api\/[a-z0-9_.-]+/g)) {
+    if (!existsSync(resolve(clerk, match[0]))) errors.push(`clerk: missing script ${match[0]}`);
+  }
+}
+
 if (errors.length > 0) {
   for (const error of errors) console.error(error);
   process.exit(1);
