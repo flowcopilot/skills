@@ -19,7 +19,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -529,69 +529,89 @@ ${routes}
 }
 
 const reactNativeSources = ["software-mansion", "callstack"] as const;
+const designEngineeringSources = ["emil-kowalski", "jakub-krehel"] as const;
+type TreeSource = typeof reactNativeSources[number] | typeof designEngineeringSources[number];
+
+// Multi-source bundles keep each source's skills/ tree and rename entry files to index.md.
+function readSkillTree(name: TreeSource, checkout: Checkout) {
+  const sourceRoot = resolve(checkout.root, "skills");
+  const files = filesUnder(sourceRoot).filter((path) => !relativePath(path, sourceRoot).split("/").includes("agents"));
+  const skills = files.filter((path) => basename(path) === "SKILL.md").map((path) => ({
+    ...parseSkill(path),
+    path: relativePath(path, sourceRoot).replace(/SKILL\.md$/, "index.md"),
+  })).sort((a, b) => a.path.localeCompare(b.path));
+  // A source must never overwrite its own index or another source's files.
+  const destinations = files.map((path) => relativePath(path, sourceRoot).replace(/(^|\/)SKILL\.md$/, "$1index.md"));
+  if (new Set(destinations).size !== destinations.length) {
+    throw new Error(`${name}: SKILL.md to index.md collision`);
+  }
+  return { name, checkout, sourceRoot, files, skills };
+}
+
+function writeSkillTree(
+  { name, checkout, sourceRoot, files, skills }: ReturnType<typeof readSkillTree>,
+  bundle: string,
+): string {
+  const target = resolve(repositoryRoot, "skills", bundle);
+  const sourceName = manifest[name].repository.replace("https://github.com/", "").replace(/\.git$/, "");
+  for (const path of files) {
+    const relative = relativePath(path, sourceRoot).replace(/(^|\/)SKILL\.md$/, "$1index.md");
+    const destination = resolve(target, "references", name, relative);
+    mkdirSync(resolve(destination, ".."), { recursive: true });
+    if (path.endsWith(".md")) {
+      const body = basename(path) === "SKILL.md" ? parseSkill(path).body : readFileSync(path, "utf8");
+      // Preserve each source tree. Only local skill entry filenames change.
+      // External URLs continue to address the original upstream SKILL.md.
+      const rewritten = body.replace(/https?:\/\/[^\s<>\)]+|\bSKILL\.md\b/g,
+        (match) => match.startsWith("http") ? match : "index.md");
+      writeMarkdown(destination, rewritten, sourceName, checkout.revision);
+    } else {
+      copyFileSync(path, destination);
+      chmodSync(destination, statSync(path).mode);
+    }
+  }
+  manifest[name].bundle = bundle;
+  manifest[name].revision = checkout.revision;
+  manifest[name].workflows = skills.map((skill) => `${name}/${skill.path.replace(/\.md$/, "")}`);
+  return sourceName;
+}
+
+function skillRoutes(name: TreeSource, skills: ReturnType<typeof readSkillTree>["skills"]): string {
+  return skills.map((skill) => {
+    const description = skill.description.split(/\.\s/)[0].replace(/\s+/g, " ").replace(/\.$/, "");
+    return `- [${skill.name}](references/${name}/${skill.path}): ${description}.`;
+  }).join("\n");
+}
 
 function syncReactNative(checkouts: Record<typeof reactNativeSources[number], Checkout>): string {
   const bundle = "react-native";
   const target = resolve(repositoryRoot, "skills", bundle);
   const imports = reactNativeSources.map((name) => {
-    const checkout = checkouts[name];
-    const sourceRoot = resolve(checkout.root, "skills");
-    const files = filesUnder(sourceRoot).filter((path) => !relativePath(path, sourceRoot).split("/").includes("agents"));
-    const skills = files.filter((path) => basename(path) === "SKILL.md").map((path) => ({
-      ...parseSkill(path),
-      path: relativePath(path, sourceRoot).replace(/SKILL\.md$/, "index.md"),
-    })).sort((a, b) => a.path.localeCompare(b.path));
-    if (!skills.some((skill) => skill.path === "react-native-best-practices/index.md")) {
+    const tree = readSkillTree(name, checkouts[name]);
+    if (!tree.skills.some((skill) => skill.path === "react-native-best-practices/index.md")) {
       throw new Error(`${name}: missing react-native-best-practices skill`);
     }
-    // A source must never overwrite its own index or another source's files.
-    const destinations = files.map((path) => relativePath(path, sourceRoot).replace(/(^|\/)SKILL\.md$/, "$1index.md"));
-    if (new Set(destinations).size !== destinations.length) {
-      throw new Error(`${name}: SKILL.md to index.md collision`);
-    }
     if (name === "software-mansion") {
-      const metadata = JSON.parse(readFileSync(resolve(checkout.root, ".claude-plugin", "marketplace.json"), "utf8"));
+      const metadata = JSON.parse(readFileSync(resolve(tree.checkout.root, ".claude-plugin", "marketplace.json"), "utf8"));
       const plugin = metadata.plugins?.find((plugin: { name: string }) => plugin.name === "skills");
       if (plugin?.license !== "MIT") throw new Error("Software Mansion plugin license changed");
     } else {
-      const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
+      const license = readFileSync(resolve(tree.checkout.root, "LICENSE"), "utf8");
       if (!license.includes("MIT License") || !license.includes("Permission is hereby granted")) {
         throw new Error("Callstack license changed");
       }
     }
-    return { name, checkout, sourceRoot, files, skills };
+    return tree;
   });
   resetDirectory(target, bundle);
   const sections: string[] = [];
   const notices: string[] = [];
   mkdirSync(resolve(target, "licenses"), { recursive: true });
-  for (const { name, checkout, sourceRoot, files, skills } of imports) {
-    const sourceName = manifest[name].repository.replace("https://github.com/", "").replace(/\.git$/, "");
-    for (const path of files) {
-      const relative = relativePath(path, sourceRoot).replace(/(^|\/)SKILL\.md$/, "$1index.md");
-      const destination = resolve(target, "references", name, relative);
-      mkdirSync(resolve(destination, ".."), { recursive: true });
-      if (path.endsWith(".md")) {
-        const body = basename(path) === "SKILL.md" ? parseSkill(path).body : readFileSync(path, "utf8");
-        // Preserve each source tree. Only local skill entry filenames change.
-        // External URLs continue to address the original upstream SKILL.md.
-        const rewritten = body.replace(/https?:\/\/[^\s<>\)]+|\bSKILL\.md\b/g,
-          (match) => match.startsWith("http") ? match : "index.md");
-        writeMarkdown(destination, rewritten, sourceName, checkout.revision);
-      } else {
-        copyFileSync(path, destination);
-        chmodSync(destination, statSync(path).mode);
-      }
-    }
+  for (const tree of imports) {
+    const { name, checkout, skills } = tree;
+    const sourceName = writeSkillTree(tree, bundle);
     const label = name === "software-mansion" ? "Software Mansion" : "Callstack";
-    const routes = skills.map((skill) => {
-      const description = skill.description.split(/\.\s/)[0].replace(/\s+/g, " ");
-      return `- [${skill.name}](references/${name}/${skill.path}): ${description}.`;
-    }).join("\n");
-    sections.push(`## ${label}\n\n${routes}`);
-    manifest[name].bundle = bundle;
-    manifest[name].revision = checkout.revision;
-    manifest[name].workflows = skills.map((skill) => `${name}/${skill.path.replace(/\.md$/, "")}`);
+    sections.push(`## ${label}\n\n${skillRoutes(name, skills)}`);
     const licenseFile = name === "software-mansion" ? "software-mansion-marketplace.json" : "callstack-LICENSE";
     copyFileSync(resolve(checkout.root, name === "software-mansion" ? ".claude-plugin/marketplace.json" : "LICENSE"), resolve(target, "licenses", licenseFile));
     notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. ${name === "software-mansion" ? "The upstream plugin metadata declares MIT; the repository provides no standalone LICENSE file. Its declaration and author metadata are retained" : "The upstream MIT license and copyright notice are retained"} in \`skills/${bundle}/licenses/${licenseFile}\`.`);
@@ -619,6 +639,69 @@ This bundle imports the skills directories of both repositories, including neste
 ${sections.join("\n\n")}
 `, "software-mansion-labs/skills", first.revision);
   return `## React Native skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
+}
+
+const designEngineeringLabels: Record<typeof designEngineeringSources[number], string> = {
+  "emil-kowalski": "Emil Kowalski",
+  "jakub-krehel": "Jakub Krehel",
+};
+
+function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources[number], Checkout>): string {
+  const bundle = "design-engineering";
+  const target = resolve(repositoryRoot, "skills", bundle);
+  const imports = designEngineeringSources.map((name) => {
+    const tree = readSkillTree(name, checkouts[name]);
+    const license = readFileSync(resolve(tree.checkout.root, "LICENSE"), "utf8");
+    if (!license.includes("MIT License") || !license.includes("Permission is hereby granted") ||
+        !license.includes(`Copyright (c) 2026 ${designEngineeringLabels[name]}`)) {
+      throw new Error(`${name}: upstream license changed`);
+    }
+    // Both sources keep one flat directory per skill; nested skills need router changes.
+    const nested = tree.skills.find((skill) => skill.path.split("/").length !== 2);
+    if (nested) throw new Error(`${name}: unexpected nested skill ${nested.path}`);
+    return tree;
+  });
+  resetDirectory(target, bundle);
+  const sections: string[] = [];
+  const notices: string[] = [];
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  for (const tree of imports) {
+    const { name, checkout, skills } = tree;
+    const sourceName = writeSkillTree(tree, bundle);
+    const label = designEngineeringLabels[name];
+    // Upstream disable-model-invocation skills run only on an explicit user request.
+    const explicit = skills.filter((skill) =>
+      /^disable-model-invocation: true$/m.test(readFileSync(resolve(tree.sourceRoot, skill.path.replace(/index\.md$/, "SKILL.md")), "utf8")));
+    const automatic = skills.filter((skill) => !explicit.includes(skill));
+    sections.push(`## ${label}\n\n${skillRoutes(name, automatic)}\n\nOnly when the user explicitly asks for them by name or purpose:\n\n${skillRoutes(name, explicit)}`);
+    const licenseFile = `${name}-LICENSE`;
+    copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", licenseFile));
+    notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. The upstream MIT license and copyright notice are retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
+  }
+  const first = checkouts["emil-kowalski"];
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
+    "Design, build, and review polished web and React Native interfaces with Emil Kowalski and Jakub Krehel guidance. Use for animation and motion, UI polish, typography, color systems, layout, accessibility, product copy, mobile web feel, interface reviews, and UI variants.",
+    "emilkowalski/skills", first.revision,
+    { upstream_jakub_krehel: `jakubkrehel/skills@${checkouts["jakub-krehel"].revision}` }, "MIT"),
+    `# Design Engineering
+
+Use the target project's stack, design tokens, and installed libraries to select references. Read only the relevant workflow and its supporting files.
+
+## Choose a source
+
+- For motion — building, reviewing, auditing, or naming animations, gestures, and transitions on the web or in Expo — start with Emil Kowalski's workflows. [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md) holds the shared philosophy.
+- For static interface quality — UI polish, typography, color, layout, accessibility, and product copy — use the matching Jakub Krehel \`better-*\` workflow. [better-interface](references/jakub-krehel/better-interface/index.md) combines them into one review.
+- When both sources cover a topic, such as animation in \`better-ui\` or typography in \`apple-design\`, prefer the source whose focus matches the task and keep the project's existing tokens.
+
+A former upstream skill name, such as \`review-animations\` or \`better-colors\`, now refers to its index.md reference in the same source directory. Those workflows are available whenever this skill is installed; load them when an imported instruction asks for another skill. Relative paths remain relative to the imported file.
+
+Upstream instructions that describe a first response for an invocation without a question apply when the user selected that workflow explicitly. Workflows listed as explicit-only were user-invoked upstream; do not start them unprompted.
+
+This bundle imports the skills directories of both repositories. Plugin metadata, agent UI metadata, and root-level files are not included.
+
+${sections.join("\n\n")}
+`, "emilkowalski/skills", first.revision);
+  return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk groups skills by category. "all" imports every skill in a category, including
@@ -806,7 +889,7 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -819,13 +902,22 @@ function syncBundle(name: BundleName): string {
     for (const source of reactNativeSources) console.log(`${source}: ${checkouts[source].revision}`);
     return notice;
   }
+  if (name === "design-engineering") {
+    const checkouts = {
+      "emil-kowalski": clone("emil-kowalski"),
+      "jakub-krehel": clone("jakub-krehel"),
+    };
+    const notice = syncDesignEngineering(checkouts);
+    for (const source of designEngineeringSources) console.log(`${source}: ${checkouts[source].revision}`);
+    return notice;
+  }
   const checkout = clone(name);
   if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
   const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
-  const notices: Record<Exclude<BundleName, "react-native">, string> = {
+  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering">, string> = {
     ax: `## Ax skill
 
 The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.

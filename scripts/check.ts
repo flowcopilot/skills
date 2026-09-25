@@ -136,6 +136,30 @@ if (!readFileSync(resolve(reactNative, "licenses/callstack-LICENSE"), "utf8").in
   errors.push("callstack: missing upstream copyright notice");
 }
 
+const designEngineering = resolve(skillsRoot, "design-engineering");
+if (readSkill(resolve(designEngineering, "SKILL.md")).metadata.license !== "MIT") {
+  errors.push("design-engineering: expected MIT license metadata");
+}
+for (const [name, holder] of [["emil-kowalski", "Emil Kowalski"], ["jakub-krehel", "Jakub Krehel"]]) {
+  const source = manifest[name];
+  if (source.bundle !== "design-engineering") errors.push(`${name}: expected design-engineering bundle`);
+  const directory = resolve(designEngineering, "references", name);
+  const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
+  for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
+    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+      errors.push(`${name}: missing or incorrect source attribution in ${file}`);
+    }
+  }
+  for (const workflow of source.workflows) {
+    if (!workflow.startsWith(`${name}/`)) errors.push(`${name}: workflow escapes its source directory`);
+  }
+  const indexes = filesUnder(directory).filter((path) => path.endsWith("/index.md"));
+  if (indexes.length !== source.workflows.length) errors.push(`${name}: workflow inventory mismatch`);
+  if (!readFileSync(resolve(designEngineering, `licenses/${name}-LICENSE`), "utf8").includes(`Copyright (c) 2026 ${holder}`)) {
+    errors.push(`${name}: missing upstream copyright notice`);
+  }
+}
+
 const clerk = resolve(skillsRoot, "clerk");
 if (readSkill(resolve(clerk, "SKILL.md")).metadata.license !== "MIT") {
   errors.push("clerk: expected MIT license metadata");

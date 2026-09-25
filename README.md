@@ -8,6 +8,7 @@ Agent skills maintained by Flow Copilot.
 - [`clerk`](skills/clerk/SKILL.md): Add, configure, and operate Clerk authentication, organizations, billing, and webhooks through one progressively disclosed skill.
 - [`cloudflare`](skills/cloudflare/SKILL.md): Choose, build, review, and operate Cloudflare products through one progressively disclosed skill.
 - [`convex`](skills/convex/SKILL.md): Build, review, test, secure, migrate, and operate Convex backends through one progressively disclosed skill.
+- [`design-engineering`](skills/design-engineering/SKILL.md): Design, build, and review polished interfaces with Emil Kowalski's motion skills and Jakub Krehel's interface skills.
 
 - [`expo`](skills/expo/SKILL.md): Build, debug, upgrade, and deploy Expo apps and operate EAS through one progressively disclosed skill.
 
@@ -29,12 +30,14 @@ The `expo` skill tracks all skills in `expo/skills` under `plugins/expo/skills`.
 
 The `react-native` skill combines all skills from `software-mansion-labs/skills` and `callstackincubator/agent-skills`, including nested skills. Each source has its own reference directory and revision, so duplicate names such as `react-native-best-practices` remain separate. More community sources can join this bundle.
 
+The `design-engineering` skill combines all skills from `emilkowalski/skills` and `jakubkrehel/skills`. Each source keeps its own reference directory and revision. The router separates the skills that were user-invoked upstream, so the agent loads them only on an explicit request.
+
 See [`NOTICE.md`](NOTICE.md) for the upstream revision and modification notice.
 See [`DEVELOPMENT.md`](DEVELOPMENT.md) to add another upstream skill source.
 
 ## Updates
 
-Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, or `bun run sync --only react-native` to update both React Native sources together. Then run the validation commands below.
+Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, `bun run sync --only react-native` to update both React Native sources together, or `bun run sync --only design-engineering` to update both design engineering sources. Then run the validation commands below.
 
 The weekly GitHub Action runs the same commands. When upstream content changes, it updates `automation/sync-upstream-skills`. It opens a pull request when the repository has a `SKILLS_SYNC_TOKEN` secret with Contents and Pull requests write access. The Flow Copilot organization currently blocks pull requests from the default `GITHUB_TOKEN`, so the Action otherwise provides a manual pull-request link in its run summary. The Action does not merge the pull request.
 

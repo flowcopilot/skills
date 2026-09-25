@@ -2,9 +2,9 @@
 
 ## Ax skill
 
-The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `4f56e6ef96afbb597c8f469a07b42c80e57968a5`, licensed under Apache License 2.0.
+The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `daa2b38ad435333f5fb7dd392a319bda41a6dbf9`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-09-24. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
+The imported revision is dated 2026-09-25. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
 
 ## Convex skill
 
@@ -41,3 +41,15 @@ Imported from [callstackincubator/agent-skills](https://github.com/callstackincu
 The files under `skills/clerk/` derive from [clerk/skills](https://github.com/clerk/skills) revision `d01c99c0d8f608d6a51bf5a62c79e30d2395248a`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in `skills/clerk/licenses/clerk-plugin.json`.
 
 The imported revision is dated 2026-09-24. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. Evaluation fixtures, starter templates, and plugin metadata are not imported.
+
+## Design Engineering skill
+
+Flow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.
+
+### Emil Kowalski
+
+Imported from [emilkowalski/skills](https://github.com/emilkowalski/skills) revision `d16ebe60d09a5ba2afcb7054ede9d0a10c9f6128`, dated 2026-09-24. The upstream MIT license and copyright notice are retained in `skills/design-engineering/licenses/emil-kowalski-LICENSE`.
+
+### Jakub Krehel
+
+Imported from [jakubkrehel/skills](https://github.com/jakubkrehel/skills) revision `267330e1adfc66a718fb65fa6918c1f06d0a689e`, dated 2026-08-29. The upstream MIT license and copyright notice are retained in `skills/design-engineering/licenses/jakub-krehel-LICENSE`.
