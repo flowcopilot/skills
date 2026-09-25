@@ -42,7 +42,7 @@ The sync command replaces `revision` with the imported commit SHA. It also repla
 Add the new key to the `Manifest` type in `scripts/sync-upstreams.ts`:
 
 ```ts
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "example", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "example", SourceConfig>;
 ```
 
 ### 3. Add a source adapter
@@ -160,6 +160,14 @@ Both sources declare MIT. Callstack's license and copyright notice are copied. S
 To add another community, register a separate manifest entry with `bundle: react-native`, add it to the adapter's source list, and implement its license validation and attribution. Keep paths qualified by source. Update the router's source selection guidance and the checker. Do not merge files based only on an upstream skill name.
 
 Run `bun run sync --only react-native` to update both sources together. The default sync and weekly workflow include this bundle. The `--only` option also accepts the other bundle names.
+
+## Design engineering sources
+
+The `emil-kowalski` and `jakub-krehel` manifest entries both set `"bundle": "design-engineering"`. The adapter shares `readSkillTree` and `writeSkillTree` with React Native: each source tree moves under `references/<source>/`, entry files become `index.md`, and agent UI metadata is excluded. The sync stops if either source adds a nested skill, because the router lists one flat directory per skill.
+
+Skills whose upstream frontmatter sets `disable-model-invocation: true` are listed under an explicit-only heading in the router. The router also states that a former skill name, such as `better-colors`, refers to its `index.md` in the same source directory; Jakub Krehel's `better-interface` and `interface-review` depend on that to find their domain skills.
+
+Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. Run `bun run sync --only design-engineering` to update both sources together.
 
 ## Repository validation
 
