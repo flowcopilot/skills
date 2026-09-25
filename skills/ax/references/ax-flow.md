@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # AxFlow Codegen Rules (@ax-llm/ax)
 
@@ -74,6 +74,12 @@ flow.execute('analyzer', (state) => ({ text: state.processorResult.output }));
 ```
 
 ## Node Definition
+
+For a Typesafe/Jev decision node, use required boolean/class outputs and pass
+its results to a later generative step when prose is needed. Native scoring
+requires an explicit rubric through `typesafe(...).systemOne(...)`. See the
+[ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
+for the TypeScript integration and a two-program hybrid example.
 
 ```typescript
 // String signature (creates AxGen automatically)

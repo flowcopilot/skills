@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision b052c32bab7dd493513260228a36c88294f343f1. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 6dc7604903127485e7e4cb26314651ebd4a4df19. -->
 
 # Durable Objects
 
@@ -14,6 +14,7 @@ Your knowledge of Durable Objects APIs and configuration may be outdated. **Pref
 | API Reference | https://developers.cloudflare.com/durable-objects/api/ |
 | Best Practices | https://developers.cloudflare.com/durable-objects/best-practices/ |
 | Examples | https://developers.cloudflare.com/durable-objects/examples/ |
+| Roles and permissions | https://developers.cloudflare.com/workers/authorization/durable-objects/ |
 
 Fetch the relevant doc page when implementing features.
 
@@ -115,6 +116,10 @@ export default {
 5. **Use RPC methods** - Not fetch() handler (compatibility date >= 2024-04-03)
 6. **Persist first, cache second** - Always write to storage before updating in-memory state
 7. **One alarm per DO** - `setAlarm()` replaces any existing alarm
+
+## Authorization
+
+Durable Objects do not have separate roles or permissions; access follows the Worker that implements them. Retrieve the current [Durable Objects authorization guidance](https://developers.cloudflare.com/workers/authorization/durable-objects/) before granting observability or Data Studio access, and scope the Workers role to the intended Worker or Workers product.
 
 ## Anti-Patterns (NEVER)
 

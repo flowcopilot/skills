@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # Audio I/O Codegen Rules (@ax-llm/ax)
 
@@ -45,6 +45,35 @@ console.log(speech.transcript);
 ```
 
 Providers without the requested batch audio capability throw `AxMediaNotSupportedError`.
+
+OpenAI also offers `gpt-transcribe` (`AxAIOpenAIModel.GPTTranscribe`), billed
+per minute of audio; it accepts `responseFormat: 'json'` or `'text'` only.
+
+### Gemini Batch Audio
+
+Gemini's `speak()` defaults to `gemini-3.8-flash-tts` (`gemini-3.8-flash-lite-tts`
+is the cheaper tier) and `transcribe()` to the dedicated `gemini-3.5-transcribe`
+model. Pick one of Gemini's prebuilt voices, such as `Kore`, `Puck`, or
+`Charon`. Gemini takes no output format, so the returned mime type sets the
+label: 3.8 TTS returns WAV, while earlier TTS models return raw 24 kHz PCM,
+reported as `pcm16` with `sampleRate` and `channels`.
+
+```typescript
+import { ai, AxAIGoogleGeminiModel } from '@ax-llm/ax';
+
+const gemini = ai({ name: 'google-gemini', apiKey: process.env.GOOGLE_APIKEY! });
+
+const speech = await gemini.speak({
+  text: 'Your order has shipped.',
+  model: AxAIGoogleGeminiModel.Gemini38FlashLiteTTS,
+  voice: 'Puck',
+});
+
+const heard = await gemini.transcribe({
+  audio: { data: speech.data, format: speech.format },
+});
+console.log(speech.format, heard.text);
+```
 
 ## Signature Audio Artifacts
 
@@ -207,7 +236,9 @@ console.log(res.results[0]?.content);
 console.log(res.results[0]?.audio?.data);
 ```
 
-Use `axAIOpenAIRealtimeDefaultConfig()` for OpenAI realtime speech-to-speech:
+Use `axAIOpenAIRealtimeDefaultConfig()` for OpenAI realtime speech-to-speech
+(`gpt-realtime-2.1` and `gpt-realtime-2.1-mini` are newer reasoning models on
+the same Realtime endpoint):
 
 - model: `gpt-realtime-2`
 - output enabled
@@ -256,9 +287,12 @@ await openai.chat({
 
 ## Gemini Live Defaults
 
-Use `axAIGoogleGeminiLiveAudioDefaultConfig()` for Gemini native audio:
+Use `axAIGoogleGeminiLiveAudioDefaultConfig()` for Gemini native audio. Gemini
+3.8 Live accepts no thinking settings; for reasoning, use
+`gemini-3.8-live-extended-thinking`, which requires a thinking level (Ax sends
+`medium` unless `thinkingTokenBudget` asks otherwise).
 
-- model: `gemini-2.5-flash-native-audio-preview-12-2025`
+- model: `gemini-3.8-live`
 - output enabled
 - voice: `Kore`
 - output format: `pcm16`
@@ -300,6 +334,8 @@ console.log(res.results[0]?.audio?.data);
 ```
 
 Gemini Live uses a one-turn WebSocket call under `.chat()`. It expects PCM input for native audio turns; use `format: 'pcm16'` or `mimeType: 'audio/pcm;rate=16000'`.
+
+`content` is the transcript of what the model said. Native audio models can also send thought summaries, even without `showThoughts`; those arrive in `thought`. When a model acknowledges the request before it thinks, `.chat()` waits for the answer, and `content` and `audio` hold both utterances.
 
 ## Grok Voice Defaults
 

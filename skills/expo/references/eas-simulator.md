@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision 39708666ce7014def1f8e34f3d8c93e8d3f588bb. -->
+<!-- Modified by Flow Copilot from expo/skills revision efa52f0a9d2176db75992736281c77da1b714fa3. -->
 
 # EAS Simulator
 
@@ -156,7 +156,7 @@ Quick decision — **default to C; A and B are explicit-only:**
 - **A:** only an explicit one-shot **static** screenshot on a Mac.
 - **B:** only when the user names an existing/EAS build or wants a static EAS artifact (CI/sharing) — see the box above for why a static build is the wrong tool for "iterate."
 
-Before starting a Mode C tunnel, read [Tunnel scope and approvals](eas-simulator/run-your-app.md#tunnel-scope-and-approvals) for its data flow, authorization context, and handling approval rejections.
+Before starting a Mode C tunnel or connecting the dev client, read [Tunnel scope and approvals](eas-simulator/run-your-app.md#tunnel-scope-and-approvals). Carry existing authorization for this project's remote development transport through tunnel creation, connection, and live edits; include its source and the concrete data flow in any approval request.
 
 ## Driving the device (agent-device)
 

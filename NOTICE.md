@@ -2,27 +2,27 @@
 
 ## Ax skill
 
-The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `259bccfd8f681969a3d134ea4f5920757f22278f`, licensed under Apache License 2.0.
+The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `4f56e6ef96afbb597c8f469a07b42c80e57968a5`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-09-09. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
+The imported revision is dated 2026-09-24. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
 
 ## Convex skill
 
-The files under `skills/convex/` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision `c41ece22681a50d326e54f30d24148a6d46d0c3c`, licensed under Apache License 2.0.
+The files under `skills/convex/` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision `0aa10576821c6928f6a0f498c087af4ee231536e`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-09-04. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves capability instructions into references, and adjusts links for their new locations.
+The imported revision is dated 2026-09-09. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves capability instructions into references, and adjusts links for their new locations.
 
 ## Cloudflare skill
 
-The files under `skills/cloudflare/` derive from [cloudflare/skills](https://github.com/cloudflare/skills) revision `b052c32bab7dd493513260228a36c88294f343f1`, licensed under Apache License 2.0.
+The files under `skills/cloudflare/` derive from [cloudflare/skills](https://github.com/cloudflare/skills) revision `6dc7604903127485e7e4cb26314651ebd4a4df19`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-09-07. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves specialized skill instructions into references, adjusts links for their new locations, and places bundled scripts under the combined skill.
+The imported revision is dated 2026-09-22. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves specialized skill instructions into references, adjusts links for their new locations, and places bundled scripts under the combined skill.
 
 ## Expo skill
 
-The files under `skills/expo/` derive from [expo/skills](https://github.com/expo/skills) revision `39708666ce7014def1f8e34f3d8c93e8d3f588bb`, licensed under the MIT License, retained in `skills/expo/LICENSE`. The animation reference also retains its upstream copyright notice in `skills/expo/references/expo-animation/LICENSE`.
+The files under `skills/expo/` derive from [expo/skills](https://github.com/expo/skills) revision `efa52f0a9d2176db75992736281c77da1b714fa3`, licensed under the MIT License, retained in `skills/expo/LICENSE`. The animation reference also retains its upstream copyright notice in `skills/expo/references/expo-animation/LICENSE`.
 
-The imported revision is dated 2026-09-15. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. Plugin metadata and hooks are not imported.
+The imported revision is dated 2026-09-24. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. Plugin metadata and hooks are not imported.
 
 ## React Native skill
 

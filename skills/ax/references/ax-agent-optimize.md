@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 259bccfd8f681969a3d134ea4f5920757f22278f. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
 
 # AxAgent Optimize Codegen Rules (@ax-llm/ax)
 
@@ -194,6 +194,7 @@ assistant.applyOptimization(result.optimizedProgram!);
 - `target` defaults to actor optimization.
 - `metric` defaults to the built-in LLM judge.
 - `judgeAI` is optional; if omitted, the agent falls back to its configured judge model or runtime model.
+- GEPA's teacher calls use `teacherAI`, or the judge model when it is omitted. `judgeOptions` only covers the judge calls, so a teacher marked `isExpensive` also needs `teacherOptions: { useExpensiveModel: 'yes' }`.
 - `bootstrap: true` is a good next step for tool-heavy agents when you want GEPA to start from successful traces from the provided tasks.
 - The one thing users still need is realistic task records with clear `criteria`.
 
