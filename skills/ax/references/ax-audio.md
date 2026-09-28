@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision b780a14a3cb94d5ac572db04038399aef655c76c. -->
 
 # Audio I/O Codegen Rules (@ax-llm/ax)
 
@@ -45,6 +45,11 @@ console.log(speech.transcript);
 ```
 
 Providers without the requested batch audio capability throw `AxMediaNotSupportedError`.
+
+OpenAI's `speak()` defaults to `gpt-4o-mini-tts` with the `alloy` voice and `mp3`.
+`format: 'pcm'` (or `'pcm16'`) asks OpenAI for its `pcm` output, 16-bit PCM at
+24 kHz. Mistral's `speak()` defaults to `voxtral-mini-tts-2603` and sends the
+voice as `voice_id`.
 
 OpenAI also offers `gpt-transcribe` (`AxAIOpenAIModel.GPTTranscribe`), billed
 per minute of audio; it accepts `responseFormat: 'json'` or `'text'` only.
@@ -103,6 +108,8 @@ console.log(result.speech.transcript);
 ```
 
 The model emits a text script for `speech`; Ax replaces it with `AxChatAudioOutput` after result selection. If the field already contains an audio artifact with `{ data }` or `{ id }`, Ax leaves it alone.
+
+An audio input given as a string, or as an audio object with a string `transcript` (such as `result.speech` above, passed to the next program), reaches the model as text: the transcript. An audio object without a transcript is sent as an audio part with its `format` (`wav` when it has none) and `data`.
 
 ## Agent Audio Inputs
 

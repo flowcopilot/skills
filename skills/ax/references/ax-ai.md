@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision b780a14a3cb94d5ac572db04038399aef655c76c. -->
 
 # AI Provider Codegen Rules (@ax-llm/ax)
 
@@ -387,6 +387,60 @@ Providers without the requested audio endpoint throw `AxMediaNotSupportedError`.
 - `showThoughts`: include thoughts in output
 - `functionCallMode`: `'auto'` | `'native'` | `'prompt'`
 - `debug`, `logger`, `tracer`, `rateLimiter`, `timeout`
+- `timeout`, `fetch` and `corsProxy` given to one `chat()` or `embed()` call override the service's own
+- `timeout` is in milliseconds and bounds the wait for the response headers: a request whose response has not started in time fails with `AxAIServiceTimeoutError`, and a stream that has started runs on
+
+## Sampling Parameters
+
+Each provider starts from its own defaults: `temperature: 0` for OpenAI Chat,
+Anthropic and Gemini, and `temperature: 0.7` with `topP: 1` for
+`openai-responses`. Model info lists the sampling parameters a model rejects
+(`notSupported`: `temperature`, `topP`, `topK`, `presencePenalty`,
+`frequencyPenalty`):
+
+- A provider default for such a parameter is never sent.
+- An explicit value is sent when the model accepts it for that request, and
+  otherwise dropped with a one-time `console.warn` naming the setting and the
+  model. Explicit values come from the AI's `config`, a model key's
+  `modelConfig`, or the request's `modelConfig`.
+- Models whose info sets `supported.temperatureOne` still take an explicit
+  `temperature: 1`: every OpenAI model below, and the Anthropic models that
+  deprecated sampling.
+- GPT-5.1 to 5.4 take sampling while they don't reason, which is their
+  default. GPT-5.5 and 5.6 take it only with reasoning effort `none`
+  (`thinkingTokenBudget: 'none'`, or `reasoningEffort: 'none'` in the
+  config). gpt-5, gpt-5-mini, gpt-5-nano and the o-series never take it; the
+  o-series still get `maxTokens` and `n`.
+- A profile without model info (`azure-openai`, `openai-compatible`, ...)
+  uses OpenAI's info for an exact o-series model name.
+- Anthropic: Opus 4.7 and later, Opus 5, Fable 5 and Sonnet 5 deprecated
+  sampling, so they take only `temperature: 1` (no `topP` or `topK`). The
+  other Claude models take every value with thinking off; while thinking,
+  only `temperature: 1`, `topP` of 0.95 or above, and no `topK`. They reject
+  `temperature` and `topP` together (`notSupported.temperatureWithTopP`): an
+  explicit `topP` goes alone in place of the default temperature, and an
+  explicit `temperature` wins over it with a warning. The default
+  `temperature: 0` is sent only without thinking, as before. Claude on Vertex
+  keeps that older rule for explicit values too, and warns about a drop.
+- Gemini: the server-managed Flash models ignore `temperature`, `topP` and
+  `topK`; the Gemini API rejects `presencePenalty` and `frequencyPenalty`.
+  Gemini 3 returns one candidate, so `n` above 1 is dropped (AxGen then gets
+  one sample), and Ax raises a temperature below 1 to 1, as Google recommends,
+  with a one-time warning for an explicit value. Vertex keeps its request
+  shape; `presencePenalty` is never sent to Gemini and is warned about.
+
+```typescript
+const llm = ai({ name: 'openai', apiKey, config: { model: 'gpt-5.6-luna' } });
+// GPT-5.6 takes temperature with reasoning off, so this one is sent.
+await gen.forward(llm, values, {
+  thinkingTokenBudget: 'none',
+  modelConfig: { temperature: 0.2 },
+});
+```
+
+A profile without a base URL of its own (`openai-compatible`, `databricks`,
+`amazon-bedrock`, `vertex-ai`, ...) needs `apiURL`: `ai(...)` throws
+`<Name> requires apiURL` without it.
 
 ## Global Runtime Defaults
 
@@ -646,6 +700,14 @@ AI, Ax selects the service hostname from the location automatically:
 Pass the canonical lower-case Vertex location ID. Ax preserves the supplied
 value and does not normalize or validate it.
 
+`gemini-embedding-2` is the exception: Vertex serves it only at `global`
+through `:embedContent`, so Ax sends its embeddings there whatever `region` is
+set. Each request embeds exactly one text (pass several and `embed()` throws,
+because Vertex would fuse them into one vector), and no task type is sent even
+when `embedType` is configured, since Vertex ignores one for this model. Put
+task instructions in the text itself, e.g. `task: search result | query: {content}`. Other embedding models keep the
+regional `:predict` endpoint.
+
 The generated Python, Java, C++, Go, and Rust clients accept the same
 `projectId` / `project_id`, `region`, and optional `endpointId` / `endpoint_id`
 options. In generated clients, `apiKey` / `api_key` is a caller-supplied bearer
@@ -689,6 +751,10 @@ Provider behavior:
 GPT-5.6+ needs a key that is stable per conversation to match reliably; it routes
 the request to the shard the cache lives on. Set `promptCacheKey`, or let it fall
 back to `sessionId`. Keep it under roughly 15 requests/minute per key.
+
+Every OpenAI Responses request sends `prompt_cache_key`, with or without
+caching: the `promptCacheKey`, else the `sessionId`, the call's before the
+service's. Chat Completions sends it only with GPT-5.6+ caching.
 
 ```typescript
 const result = await gen.forward(llm, values, {
@@ -931,7 +997,12 @@ ordinary tool loop. Providers without session support retain that loop.
 Use `const control = runControl()` and pass `{ control }` in forward options.
 Call `control.steer(text)`, `control.setThinkingTokenBudget('high')`, or
 `control.abort()`. `control.onEvent(listener)` observes queued/applied updates,
-run lifecycle, tool activity, and model output activity. Untargeted updates apply
+run lifecycle, tool activity, and model output activity. A run emits `started`,
+then `completed` or `failed` (with its `error`). `control.abort()` emits
+`aborted` at once, and the run then ends as `failed` with the abort error. A
+consumer that stops a `streamingForward` early (for example with `break`) ends
+the run as `aborted` instead.
+Untargeted updates apply
 to the root and future descendants. `{ target: 'root/nodeName' }` restricts an
 update to a flow node and its descendants. Completed nodes are not rerun.
 Controller-attached runs bypass result caching; provider prompt caching remains enabled.
@@ -939,6 +1010,10 @@ Controller-attached runs bypass result caching; provider prompt caching remains 
 HTTP streaming needs no WebSocket dependency. With a configured host
 `options.webSocket`, steering can apply natively during generation; otherwise it
 applies at the next response boundary. Observe the applied event's `timing`.
+An update queued while a request is in flight applies when the next step
+starts. If that request gave the final answer, the run takes one more step to
+apply it, and the answer comes from that step; a steer stays in the
+conversation for the steps after it.
 Reasoning updates use continuation input items, retaining the original prefix.
 Steering that awaits tool input is continued even when its pending notification
 arrives after completion. Duplicate acknowledgements do not apply an update twice.
