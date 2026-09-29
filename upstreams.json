@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "4f56e6ef96afbb597c8f469a07b42c80e57968a5",
+    "revision": "b780a14a3cb94d5ac572db04038399aef655c76c",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -25,7 +25,7 @@
   },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
-    "revision": "6dc7604903127485e7e4cb26314651ebd4a4df19",
+    "revision": "626547c06881a20b3322bdc2ed6e6451b33a4fb6",
     "workflows": [
       "agents-sdk",
       "cloudflare-email-service",

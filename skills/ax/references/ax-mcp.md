@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision b780a14a3cb94d5ac572db04038399aef655c76c. -->
 
 # Native MCP With Ax
 
@@ -254,6 +254,13 @@ if (outcome.kind === 'task') {
   if (task.status === 'working') await docs.cancelTask(task.taskId);
 }
 ```
+
+The Python, Go, Java, C++, and Rust clients have the same calls:
+`call_tool_outcome` (`CallToolOutcome` in Go, `callToolOutcome` in Java), and
+expose handling through `task_handling="expose"` in Python,
+`CallToolWithOptions` in Go, a `taskHandling` call option in Java and C++, or
+`call_tool_with_task_handling` in Rust. There too, a legacy server's
+task-shaped result is a complete result.
 
 Use `subscribeTaskStatus` or `subscribeEvents` for observation. Keep polling
 available because task notifications are optional. Pass Ax abort signals

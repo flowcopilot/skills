@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 4f56e6ef96afbb597c8f469a07b42c80e57968a5. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision b780a14a3cb94d5ac572db04038399aef655c76c. -->
 
 # AxFlow Codegen Rules (@ax-llm/ax)
 
@@ -220,6 +220,7 @@ Planner rules:
 - Independent `.execute()` and `.derive()` steps may parallelize.
 - `.map()`, `.returns()`, `.branch()`, `.while()`, `.feedback()`, and explicit `.parallel()` are barriers.
 - Branch, while, and feedback bodies still use the same planner internally.
+- A parallel group ends as running its steps one after another would: each step's changes merge into the state in step order.
 - Use `autoParallel: false` when you need strict sequential execution.
 
 Disable auto-parallel:
@@ -419,6 +420,28 @@ const log = wf.getChatLog();
 for (const entry of log) {
   console.log(entry.name, entry.model);
 }
+```
+
+## Result Caching
+
+Pass `cachingFunction` in `forward()` options, or set
+`axGlobals.cachingFunction`; the flow's factory options take none. The flow
+stores its returned output under a key of its signature and input values, and
+a stored output comes back without running any node. The flow ignores errors
+from its own cache reads and writes. The same function reaches AxGen nodes
+through the forward options, so each node caches its own output too, and a
+node's read error fails the run as AxGen `forward` does. A run with a
+`control` bypasses the cache. `streamingForward` returns a stored output as
+its single update.
+
+```typescript
+const cache = new Map<string, unknown>();
+const result = await wf.forward(llm, input, {
+  cachingFunction: async (key, value) => {
+    if (value === undefined) return cache.get(key);
+    cache.set(key, value);
+  },
+});
 ```
 
 ## Error Handling
