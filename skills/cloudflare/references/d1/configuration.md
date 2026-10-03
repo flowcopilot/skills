@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # D1 Configuration
 
@@ -6,15 +6,15 @@ Read the task's documentation before adding bindings or running database command
 
 | Task | Current documentation |
 | --- | --- |
-| Create a database and attach a Worker binding | [Getting started](https://developers.cloudflare.com/d1/get-started/) |
-| Configure binding fields and multiple databases | [Wrangler D1 configuration](https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases) |
-| Separate staging and production databases | [D1 environments](https://developers.cloudflare.com/d1/configuration/environments/) |
-| Create, track, and apply schema migrations | [Migrations](https://developers.cloudflare.com/d1/reference/migrations/) |
-| Look up CLI flags for management, execution, and exports | [D1 Wrangler commands](https://developers.cloudflare.com/d1/wrangler-commands/) |
-| Develop against local database state | [Local development](https://developers.cloudflare.com/d1/best-practices/local-development/) |
-| Generate binding types | [Workers TypeScript](https://developers.cloudflare.com/workers/languages/typescript/) |
-| Choose an ORM or query builder, including Drizzle | [D1 community projects](https://developers.cloudflare.com/d1/reference/community-projects/) (follow the integration's current setup guide) |
-| Import or export SQL data | [Import and export data](https://developers.cloudflare.com/d1/best-practices/import-export-data/) |
-| Enable replicas and use them through sessions | [Read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/) |
+| Create a database and attach a Worker binding | [Getting started](https://developers.cloudflare.com/d1/get-started/index.md) |
+| Configure binding fields and multiple databases | [Wrangler D1 configuration](https://developers.cloudflare.com/workers/wrangler/configuration/index.md#d1-databases) |
+| Separate staging and production databases | [D1 environments](https://developers.cloudflare.com/d1/configuration/environments/index.md) |
+| Create, track, and apply schema migrations | [Migrations](https://developers.cloudflare.com/d1/reference/migrations/index.md) |
+| Look up CLI flags for management, execution, and exports | [D1 Wrangler commands](https://developers.cloudflare.com/d1/wrangler-commands/index.md) |
+| Develop against local database state | [Local development](https://developers.cloudflare.com/d1/best-practices/local-development/index.md) |
+| Generate binding types | [Workers TypeScript](https://developers.cloudflare.com/workers/languages/typescript/index.md) |
+| Choose an ORM or query builder, including Drizzle | [D1 community projects](https://developers.cloudflare.com/d1/reference/community-projects/index.md) (follow the integration's current setup guide) |
+| Import or export SQL data | [Import and export data](https://developers.cloudflare.com/d1/best-practices/import-export-data/index.md) |
+| Enable replicas and use them through sessions | [Read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/index.md) |
 
 Local migrations and data do not automatically update a remote database. Test against a separate staging database before a production migration. Naming another binding `DB_REPLICA` does not configure replica routing; follow the replication guide.

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Workers Analytics Engine Reference
 
@@ -91,6 +91,6 @@ ORDER BY total_requests DESC
 
 ## See Also
 
-- [Cloudflare Analytics Engine Docs](https://developers.cloudflare.com/analytics/analytics-engine/)
+- [Cloudflare Analytics Engine Docs](https://developers.cloudflare.com/analytics/analytics-engine/index.md)
 - [GraphQL Analytics API Reference](../graphql-api/) - Query built-in Cloudflare analytics (HTTP, Workers, DNS, Firewall, etc.)
 - [Observability Reference](../observability/) - Workers Logs, Traces, and real-time debugging

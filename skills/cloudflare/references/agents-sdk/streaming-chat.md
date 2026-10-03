@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Streaming Chat with AIChatAgent
 
@@ -8,10 +8,10 @@ Read the relevant documentation before implementing:
 
 | Task | Documentation |
 |------|---------------|
-| Build a chat agent | [Chat agent example](https://developers.cloudflare.com/agents/examples/chat-agent/) — setup, provider, server, and UI |
-| Implement or customize chat | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/) — message format, tools, custom streams, persistence, concurrency, cancellation, and recovery |
+| Build a chat agent | [Chat agent example](https://developers.cloudflare.com/agents/examples/chat-agent/index.md) — setup, provider, server, and UI |
+| Implement or customize chat | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/index.md) — message format, tools, custom streams, persistence, concurrency, cancellation, and recovery |
 | Connect a client | [Client guidance](client-sdk.md) — React, vanilla JS, HTTP, and authentication |
-| Stream non-chat results | [Callable methods](https://developers.cloudflare.com/agents/runtime/lifecycle/callable-methods/) — server and client streaming RPC |
+| Stream non-chat results | [Callable methods](https://developers.cloudflare.com/agents/runtime/lifecycle/callable-methods/index.md) — server and client streaming RPC |
 | Trigger background turns | [Server-driven messages](server-driven-messages.md) |
 | Add approvals | [Human-in-the-loop](human-in-the-loop.md) |
 

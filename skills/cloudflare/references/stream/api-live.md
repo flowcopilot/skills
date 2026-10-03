@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Stream Live Streaming API
 
@@ -6,15 +6,15 @@ Choose the ingest protocol and viewer experience before creating live inputs. Re
 
 | Task | Read |
 |---|---|
-| Create an RTMPS/SRT input and connect an encoder | [Start a live stream](https://developers.cloudflare.com/stream/stream-live/start-stream-live/) |
-| Update inputs, recording, retention, or stream keys | [Manage live inputs](https://developers.cloudflare.com/stream/stream-live/start-stream-live/#manage-live-inputs) |
-| Choose persistent-channel playback versus a particular video | [View by live input ID or video ID](https://developers.cloudflare.com/stream/stream-live/watch-live-stream/#view-by-live-input-id-or-video-id) |
-| Find and replay recorded broadcasts | [Replay recordings](https://developers.cloudflare.com/stream/stream-live/replay-recordings/) |
-| Forward broadcasts to external platforms | [Simulcasting configuration and limits](https://developers.cloudflare.com/stream/stream-live/simulcasting/) |
-| Receive connection and disconnection notifications | [Live webhooks](https://developers.cloudflare.com/stream/stream-live/webhooks/) |
-| Publish and play using WHIP/WHEP | [WebRTC requirements and endpoints](https://developers.cloudflare.com/stream/webrtc-beta/) and [browser integration](https://developers.cloudflare.com/stream/examples/browser-based-webrtc/) |
-| Diagnose encoder, buffering, or latency problems | [Live troubleshooting](https://developers.cloudflare.com/stream/stream-live/troubleshooting/) |
+| Create an RTMPS/SRT input and connect an encoder | [Start a live stream](https://developers.cloudflare.com/stream/stream-live/start-stream-live/index.md) |
+| Update inputs, recording, retention, or stream keys | [Manage live inputs](https://developers.cloudflare.com/stream/stream-live/start-stream-live/index.md#manage-live-inputs) |
+| Choose persistent-channel playback versus a particular video | [View by live input ID or video ID](https://developers.cloudflare.com/stream/stream-live/watch-live-stream/index.md#view-by-live-input-id-or-video-id) |
+| Find and replay recorded broadcasts | [Replay recordings](https://developers.cloudflare.com/stream/stream-live/replay-recordings/index.md) |
+| Forward broadcasts to external platforms | [Simulcasting configuration and limits](https://developers.cloudflare.com/stream/stream-live/simulcasting/index.md) |
+| Receive connection and disconnection notifications | [Live webhooks](https://developers.cloudflare.com/stream/stream-live/webhooks/index.md) |
+| Publish and play using WHIP/WHEP | [WebRTC requirements and endpoints](https://developers.cloudflare.com/stream/webrtc-beta/index.md) and [browser integration](https://developers.cloudflare.com/stream/examples/browser-based-webrtc/index.md) |
+| Diagnose encoder, buffering, or latency problems | [Live troubleshooting](https://developers.cloudflare.com/stream/stream-live/troubleshooting/index.md) |
 
-Keep publishing credentials separate from viewer playback data. Decide whether the application stores a reusable live input, individual recording IDs, or both. Route recording processing events through [video webhooks](https://developers.cloudflare.com/stream/manage-video-library/using-webhooks/); live connection events have their own notification setup.
+Keep publishing credentials separate from viewer playback data. Decide whether the application stores a reusable live input, individual recording IDs, or both. Route recording processing events through [video webhooks](https://developers.cloudflare.com/stream/manage-video-library/using-webhooks/index.md); live connection events have their own notification setup.
 
 See [configuration.md](./configuration.md) for access decisions and [patterns.md](./patterns.md) for application state handling.

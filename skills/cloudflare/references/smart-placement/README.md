@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Workers Smart Placement
 
@@ -134,7 +134,7 @@ wrangler tail your-worker-name --header cf-placement
 
 ## See Also
 
-- [workers](https://developers.cloudflare.com/workers/) - Worker runtime and fetch handlers
+- [workers](https://developers.cloudflare.com/workers/index.md) - Worker runtime and fetch handlers
 - [d1](../d1/) - D1 database that benefits from Smart Placement
-- [durable-objects](https://developers.cloudflare.com/durable-objects/) - Durable Objects with backend logic
+- [durable-objects](https://developers.cloudflare.com/durable-objects/index.md) - Durable Objects with backend logic
 - [bindings](../bindings/) - Service bindings for frontend/backend split

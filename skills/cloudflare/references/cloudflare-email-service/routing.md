@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Receiving & Routing Inbound Email
 
 Handle incoming emails sent to your domain via a Worker's `email()` handler. Forward, reply, reject, or parse emails programmatically.
 
-For full API details, see the [Email Routing docs](https://developers.cloudflare.com/email-service/api/route-emails/email-handler/).
+For full API details, see the [Email Routing docs](https://developers.cloudflare.com/email-service/api/route-emails/email-handler/index.md).
 
 ## Email Handler
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Realtime SFU Reference
 
@@ -63,5 +63,5 @@ Get `CALLS_APP_ID` and `CALLS_APP_SECRET` from dashboard, then see configuration
 - [Orange Meets Demo](https://demo.orange.cloudflare.dev/)
 - [Orange Source](https://github.com/cloudflare/orange)
 - [Calls Examples](https://github.com/cloudflare/calls-examples)
-- [API Reference](https://developers.cloudflare.com/api/resources/calls/)
-- [RealtimeKit Docs](https://developers.cloudflare.com/realtime/realtimekit/)
+- [API Reference](https://developers.cloudflare.com/api/resources/calls/index.md)
+- [RealtimeKit Docs](https://developers.cloudflare.com/realtime/realtimekit/index.md)

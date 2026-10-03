@@ -4,10 +4,10 @@ description: Build, debug, upgrade, and deploy Expo apps and operate Expo Applic
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: expo/skills@efa52f0a9d2176db75992736281c77da1b714fa3
+  upstream: expo/skills@13ad8e05874195633b5c185f6947bb6400e228fc
 ---
 
-<!-- Modified by Flow Copilot from expo/skills revision efa52f0a9d2176db75992736281c77da1b714fa3. -->
+<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
 
 # Expo
 
@@ -27,7 +27,7 @@ Load this first for any Expo/EAS task, then route to the specific skill below.
 
 ## Framework (open source)
 
-Free, open-source Expo SDK and React Native skills. Descriptions are prefixed `Framework (OSS).`, except `expo-skill-feedback`, which accepts feedback across Expo surfaces.
+Free, open-source Expo SDK and React Native skills.
 
 | Skill | Use it for |
 | --- | --- |
@@ -50,7 +50,7 @@ Free, open-source Expo SDK and React Native skills. Descriptions are prefixed `F
 
 ## Services & paid distribution
 
-Skills whose core purpose uses paid Expo Application Services (EAS). Descriptions are prefixed `EAS service (paid).`, and each `SKILL.md` opens with a costs/plan-limits callout.
+Skills whose core purpose uses paid Expo Application Services (EAS). Each `SKILL.md` opens with a costs/plan-limits callout.
 
 | Skill | Use it for | Paid dependency |
 | --- | --- | --- |

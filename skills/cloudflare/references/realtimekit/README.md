@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare RealtimeKit
 
@@ -102,14 +102,14 @@ Need raw WebRTC control?
 
 ## See Also
 
-- [Workers](https://developers.cloudflare.com/workers/) - Backend integration
+- [Workers](https://developers.cloudflare.com/workers/index.md) - Backend integration
 - [D1](../d1/) - Meeting metadata storage
 - [R2](../r2/) - Recording storage
 - [KV](../kv/) - Session management
 
 ## Reference Links
 
-- **Official Docs**: https://developers.cloudflare.com/realtime/realtimekit/
-- **API Reference**: https://developers.cloudflare.com/api/resources/realtime_kit/
+- **Official Docs**: https://developers.cloudflare.com/realtime/realtimekit/index.md
+- **API Reference**: https://developers.cloudflare.com/api/resources/realtime_kit/index.md
 - **Examples**: https://github.com/cloudflare/realtimekit-web-examples
 - **Dashboard**: https://dash.cloudflare.com/?to=/:account/realtime/kit

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision efa52f0a9d2176db75992736281c77da1b714fa3. -->
+<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
 
 Use EAS Build to create development clients for testing native code changes on physical devices. Use this for creating custom Expo Go clients for testing branches of your app.
 

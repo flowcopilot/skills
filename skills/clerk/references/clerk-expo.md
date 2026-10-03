@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d01c99c0d8f608d6a51bf5a62c79e30d2395248a. -->
+<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
 
 > **Requirements:** Requires @clerk/expo v3.4+ (written against v3.6.x, July 2026). Expo SDK 53-56, React Native 0.75+.
 

@@ -4,11 +4,11 @@ description: Design, build, and review polished web and React Native interfaces 
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: emilkowalski/skills@d16ebe60d09a5ba2afcb7054ede9d0a10c9f6128
+  upstream: emilkowalski/skills@e8a175de22ae1e49370fc144c1f3bb9aeedf988d
   upstream_jakub_krehel: "jakubkrehel/skills@267330e1adfc66a718fb65fa6918c1f06d0a689e"
 ---
 
-<!-- Modified by Flow Copilot from emilkowalski/skills revision d16ebe60d09a5ba2afcb7054ede9d0a10c9f6128. -->
+<!-- Modified by Flow Copilot from emilkowalski/skills revision e8a175de22ae1e49370fc144c1f3bb9aeedf988d. -->
 
 # Design Engineering
 
@@ -33,6 +33,7 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 - [animation-vocabulary](references/emil-kowalski/animation-vocabulary/index.md): Reverse-lookup glossary that turns a vague description of a web animation or motion effect into its exact term ("the bouncy thing when a popover opens" → Pop in; "the iOS rubber-band scroll" → Rubber-banding).
 - [apple-design](references/emil-kowalski/apple-design/index.md): Apple's approach to interface design and fluid, physical motion, translated for the web.
 - [ask-sonner](references/emil-kowalski/ask-sonner/index.md): Guide to Sonner, the React toast library — install and wire up the Toaster, pick the right toast() call, promise and loading toasts, updating, dismissing and persisting toasts, styling, theming and icons, positioning and multiple toasters.
+- [break-ui](references/emil-kowalski/break-ui/index.md): Try to break a piece of UI by feeding it worst-case data — long names, unbreakable emails, one-letter names, missing fields, huge counts, zero items, long labels, non-Latin text, emoji, extreme numbers — then render it behind a "Demo data / Worst case" toggle and report everything that broke, with the fix for each.
 - [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md): This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.
 - [find-animation-opportunities](references/emil-kowalski/find-animation-opportunities/index.md): Search a codebase or UI for places that don't animate but should, and reject everything that shouldn't.
 - [improve-animations](references/emil-kowalski/improve-animations/index.md): Survey a codebase's animation and motion code as a senior motion advisor, then produce a prioritized audit and self-contained implementation plans for other agents (or cheaper models) to execute.

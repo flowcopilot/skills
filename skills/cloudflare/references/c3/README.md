@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # C3 (create-cloudflare)
 
@@ -41,7 +41,7 @@ What are you building?
 
 ## Framework Setup
 
-Fetch the [Workers framework guide](https://developers.cloudflare.com/workers/framework-guides/) for the chosen framework before scaffolding or adapting an existing app. For Next.js, follow [Next.js on Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/); use the [Pages static export guide](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/) only when targeting a Next.js static export on Pages.
+Fetch the [Workers framework guide](https://developers.cloudflare.com/workers/framework-guides/index.md) for the chosen framework before scaffolding or adapting an existing app. For Next.js, follow [Next.js on Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/index.md); use the [Pages static export guide](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/index.md) only when targeting a Next.js static export on Pages.
 
 ## Interactive Flow
 

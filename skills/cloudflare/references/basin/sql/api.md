@@ -1,19 +1,19 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
-# R2 SQL API Reference
+# Basin SQL API Reference
 
 Read-only SQL over Iceberg (Apache DataFusion). Query templates only. For the authoritative list of supported syntax, functions, data types, and limitations, pull the SQL reference (`sql-reference/`, `.../aggregate-functions/`, `.../scalar-functions/`, `.../complex-types/`) and `reference/limitations-best-practices/`.
 
 ## Query Endpoint
 
 ```
-POST https://api.sql.cloudflarestorage.com/api/v1/accounts/{ACCOUNT_ID}/r2-sql/query/{BUCKET}
+POST https://api.sql.cloudflarestorage.com/api/v1/accounts/{ACCOUNT_ID}/basin-sql/query/{BUCKET}
 Authorization: Bearer <token>
 Content-Type: application/json
 Body: {"query": "<SQL>"}
 ```
 
-CLI: `npx wrangler r2 sql query "{WAREHOUSE}" "<SQL>"` (with `WRANGLER_R2_SQL_AUTH_TOKEN`).
+CLI: `npx wrangler basin sql query "{WAREHOUSE}" "<SQL>"` (with `WRANGLER_BASIN_SQL_AUTH_TOKEN`).
 
 ## Response Format
 
@@ -116,7 +116,7 @@ SELECT map_keys(meta), map_extract(meta, 'source') FROM ns.t;                   
 
 ## Errors
 
-Failed queries return `{"success": false, "errors": [{"code": ..., "message": ...}]}`. For error codes and troubleshooting, see `https://developers.cloudflare.com/r2-sql/troubleshooting/`.
+Failed queries return `{"success": false, "errors": [{"code": ..., "message": ...}]}`. For error codes and troubleshooting, see `https://developers.cloudflare.com/basin-sql/troubleshooting/index.md`.
 
 ## See Also
 

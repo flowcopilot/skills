@@ -1,6 +1,6 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
-# Cloudflare Pipelines
+# Basin Pipelines
 
 Streaming ingest: receive events over HTTP/Workers/Logpush, transform with SQL, write to R2 as Iceberg tables or Parquet/JSON files.
 
@@ -10,23 +10,23 @@ This reference is a fast-start with verified code and gotchas. For limits, setti
 
 | Topic | URL |
 |-------|-----|
-| Overview / getting started | `https://developers.cloudflare.com/pipelines/getting-started/` |
-| Streams (write, manage, Logpush) | `https://developers.cloudflare.com/pipelines/streams/` |
-| Sinks | `https://developers.cloudflare.com/pipelines/sinks/` |
-| Pipelines & SQL transforms | `https://developers.cloudflare.com/pipelines/pipelines/` |
-| SQL reference (statements, types) | `https://developers.cloudflare.com/pipelines/sql-reference/` |
-| Wrangler commands | `https://developers.cloudflare.com/pipelines/reference/wrangler-commands/` |
-| Terraform | `https://developers.cloudflare.com/pipelines/reference/terraform/` |
-| Limits | `https://developers.cloudflare.com/pipelines/platform/limits/` |
-| Pricing | `https://developers.cloudflare.com/pipelines/platform/pricing/` |
-| Metrics (GraphQL) | `https://developers.cloudflare.com/pipelines/observability/metrics/` |
+| Overview / getting started | `https://developers.cloudflare.com/basin-pipelines/getting-started/index.md` |
+| Streams (write, manage, Logpush) | `https://developers.cloudflare.com/basin-pipelines/streams/index.md` |
+| Sinks | `https://developers.cloudflare.com/basin-pipelines/sinks/index.md` |
+| Basin Pipelines & SQL transforms | `https://developers.cloudflare.com/basin-pipelines/pipelines/index.md` |
+| SQL reference (statements, types) | `https://developers.cloudflare.com/basin-pipelines/sql-reference/index.md` |
+| Wrangler commands | `https://developers.cloudflare.com/basin-pipelines/reference/wrangler-commands/index.md` |
+| Terraform | `https://developers.cloudflare.com/basin-pipelines/reference/terraform/index.md` |
+| Limits | `https://developers.cloudflare.com/basin-pipelines/platform/limits/index.md` |
+| Pricing | `https://developers.cloudflare.com/basin-pipelines/platform/pricing/index.md` |
+| Metrics (GraphQL) | `https://developers.cloudflare.com/basin-pipelines/observability/metrics/index.md` |
 
 ## Three Components
 
 ```
 Sources → Stream → Pipeline (SQL) → Sink → R2
           ↑          ↓                 ↓
-   HTTP / Workers / Transform     Iceberg (Data Catalog)
+   HTTP / Workers / Transform     Iceberg (Basin Catalog)
    Logpush          (row-level)   or Parquet/JSON files
 ```
 
@@ -34,15 +34,15 @@ Sources → Stream → Pipeline (SQL) → Sink → R2
 |-----------|---------|
 | **Stream** | Receives events (HTTP endpoint, Worker binding, or Logpush). Structured (schema-validated) or unstructured. |
 | **Pipeline** | SQL connecting a stream to a sink. Row-level transforms only — no GROUP BY/aggregation. |
-| **Sink** | Writes to R2 — Iceberg via Data Catalog, or raw Parquet/JSON. |
+| **Sink** | Writes to R2 — Iceberg via Basin Catalog, or raw Parquet/JSON. |
 
-**Status:** Open beta (Workers Paid for production). Pricing announced; verify billing status in docs.
+**Status:** The linked docs PR proposes Basin general availability. Verify current availability, limits, and pricing in the live docs before making claims or sizing workloads.
 
 ## Quick Start
 
 ```bash
 # Interactive — creates stream + sink + pipeline, optionally bucket + catalog
-npx wrangler pipelines setup
+npx wrangler basin pipelines setup
 ```
 
 Minimal Worker producer:
@@ -61,7 +61,7 @@ export default {
 
 ```
 Need SQL queries / ACID / time-travel on the data?
-  → R2 Data Catalog (Iceberg)   ✅ R2 SQL, schema evolution   ❌ more setup
+  → Basin Catalog (Iceberg)   ✅ Basin SQL, schema evolution   ❌ more setup
 
 Just archival / external tools (Spark, Athena)?
   → R2 raw files (Parquet/JSON) ✅ simple, partitioned files  ❌ no built-in SQL
@@ -87,6 +87,6 @@ These are non-obvious and prevent most failures — see [gotchas.md](gotchas.md)
 
 ## See Also
 
-- [r2-data-catalog](../r2-data-catalog/) — Iceberg sink destination
-- [r2-sql](../r2-sql/) — query the ingested data
-- [r2](../r2/) · [queues](../queues/) · [workers](https://developers.cloudflare.com/workers/)
+- [Basin Catalog](../catalog/) — Iceberg sink destination
+- [Basin SQL](../sql/) — query the ingested data
+- [r2](https://developers.cloudflare.com/r2/index.md) · [queues](https://developers.cloudflare.com/queues/index.md) · [workers](https://developers.cloudflare.com/workers/index.md)

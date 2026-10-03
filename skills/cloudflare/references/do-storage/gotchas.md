@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # DO Storage Troubleshooting
 
@@ -8,10 +8,10 @@ Fetch the relevant current documentation before implementing or reviewing change
 
 | Task | Documentation |
 |------|---------------|
-| Input/output gates, write coalescing, external I/O races, or storage options | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/) |
-| SQL transactions, synchronous callbacks, parameter types, or numeric precision | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Alarm cancellation and storage deletion | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Slow queries, indexing, caching, or initialization | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/); [Durable Object State](https://developers.cloudflare.com/durable-objects/api/state/) |
-| Storage limits or CPU exhaustion | [Limits](https://developers.cloudflare.com/durable-objects/platform/limits/) |
-| Storage charges and operation accounting | [Pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/) |
-| Overload, storage timeouts, or object resets | [Troubleshooting](https://developers.cloudflare.com/durable-objects/observability/troubleshooting/); [Error handling](https://developers.cloudflare.com/durable-objects/best-practices/error-handling/) |
+| Input/output gates, write coalescing, external I/O races, or storage options | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/index.md); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/index.md) |
+| SQL transactions, synchronous callbacks, parameter types, or numeric precision | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Alarm cancellation and storage deletion | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/index.md); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Slow queries, indexing, caching, or initialization | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/index.md); [Durable Object State](https://developers.cloudflare.com/durable-objects/api/state/index.md) |
+| Storage limits or CPU exhaustion | [Limits](https://developers.cloudflare.com/durable-objects/platform/limits/index.md) |
+| Storage charges and operation accounting | [Pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/index.md) |
+| Overload, storage timeouts, or object resets | [Troubleshooting](https://developers.cloudflare.com/durable-objects/observability/troubleshooting/index.md); [Error handling](https://developers.cloudflare.com/durable-objects/best-practices/error-handling/index.md) |

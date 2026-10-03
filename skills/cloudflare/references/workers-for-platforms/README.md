@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Workers for Platforms
 
@@ -84,8 +84,8 @@ Worker mode?
 | [gotchas.md](./gotchas.md) | Limits, isolation issues, best practices | Debugging, production prep |
 
 ## See Also
-- [workers](https://developers.cloudflare.com/workers/) - Core Workers runtime documentation
-- [durable-objects](https://developers.cloudflare.com/durable-objects/) - Stateful multi-tenant patterns
-- [sandbox](https://developers.cloudflare.com/sandbox/) - Alternative for untrusted code execution
-- [Reference Architecture: Programmable Platforms](https://developers.cloudflare.com/reference-architecture/diagrams/serverless/programmable-platforms/)
-- [Reference Architecture: AI Vibe Coding Platform](https://developers.cloudflare.com/reference-architecture/diagrams/ai/ai-vibe-coding-platform/)
+- [workers](https://developers.cloudflare.com/workers/index.md) - Core Workers runtime documentation
+- [durable-objects](https://developers.cloudflare.com/durable-objects/index.md) - Stateful multi-tenant patterns
+- [sandbox](https://developers.cloudflare.com/sandbox/index.md) - Alternative for untrusted code execution
+- [Reference Architecture: Programmable Platforms](https://developers.cloudflare.com/reference-architecture/diagrams/serverless/programmable-platforms/index.md)
+- [Reference Architecture: AI Vibe Coding Platform](https://developers.cloudflare.com/reference-architecture/diagrams/ai/ai-vibe-coding-platform/index.md)

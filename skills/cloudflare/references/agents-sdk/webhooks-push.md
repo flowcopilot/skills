@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Webhooks & Push Notifications
 
 ## Webhooks
 
-Fetch https://developers.cloudflare.com/agents/communication-channels/webhooks/ for complete documentation.
+Fetch https://developers.cloudflare.com/agents/communication-channels/webhooks/index.md for complete documentation.
 
 Route external webhooks to agent instances via `onRequest`:
 
@@ -42,7 +42,7 @@ export class MyAgent extends Agent<Env, State> {
 
 ## Push Notifications
 
-Fetch https://developers.cloudflare.com/agents/communication-channels/webhooks/push-notifications/ for complete documentation.
+Fetch https://developers.cloudflare.com/agents/communication-channels/webhooks/push-notifications/index.md for complete documentation.
 
 Web Push via VAPID from agents. Store subscriptions in agent state, send via `web-push`.
 

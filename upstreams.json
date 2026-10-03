@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "b780a14a3cb94d5ac572db04038399aef655c76c",
+    "revision": "46a1ced876ffc1e17257c8dd8167f11ca45fdde3",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -25,13 +25,15 @@
   },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
-    "revision": "626547c06881a20b3322bdc2ed6e6451b33a4fb6",
+    "revision": "41e0d19858946d18af9ee2c2feebbe2e11d829ff",
     "workflows": [
       "agents-sdk",
+      "basin",
       "cloudflare-email-service",
       "cloudflare-one",
       "cloudflare-one-migrations",
       "durable-objects",
+      "k2",
       "nextjs-on-cloudflare",
       "sandbox-migrate-to-next",
       "sandbox-next",
@@ -44,7 +46,7 @@
   },
   "convex": {
     "repository": "https://github.com/get-convex/agent-skills.git",
-    "revision": "0aa10576821c6928f6a0f498c087af4ee231536e",
+    "revision": "2cfe645c87f971242cfc8ef3eb53662cbec26a53",
     "workflows": [
       "convex-add",
       "convex-advisor",
@@ -82,7 +84,7 @@
   },
   "expo": {
     "repository": "https://github.com/expo/skills.git",
-    "revision": "efa52f0a9d2176db75992736281c77da1b714fa3",
+    "revision": "13ad8e05874195633b5c185f6947bb6400e228fc",
     "workflows": [
       "eas-app-stores",
       "eas-hosting",
@@ -160,7 +162,7 @@
   },
   "clerk": {
     "repository": "https://github.com/clerk/skills.git",
-    "revision": "d01c99c0d8f608d6a51bf5a62c79e30d2395248a",
+    "revision": "cc508f98dfca1ada6b420d2910e6aa150013e80c",
     "workflows": [
       "clerk-backend-api",
       "clerk-billing",
@@ -177,13 +179,14 @@
   },
   "emil-kowalski": {
     "repository": "https://github.com/emilkowalski/skills.git",
-    "revision": "d16ebe60d09a5ba2afcb7054ede9d0a10c9f6128",
+    "revision": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
     "workflows": [
       "emil-kowalski/animate-expo/index",
       "emil-kowalski/animate/index",
       "emil-kowalski/animation-vocabulary/index",
       "emil-kowalski/apple-design/index",
       "emil-kowalski/ask-sonner/index",
+      "emil-kowalski/break-ui/index",
       "emil-kowalski/emil-design-eng/index",
       "emil-kowalski/find-animation-opportunities/index",
       "emil-kowalski/improve-animations/index",

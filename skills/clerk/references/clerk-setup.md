@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d01c99c0d8f608d6a51bf5a62c79e30d2395248a. -->
+<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
 
 > **Requirements:** Requires Node.js 20.9.0 or later for current Clerk SDKs. The Clerk CLI can provision temporary development keys on supported frameworks without a Clerk account.
 
@@ -34,7 +34,7 @@ See the [migration guide](https://clerk.com/docs/guides/development/migrating/ov
 
 If the project already uses Clerk, skip `init` in Steps 1a and 1b: a signed-out agent run could create another application and replace the project's Clerk keys. If Clerk already works and the user asked for setup, report that no setup is needed. If the user reports missing keys, restore them through the existing-application branch below. If inspection finds missing provider, middleware, or auth routes, add only those pieces from the matching quickstart in Step 2. Never create a replacement application.
 
-Inspect its Clerk package versions before changing anything and use the [Clerk router](../SKILL.md)'s version table to identify its SDK generation. Preserve that generation unless the user asks to upgrade it, and apply these differences in every step below for Core 2 projects:
+Inspect its Clerk package versions before changing anything and use the version table in the [Clerk router](../SKILL.md) to identify its SDK generation. Preserve that generation unless the user asks to upgrade it, and apply these differences in every step below for Core 2 projects:
 
 - React and Expo use `@clerk/clerk-react` and `@clerk/clerk-expo` instead of `@clerk/react` and `@clerk/expo`.
 - Control components are `<SignedIn>` and `<SignedOut>` instead of `<Show>`.
@@ -156,6 +156,8 @@ npx -y clerk@latest doctor
 ```
 
 Then start the app, confirm the auth controls render, and fix anything the CLI reports.
+
+Bot protection can block sign-ups in browsers you automate. If you test a new accountless app in one, run `npx -y clerk@latest users create --email <unique>+clerk_test@example.com --password <random-16-char-alphanumeric> --yes`, then sign in. If asked for a verification code, enter 424242. Tell the user you created this test user. For an existing app, ask the user before creating users. To test sign-up, use [`@clerk/testing`](https://clerk.com/docs/guides/development/testing/playwright/overview.md).
 
 ## Step 5: If using shadcn/ui
 

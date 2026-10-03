@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare TURN Service
 
@@ -78,7 +78,7 @@ Cloudflare TURN (Traversal Using Relays around NAT) Service is a managed relay s
 
 ## Additional Resources
 
-- [Cloudflare Calls Documentation](https://developers.cloudflare.com/calls/)
-- [Cloudflare TURN Service Docs](https://developers.cloudflare.com/realtime/turn/)
-- [Cloudflare API Reference](https://developers.cloudflare.com/api/resources/calls/subresources/turn/)
+- [Cloudflare Calls Documentation](https://developers.cloudflare.com/realtime/index.md)
+- [Cloudflare TURN Service Docs](https://developers.cloudflare.com/realtime/turn/index.md)
+- [Cloudflare API Reference](https://developers.cloudflare.com/api/resources/calls/subresources/turn/index.md)
 - [Orange Meets (Open Source Example)](https://github.com/cloudflare/orange)

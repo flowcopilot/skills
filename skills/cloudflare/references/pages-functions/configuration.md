@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Pages Functions Configuration
 
@@ -6,11 +6,11 @@ Read Pages-specific configuration before reusing settings from a Worker project.
 
 | Task | Documentation |
 | --- | --- |
-| Manage Wrangler settings and environment overrides | [Functions configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/) |
-| Configure supported bindings, variables, and secrets | [Bindings](https://developers.cloudflare.com/pages/functions/bindings/) |
-| Generate and configure runtime and environment types | [TypeScript](https://developers.cloudflare.com/pages/functions/typescript/) |
-| Run assets and Functions locally | [Local development](https://developers.cloudflare.com/pages/functions/local-development/) |
-| Set Function invocation routes | [Routing](https://developers.cloudflare.com/pages/functions/routing/) |
-| Evaluate and enable placement | [Smart Placement](https://developers.cloudflare.com/pages/functions/smart-placement/) |
+| Manage Wrangler settings and environment overrides | [Functions configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/index.md) |
+| Configure supported bindings, variables, and secrets | [Bindings](https://developers.cloudflare.com/pages/functions/bindings/index.md) |
+| Generate and configure runtime and environment types | [TypeScript](https://developers.cloudflare.com/pages/functions/typescript/index.md) |
+| Run assets and Functions locally | [Local development](https://developers.cloudflare.com/pages/functions/local-development/index.md) |
+| Set Function invocation routes | [Routing](https://developers.cloudflare.com/pages/functions/routing/index.md) |
+| Evaluate and enable placement | [Smart Placement](https://developers.cloudflare.com/pages/functions/smart-placement/index.md) |
 
 Identify the target deployment environment and which configuration source controls it. Verify Pages support for each binding and the documented local-development behavior before accessing remote resources. See [Pages configuration](../pages/configuration.md) for build output, headers, and redirects.

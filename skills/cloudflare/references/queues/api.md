@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Queues API Reference
 
@@ -6,10 +6,10 @@ Fetch the current API documentation for the operation being implemented; do not 
 
 | Task | Documentation |
 |------|---------------|
-| Send individual messages or batches; choose encoding; implement a typed Worker queue handler; dispatch by queue name | [JavaScript APIs](https://developers.cloudflare.com/queues/configuration/javascript-apis/) |
-| Understand automatic acknowledgement, explicit per-message and batch actions, precedence, delivery failures, delays, and backoff | [Batching, retries, and delays](https://developers.cloudflare.com/queues/configuration/batching-retries/) |
-| Pull over HTTP and acknowledge or retry using leases | [Pull consumers](https://developers.cloudflare.com/queues/configuration/pull-consumers/) |
-| Publish from outside Workers | [Publish to a Queue via HTTP](https://developers.cloudflare.com/queues/examples/publish-to-a-queue-via-http/) |
+| Send individual messages or batches; choose encoding; implement a typed Worker queue handler; dispatch by queue name | [JavaScript APIs](https://developers.cloudflare.com/queues/configuration/javascript-apis/index.md) |
+| Understand automatic acknowledgement, explicit per-message and batch actions, precedence, delivery failures, delays, and backoff | [Batching, retries, and delays](https://developers.cloudflare.com/queues/configuration/batching-retries/index.md) |
+| Pull over HTTP and acknowledge or retry using leases | [Pull consumers](https://developers.cloudflare.com/queues/configuration/pull-consumers/index.md) |
+| Publish from outside Workers | [Publish to a Queue via HTTP](https://developers.cloudflare.com/queues/examples/publish-to-a-queue-via-http/index.md) |
 
 Acknowledge only after the intended work succeeds. For independently processed messages, use per-message outcomes to avoid replaying successful work when another message fails. If catching an error and continuing, explicitly request a retry for work that still needs processing; a successful handler return can acknowledge messages automatically. Fetch the linked acknowledgement rules before mixing message-level and batch-level actions.
 

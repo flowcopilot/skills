@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare R2 Object Storage
 
@@ -6,8 +6,8 @@ Use R2 for objects such as uploads, media, backups, and static assets. Fetch the
 
 ## Choose an access path
 
-- Use a Workers binding for object access inside a Worker: [Workers API setup](https://developers.cloudflare.com/r2/get-started/workers-api/).
-- Use the S3-compatible API for existing S3 clients or direct client access through presigned URLs: [S3 setup](https://developers.cloudflare.com/r2/get-started/s3/). Check supported operations rather than assuming full S3 parity.
+- Use a Workers binding for object access inside a Worker: [Workers API setup](https://developers.cloudflare.com/r2/get-started/workers-api/index.md).
+- Use the S3-compatible API for existing S3 clients or direct client access through presigned URLs: [S3 setup](https://developers.cloudflare.com/r2/get-started/s3/index.md). Check supported operations rather than assuming full S3 parity.
 - Decide whether objects need application authorization, temporary access, or public delivery before exposing the bucket. See [patterns.md](./patterns.md).
 
 ## Find the task
@@ -19,10 +19,10 @@ Use R2 for objects such as uploads, media, backups, and static assets. Fetch the
 | Uploads, streaming, caching, public delivery, event processing | [patterns.md](./patterns.md) |
 | Pagination, conditional responses, failed uploads, limits | [gotchas.md](./gotchas.md) |
 
-For other topics, discover pages through the [R2 documentation index](https://developers.cloudflare.com/r2/llms.txt). Check [pricing](https://developers.cloudflare.com/r2/pricing/) before estimating costs.
+For other topics, discover pages through the [R2 documentation index](https://developers.cloudflare.com/r2/llms.txt). Check [pricing](https://developers.cloudflare.com/r2/pricing/index.md) before estimating costs.
 
 ## See also
 
-- [Workers](https://developers.cloudflare.com/workers/) for request handling.
+- [Workers](https://developers.cloudflare.com/workers/index.md) for request handling.
 - [KV](../kv/) or [D1](../d1/) for application metadata associated with objects.
 - [Queues](../queues/) for asynchronous processing of object events.

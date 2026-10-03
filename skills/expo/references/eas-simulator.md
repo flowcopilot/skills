@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision efa52f0a9d2176db75992736281c77da1b714fa3. -->
+<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
 
 # EAS Simulator
 
@@ -181,6 +181,12 @@ If a controller fails to download a recording, retrieve it from [EAS session art
 
 For the full verb set and the `argent` controller alternative, see [eas-simulator/controllers.md](eas-simulator/controllers.md).
 
+## When the app crashes: device logs and crash reports (iOS)
+
+When the app crashes or closes on launch, read the iOS session's crash reports and device log before guessing from screenshots. Read them from the preview API URL in `simulator:get --json`. That URL carries the session token, so never print it.
+
+**Hold the device log before you reproduce the crash.** Without the hold, the crash gets a report but an empty log tail. Commands, fields, and fallbacks are in [eas-simulator/logs-and-crashes.md](eas-simulator/logs-and-crashes.md).
+
 ## Operating principles
 
 The non-obvious mental model worth internalizing. Specific error→fix lookups (hung verbs, `tap`→`press`, `--platform`, `--json`, `pod install` locale, orphaned sessions, boot variability) live in [eas-simulator/troubleshooting.md](eas-simulator/troubleshooting.md).
@@ -211,6 +217,7 @@ printf '# managed by eas-cli\n' > .env.eas-simulator   # clear the stale session
 
 - [eas-simulator/run-your-app.md](eas-simulator/run-your-app.md) — full command sequences for modes A, B, and C (read before running a mode).
 - [eas-simulator/controllers.md](eas-simulator/controllers.md) — agent-device verb reference and the `argent` alternative.
+- [eas-simulator/logs-and-crashes.md](eas-simulator/logs-and-crashes.md) — device logs and crash reports from an iOS session (read when the app crashes or misbehaves).
 - [eas-simulator/troubleshooting.md](eas-simulator/troubleshooting.md) — concrete errors and fixes.
 
 Source of truth: Expo docs and the `eas` / `agent-device` CLIs (`npx --yes eas-cli@latest simulator:* --help`, `agent-device --help`). This skill teaches how to apply them; it doesn't replace them.

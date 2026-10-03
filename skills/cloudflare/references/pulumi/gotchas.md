@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Troubleshooting & Best Practices
 
@@ -176,8 +176,8 @@ const deployment = new cloudflare.WorkersDeployment("prod", {
 - **Pulumi Registry:** https://www.pulumi.com/registry/packages/cloudflare/
 - **API Docs:** https://www.pulumi.com/registry/packages/cloudflare/api-docs/
 - **GitHub:** https://github.com/pulumi/pulumi-cloudflare
-- **Cloudflare Docs:** https://developers.cloudflare.com/
-- **Workers Docs:** https://developers.cloudflare.com/workers/
+- **Cloudflare Docs:** https://developers.cloudflare.com/llms.txt
+- **Workers Docs:** https://developers.cloudflare.com/workers/index.md
 
 ---
 See: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)

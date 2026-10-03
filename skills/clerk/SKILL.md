@@ -4,16 +4,16 @@ description: Add, configure, and operate Clerk authentication. Use when a projec
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: clerk/skills@d01c99c0d8f608d6a51bf5a62c79e30d2395248a
+  upstream: clerk/skills@cc508f98dfca1ada6b420d2910e6aa150013e80c
 ---
 
-<!-- Modified by Flow Copilot from clerk/skills revision d01c99c0d8f608d6a51bf5a62c79e30d2395248a. -->
+<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
 
 # Clerk
 
 Detect the installed Clerk SDK version first, then read only the references that match the task. A former `clerk-*` skill name now refers to its file below. Do not expect separate Clerk skills to be installed. Script paths in references are relative to this skill directory.
 
-This bundle imports a subset of Clerk's skills. Not bundled: `clerk-nuxt-patterns`, `clerk-nextjs-patterns`, `clerk-chrome-extension-patterns`, `clerk-react-router-patterns`, `clerk-astro-patterns`, `clerk-vue-patterns`, `clerk-swift`, `clerk-android`. When a reference points to one of these, use the current Clerk documentation for that framework instead.
+This bundle imports a subset of Clerk's skills. Not bundled: `clerk-astro-patterns`, `clerk-nuxt-patterns`, `clerk-nextjs-patterns`, `clerk-react-router-patterns`, `clerk-vue-patterns`, `clerk-chrome-extension-patterns`, `clerk-swift`, `clerk-android`. When a reference points to one of these, use the current Clerk documentation for that framework instead.
 
 ## Version Detection
 

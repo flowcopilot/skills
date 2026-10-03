@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # R2 API Reference
 
@@ -6,13 +6,13 @@ Fetch the relevant page before writing code. Use the Workers API for bucket bind
 
 | Task | Current documentation |
 |------|-----------------------|
-| Read, write, inspect, delete, or list objects; metadata, checksums, ranges, and return types | [Workers API reference](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) |
-| Implement a Worker that serves or writes objects | [Use R2 from Workers](https://developers.cloudflare.com/r2/api/workers/workers-api-usage/) |
-| Create, resume, complete, or abort multipart uploads | [Multipart Worker and client example](https://developers.cloudflare.com/r2/api/workers/workers-multipart-usage/) |
-| Check supported S3 operations and headers | [S3 compatibility](https://developers.cloudflare.com/r2/api/s3/api/) |
-| Configure an S3 JavaScript client | [AWS SDK for JavaScript v3](https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/) |
-| Sign temporary upload or download access | [Presigned URLs](https://developers.cloudflare.com/r2/api/s3/presigned-urls/) |
-| Encrypt with customer-provided keys | [SSE-C usage](https://developers.cloudflare.com/r2/examples/ssec/) |
-| Manage buckets and objects from the command line | [Wrangler R2 commands](https://developers.cloudflare.com/r2/reference/wrangler-commands/) |
+| Read, write, inspect, delete, or list objects; metadata, checksums, ranges, and return types | [Workers API reference](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/index.md) |
+| Implement a Worker that serves or writes objects | [Use R2 from Workers](https://developers.cloudflare.com/r2/api/workers/workers-api-usage/index.md) |
+| Create, resume, complete, or abort multipart uploads | [Multipart Worker and client example](https://developers.cloudflare.com/r2/api/workers/workers-multipart-usage/index.md) |
+| Check supported S3 operations and headers | [S3 compatibility](https://developers.cloudflare.com/r2/api/s3/api/index.md) |
+| Configure an S3 JavaScript client | [AWS SDK for JavaScript v3](https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/index.md) |
+| Sign temporary upload or download access | [Presigned URLs](https://developers.cloudflare.com/r2/api/s3/presigned-urls/index.md) |
+| Encrypt with customer-provided keys | [SSE-C usage](https://developers.cloudflare.com/r2/examples/ssec/index.md) |
+| Manage buckets and objects from the command line | [Wrangler R2 commands](https://developers.cloudflare.com/r2/reference/wrangler-commands/index.md) |
 
-Use generated project types rather than maintaining local copies of R2 interfaces; see [Workers TypeScript guidance](https://developers.cloudflare.com/workers/languages/typescript/). For pagination and conditional response handling, read [gotchas.md](./gotchas.md) alongside the API reference.
+Use generated project types rather than maintaining local copies of R2 interfaces; see [Workers TypeScript guidance](https://developers.cloudflare.com/workers/languages/typescript/index.md). For pagination and conditional response handling, read [gotchas.md](./gotchas.md) alongside the API reference.
