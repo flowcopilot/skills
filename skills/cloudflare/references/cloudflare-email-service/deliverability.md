@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Email Deliverability & Best Practices
 
-For full details, see the [deliverability docs](https://developers.cloudflare.com/email-service/concepts/deliverability/) and [email authentication docs](https://developers.cloudflare.com/email-service/concepts/email-authentication/). All the monitoring endpoints below can be called via the [REST API](rest-api.md), [Wrangler CLI, or the Cloudflare MCP server](cli-and-mcp.md).
+For full details, see the [deliverability docs](https://developers.cloudflare.com/email-service/concepts/deliverability/index.md) and [email authentication docs](https://developers.cloudflare.com/email-service/concepts/email-authentication/index.md). All the monitoring endpoints below can be called via the [REST API](rest-api.md), [Wrangler CLI, or the Cloudflare MCP server](cli-and-mcp.md).
 
 ## What Cloudflare Handles
 
@@ -27,7 +27,7 @@ Consider adding a **DMARC** record if you don't have one: `v=DMARC1; p=quarantin
 
 **Account list** (your account) — spam complaints from recipients. Cloudflare integrates with Postmasters to auto-suppress. You can manually add/remove addresses in the Dashboard.
 
-See the [suppressions docs](https://developers.cloudflare.com/email-service/concepts/suppressions/) for details.
+See the [suppressions docs](https://developers.cloudflare.com/email-service/concepts/suppressions/index.md) for details.
 
 ## Your Responsibilities
 
@@ -146,7 +146,7 @@ Zone-level suppressions are also available at `/zones/{zone_id}/email/sending/su
 
 ### GraphQL Analytics API
 
-Email Service exposes two zone-level datasets via the [GraphQL Analytics API](https://developers.cloudflare.com/analytics/graphql-api/). You can explore the schema interactively at [graphql.cloudflare.com/explorer](https://graphql.cloudflare.com/explorer). Metrics are retained for 31 days.
+Email Service exposes two zone-level datasets via the [GraphQL Analytics API](https://developers.cloudflare.com/analytics/graphql-api/index.md). You can explore the schema interactively at [graphql.cloudflare.com/explorer](https://graphql.cloudflare.com/explorer). Metrics are retained for 31 days.
 
 | Dataset | Description |
 |---------|-------------|

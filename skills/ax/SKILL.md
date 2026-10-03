@@ -4,11 +4,11 @@ description: Build, review, debug, and optimize TypeScript LLM applications with
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: ax-llm/ax@b780a14a3cb94d5ac572db04038399aef655c76c
-  upstream_version: "24.0.24"
+  upstream: ax-llm/ax@46a1ced876ffc1e17257c8dd8167f11ca45fdde3
+  upstream_version: "25.0.0"
 ---
 
-<!-- Modified by Flow Copilot from ax-llm/ax revision b780a14a3cb94d5ac572db04038399aef655c76c. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
 
 # Ax
 

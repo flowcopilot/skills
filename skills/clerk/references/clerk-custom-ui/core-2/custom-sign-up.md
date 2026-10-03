@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d01c99c0d8f608d6a51bf5a62c79e30d2395248a. -->
+<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
 
 # Custom Sign-Up Flow (Core 2)
 
@@ -189,4 +189,4 @@ export default function SignUpPage() {
 ## Docs
 
 - [Custom sign-up flow](https://clerk.com/docs/custom-flows/overview)
-- [useSignUp() reference](https://clerk.com/docs/references/react/use-sign-up)
+- [useSignUp() reference](https://clerk.com/docs/reference/hooks/legacy/use-sign-up)

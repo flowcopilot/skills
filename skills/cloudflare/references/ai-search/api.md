@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # AI Search API Routes
 
@@ -6,10 +6,10 @@ Choose documentation that matches the integration you are working on. Fetch the 
 
 | Task | Documentation |
 |------|---------------|
-| New Worker integration: bindings, search, chat completions, and streaming | [Search Workers binding](https://developers.cloudflare.com/ai-search/api/search/workers-binding/) |
-| Create, list, configure, and inspect instances | [Instances Workers binding](https://developers.cloudflare.com/ai-search/api/instances/workers-binding/) |
-| Query over HTTP and configure request authentication | [Search REST API](https://developers.cloudflare.com/ai-search/api/search/rest-api/) |
-| Maintain an existing `env.AI.autorag()` integration | [Legacy Workers binding](https://developers.cloudflare.com/ai-search/api/migration/workers-binding-legacy/) |
-| Upgrade a legacy binding, including responses, streaming, and filters | [Workers binding migration](https://developers.cloudflare.com/ai-search/api/migration/workers-binding/) |
+| New Worker integration: bindings, search, chat completions, and streaming | [Search Workers binding](https://developers.cloudflare.com/ai-search/api/search/workers-binding/index.md) |
+| Create, list, configure, and inspect instances | [Instances Workers binding](https://developers.cloudflare.com/ai-search/api/instances/workers-binding/index.md) |
+| Query over HTTP and configure request authentication | [Search REST API](https://developers.cloudflare.com/ai-search/api/search/rest-api/index.md) |
+| Maintain an existing `env.AI.autorag()` integration | [Legacy Workers binding](https://developers.cloudflare.com/ai-search/api/migration/workers-binding-legacy/index.md) |
+| Upgrade a legacy binding, including responses, streaming, and filters | [Workers binding migration](https://developers.cloudflare.com/ai-search/api/migration/workers-binding/index.md) |
 
 The legacy binding remains supported; use current bindings for new integrations. Keep legacy request and response handling together until deliberately migrating them.

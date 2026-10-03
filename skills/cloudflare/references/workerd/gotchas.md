@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Workerd Gotchas
 
@@ -114,7 +114,7 @@ bindings = [(name = "API", service = (external = (address = "api.com:443", http 
 
 **Problem:** Breaking changes after compat date update
 **Cause:** New flags enabled between dates
-**Solution:** Review [compat dates docs](https://developers.cloudflare.com/workers/configuration/compatibility-dates/), test locally first
+**Solution:** Review [compat dates docs](https://developers.cloudflare.com/workers/configuration/compatibility-dates/index.md), test locally first
 
 **Problem:** "Compatibility date not supported"
 **Cause:** Workerd version older than compat date

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Queues
 
@@ -12,7 +12,7 @@ Fetch the relevant documentation below before implementing. Treat current Cloudf
 - Use an HTTP pull consumer when processing runs in another environment; plan for polling, visibility timeouts, and acknowledgement leases.
 - Choose a message encoding the consumer can decode. Check serialization and compatibility-date behavior before sending existing application objects.
 
-See [How Queues works](https://developers.cloudflare.com/queues/reference/how-queues-works/) and [delivery guarantees](https://developers.cloudflare.com/queues/reference/delivery-guarantees/) before choosing ordering or deduplication strategies.
+See [How Queues works](https://developers.cloudflare.com/queues/reference/how-queues-works/index.md) and [delivery guarantees](https://developers.cloudflare.com/queues/reference/delivery-guarantees/index.md) before choosing ordering or deduplication strategies.
 
 ## Read by task
 
@@ -23,4 +23,4 @@ See [How Queues works](https://developers.cloudflare.com/queues/reference/how-qu
 | Buffer APIs, defer jobs, or integrate with storage and orchestration | [patterns.md](./patterns.md) |
 | Diagnose delivery failures, duplicates, or capacity issues | [gotchas.md](./gotchas.md) |
 
-For a first application, fetch [Getting started](https://developers.cloudflare.com/queues/get-started/). Retrieve [limits](https://developers.cloudflare.com/queues/platform/limits/) and [pricing](https://developers.cloudflare.com/queues/platform/pricing/) before sizing throughput, retention, or cost; plan-specific values are not maintained here.
+For a first application, fetch [Getting started](https://developers.cloudflare.com/queues/get-started/index.md). Retrieve [limits](https://developers.cloudflare.com/queues/platform/limits/index.md) and [pricing](https://developers.cloudflare.com/queues/platform/pricing/index.md) before sizing throughput, retention, or cost; plan-specific values are not maintained here.

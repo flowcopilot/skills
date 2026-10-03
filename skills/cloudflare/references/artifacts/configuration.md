@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Artifacts Configuration
 
@@ -69,7 +69,7 @@ Recommended handling:
 - Prefer short-lived tokens for handoff between systems
 - Revoke tokens that are no longer needed
 
-Verify the current token behavior and auth guidance in `https://developers.cloudflare.com/artifacts/` before building long-lived automation.
+Verify the current token behavior and auth guidance in `https://developers.cloudflare.com/artifacts/index.md` before building long-lived automation.
 
 ## Git Consumers
 

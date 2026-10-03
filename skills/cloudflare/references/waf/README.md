@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare WAF
 
@@ -6,12 +6,12 @@ Use this reference for managed protection, custom request policies, rate limitin
 
 | Task | Start here |
 |------|------------|
-| Choose and enable WAF protections | [Get started](https://developers.cloudflare.com/waf/get-started/) |
-| Deploy managed protection | [Managed rules deployment](https://developers.cloudflare.com/waf/managed-rules/deploy-api/) |
-| Match application-specific requests | [Custom rules](https://developers.cloudflare.com/waf/custom-rules/create-api/) |
-| Limit request volume | [Rate limiting](https://developers.cloudflare.com/waf/rate-limiting-rules/create-api/) |
-| Understand score-based detection | [Attack score](https://developers.cloudflare.com/waf/detections/attack-score/) |
-| Diagnose blocked or unmitigated requests | [Managed rules troubleshooting](https://developers.cloudflare.com/waf/managed-rules/troubleshooting/) |
+| Choose and enable WAF protections | [Get started](https://developers.cloudflare.com/waf/get-started/index.md) |
+| Deploy managed protection | [Managed rules deployment](https://developers.cloudflare.com/waf/managed-rules/deploy-api/index.md) |
+| Match application-specific requests | [Custom rules](https://developers.cloudflare.com/waf/custom-rules/create-api/index.md) |
+| Limit request volume | [Rate limiting](https://developers.cloudflare.com/waf/rate-limiting-rules/create-api/index.md) |
+| Understand score-based detection | [Attack score](https://developers.cloudflare.com/waf/detections/attack-score/index.md) |
+| Diagnose blocked or unmitigated requests | [Managed rules troubleshooting](https://developers.cloudflare.com/waf/managed-rules/troubleshooting/index.md) |
 
 Identify the target account or zone and inspect existing rules before planning a change. Keep the requested traffic scope explicit, especially for exceptions and account-wide deployments.
 

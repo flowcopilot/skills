@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
-# Pipelines Gotchas
+# Basin Pipelines Gotchas
 
-Non-obvious failure modes (not well covered by docs). For current limits and error semantics, pull `https://developers.cloudflare.com/pipelines/platform/limits/`.
+Non-obvious failure modes (not well covered by docs). For current limits and error semantics, pull `https://developers.cloudflare.com/basin-pipelines/platform/limits/index.md`.
 
 ## Events accepted but never appear (most common)
 
@@ -31,9 +31,9 @@ curl -X DELETE "$BASE_URL/streams/{id}"   -H "Authorization: Bearer $API_TOKEN"
 
 ## REST API field names ≠ CLI flags
 
-`r2_data_catalog` vs `--type r2-data-catalog`, `table_name` vs `--table`, `token` vs `--catalog-token`, and `format` is required in REST but implied in CLI. See [configuration.md](configuration.md#option-c-rest-api-programmatic).
+`r2_data_catalog` vs `--type basin-catalog`, `table_name` vs `--table`, `token` vs `--catalog-token`, and `format` is required in REST but implied in CLI. See [configuration.md](configuration.md#option-c-rest-api-programmatic).
 
-## `wrangler pipelines delete` defaults to "no"
+## `wrangler basin pipelines delete` defaults to "no"
 
 Non-interactive environments answer "no" automatically — use REST `DELETE` for CI/automation.
 
@@ -44,11 +44,11 @@ Non-interactive environments answer "no" automatically — use REST `DELETE` for
 - **JSON-only input** — no Avro/Protobuf/CSV.
 - **Naming:** streams/sinks/pipelines use underscores; buckets use hyphens.
 - **Metrics lag 5–10 min** after creation.
-- **Pipeline SQL is row-level only** — no GROUP BY/aggregation/window functions (do aggregation in [R2 SQL](../r2-sql/) at query time). CTEs and `UNNEST` are supported.
+- **Pipeline SQL is row-level only** — no GROUP BY/aggregation/window functions (do aggregation in [Basin SQL](../sql/) at query time). CTEs and `UNNEST` are supported.
 
 ## Debug Checklist
 
-- [ ] Stream exists: `wrangler pipelines streams list`
+- [ ] Stream exists: `wrangler basin pipelines streams list`
 - [ ] Pipeline `running` (not `initializing`/`failed`): `GET /pipelines/{id}`, check `failure_reason`
 - [ ] SQL matches schema; sink token valid; bucket + catalog exist
 - [ ] Worker redeployed; binding uses **stream ID** under `"stream"`

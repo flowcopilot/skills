@@ -426,8 +426,8 @@ function syncCloudflare(checkout: Checkout): string[] {
   );
   rootBody = replaceExact(
     rootBody,
-    "If a named skill is unavailable, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/); sibling skills are optional.",
-    "If no bundled reference covers the product, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/).",
+    "If a named skill is unavailable, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/index.md); sibling skills are optional.",
+    "If no bundled reference covers the product, use the relevant product docs through the [Cloudflare directory](https://developers.cloudflare.com/directory/index.md).",
   );
   rootBody = replaceExact(rootBody, "| Skill or reference |", "| Reference |");
   const staleMention = rootBody.match(/`([a-z0-9-]+)` skill|named skill/);
@@ -818,7 +818,7 @@ function syncClerk(checkout: Checkout): string[] {
       body = replaceExact(body, "(../clerk-setup/SKILL.md)", "(clerk-setup.md)");
     }
     if (skill.name === "clerk-setup") {
-      body = replaceExact(body, "[clerk](../clerk/SKILL.md) skill's", "[Clerk router](../SKILL.md)'s");
+      body = replaceExact(body, "[clerk skill](https://clerk.com/.well-known/skills/clerk/SKILL.md)", "[Clerk router](../SKILL.md)");
     }
     body = linkSkills(body, "");
     const metadata = readFileSync(resolve(skill.root, "SKILL.md"), "utf8").match(/^---\n([\s\S]*?)\n---\n/)!;

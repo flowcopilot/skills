@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
-# Pipelines API Reference
+# Basin Pipelines API Reference
 
-Code templates and verified behavior. For the full SQL function set and HTTP status semantics, pull `https://developers.cloudflare.com/pipelines/sql-reference/` and the streams docs.
+Code templates and verified behavior. For the full SQL function set and HTTP status semantics, pull `https://developers.cloudflare.com/basin-pipelines/sql-reference/index.md` and the streams docs.
 
 ## Worker Binding Interface
 
@@ -23,7 +23,7 @@ export default {
 - `send()` takes an **array**, returns `Promise<void>` (no confirmation payload).
 - Throws on network errors — wrap in try/catch or use `ctx.waitUntil()` for fire-and-forget.
 - Validation errors are **not** thrown here (deferred during processing — see [gotchas.md](gotchas.md)).
-- Payload/rate limits apply — check `https://developers.cloudflare.com/pipelines/platform/limits/` before sizing batches.
+- Payload/rate limits apply — check `https://developers.cloudflare.com/basin-pipelines/platform/limits/index.md` before sizing batches.
 
 ## HTTP Ingest
 
@@ -31,7 +31,7 @@ export default {
 https://{stream-id}.ingest.cloudflare.com
 ```
 
-Get `{stream-id}` from `npx wrangler pipelines streams list`.
+Get `{stream-id}` from `npx wrangler basin pipelines streams list`.
 
 ```bash
 # Batch (preferred)
@@ -67,7 +67,7 @@ curl -X DELETE "$BASE_URL/sinks/{id}"     -H "Authorization: Bearer $API_TOKEN"
 curl -X DELETE "$BASE_URL/streams/{id}"   -H "Authorization: Bearer $API_TOKEN"
 ```
 
-> `wrangler pipelines delete` defaults to "no" non-interactively — use the REST API for automated cleanup. Deleting a stream removes buffered events and dependent pipelines.
+> `wrangler basin pipelines delete` defaults to "no" non-interactively — use the REST API for automated cleanup. Deleting a stream removes buffered events and dependent pipelines.
 
 ### Pipeline Lifecycle States
 
@@ -81,7 +81,7 @@ curl -X DELETE "$BASE_URL/streams/{id}"   -H "Authorization: Bearer $API_TOKEN"
 
 ## Pipeline SQL (Transforms)
 
-Row-level only — no GROUP BY/aggregation. CTEs (`WITH`) and `UNNEST` are supported. Full function list: `https://developers.cloudflare.com/pipelines/sql-reference/`.
+Row-level only — no GROUP BY/aggregation. CTEs (`WITH`) and `UNNEST` are supported. Full function list: `https://developers.cloudflare.com/basin-pipelines/sql-reference/index.md`.
 
 ```sql
 -- Passthrough / filter / enrich
@@ -111,9 +111,9 @@ curl -s "$BASE_URL/pipelines/{id}" -H "Authorization: Bearer $API_TOKEN"
 curl -s "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/r2-catalog/$BUCKET/namespaces/my_ns/tables" \
   -H "Authorization: Bearer $API_TOKEN"
 
-# 3. Data present? (R2 SQL)
+# 3. Data present? (Basin SQL)
 curl -s -X POST \
-  "https://api.sql.cloudflarestorage.com/api/v1/accounts/$ACCOUNT_ID/r2-sql/query/$BUCKET" \
+  "https://api.sql.cloudflarestorage.com/api/v1/accounts/$ACCOUNT_ID/basin-sql/query/$BUCKET" \
   -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" \
   -d '{"query": "SELECT COUNT(*) AS total FROM my_ns.my_table"}'
 ```
@@ -123,4 +123,4 @@ curl -s -X POST \
 ## See Also
 
 - [configuration.md](configuration.md) — creating resources · [patterns.md](patterns.md) — producers, Logpush, observability
-- [r2-sql/api.md](../r2-sql/api.md) — querying results
+- [sql/api.md](../sql/api.md) — querying results

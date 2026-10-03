@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Argo Smart Routing Skill Reference
 
@@ -86,7 +86,7 @@ console.log(`Argo enabled: ${result.value}`);
 
 ## See Also
 
-- [Cloudflare Argo Smart Routing Docs](https://developers.cloudflare.com/argo-smart-routing/)
-- [Cloudflare Smart Shield](https://developers.cloudflare.com/smart-shield/)
-- [Spectrum Documentation](https://developers.cloudflare.com/spectrum/)
-- [Tiered Cache](https://developers.cloudflare.com/cache/how-to/tiered-cache/)
+- [Cloudflare Argo Smart Routing Docs](https://developers.cloudflare.com/argo-smart-routing/index.md)
+- [Cloudflare Smart Shield](https://developers.cloudflare.com/smart-shield/index.md)
+- [Spectrum Documentation](https://developers.cloudflare.com/spectrum/index.md)
+- [Tiered Cache](https://developers.cloudflare.com/cache/how-to/tiered-cache/index.md)

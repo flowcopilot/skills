@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Artifacts API Reference
 
 Use Artifacts through the **Workers binding**, the **REST control plane**, and **Git-compatible remotes**.
 
-**Prefer retrieval** for exact request and response details. Verify current behavior at `https://developers.cloudflare.com/artifacts/` before relying on specific auth flows, route details, or generated binding types.
+**Prefer retrieval** for exact request and response details. Verify current behavior at `https://developers.cloudflare.com/artifacts/index.md` before relying on specific auth flows, route details, or generated binding types.
 
 ## Workers Binding
 
@@ -127,4 +127,4 @@ Use a self-contained Basic-auth remote only for short-lived commands that need c
 
 `read` tokens support `clone`, `fetch`, and `pull`. `git push` requires a `write` token.
 
-For large repos where startup time matters more than a full clone, Artifacts also documents **ArtifactFS**. Retrieve current details from `https://developers.cloudflare.com/artifacts/` when you need mount-style access.
+For large repos where startup time matters more than a full clone, Artifacts also documents **ArtifactFS**. Retrieve current details from `https://developers.cloudflare.com/artifacts/index.md` when you need mount-style access.

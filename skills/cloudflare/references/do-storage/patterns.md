@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # DO Storage Patterns
 
@@ -8,10 +8,10 @@ Fetch the relevant current documentation before implementing or reviewing change
 
 | Task | Documentation |
 |------|---------------|
-| Schema initialization, migrations, indexes, caching, or parent-child coordination | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/) |
-| Counters, transactions, and atomic updates | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/); [Counter example](https://developers.cloudflare.com/durable-objects/examples/build-a-counter/) |
-| Batch processing or multiple scheduled events | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/); [Batching example](https://developers.cloudflare.com/durable-objects/examples/alarms-api/) |
-| Cleanup and expiration | [Time to Live example](https://developers.cloudflare.com/durable-objects/examples/durable-object-ttl/); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Design application-specific rate limiting | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
+| Schema initialization, migrations, indexes, caching, or parent-child coordination | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/index.md) |
+| Counters, transactions, and atomic updates | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/index.md); [Counter example](https://developers.cloudflare.com/durable-objects/examples/build-a-counter/index.md) |
+| Batch processing or multiple scheduled events | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/index.md); [Batching example](https://developers.cloudflare.com/durable-objects/examples/alarms-api/index.md) |
+| Cleanup and expiration | [Time to Live example](https://developers.cloudflare.com/durable-objects/examples/durable-object-ttl/index.md); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Design application-specific rate limiting | [Rules of Durable Objects](https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/index.md); [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
 
 Verify persistence, isolation, and rollback behavior with the [testing guidance](testing.md).

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # DO Storage API
 
@@ -8,9 +8,9 @@ Fetch the relevant current documentation before implementing or reviewing change
 
 | Task | Documentation |
 |------|---------------|
-| Use SQL cursors, bound parameters, supported SQL, or database size | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Use synchronous or asynchronous key-value methods on SQLite | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Maintain asynchronous KV operations on a legacy backend | [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/) |
-| Review transactions, write coalescing, storage options, or cleanup | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/) |
-| Create bookmarks or restore SQLite data | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) |
-| Schedule, inspect, or cancel an alarm | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/) |
+| Use SQL cursors, bound parameters, supported SQL, or database size | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Use synchronous or asynchronous key-value methods on SQLite | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Maintain asynchronous KV operations on a legacy backend | [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/index.md) |
+| Review transactions, write coalescing, storage options, or cleanup | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md); [Legacy KV storage API](https://developers.cloudflare.com/durable-objects/api/legacy-kv-storage-api/index.md) |
+| Create bookmarks or restore SQLite data | [SQLite storage API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/index.md) |
+| Schedule, inspect, or cancel an alarm | [Alarms](https://developers.cloudflare.com/durable-objects/api/alarms/index.md) |

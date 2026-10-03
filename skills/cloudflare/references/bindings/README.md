@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Workers Bindings
 
@@ -8,8 +8,8 @@ Read the relevant current documentation before implementing. These references ro
 
 ## Start here
 
-- [Bindings overview and catalog](https://developers.cloudflare.com/workers/runtime-apis/bindings/): capability model, available products, environment access, and binding lifecycle.
-- [Storage options](https://developers.cloudflare.com/workers/platform/storage-options/): choose storage from consistency, query, and coordination requirements.
+- [Bindings overview and catalog](https://developers.cloudflare.com/workers/runtime-apis/bindings/index.md): capability model, available products, environment access, and binding lifecycle.
+- [Storage options](https://developers.cloudflare.com/workers/platform/storage-options/index.md): choose storage from consistency, query, and coordination requirements.
 - [api.md](./api.md): environment access, generated types, and product APIs.
 - [configuration.md](./configuration.md): binding configuration, environments, secrets, and local development.
 - [patterns.md](./patterns.md): Worker-to-Worker calls, testing, and resource selection.

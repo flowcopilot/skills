@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Pages Configuration
 
@@ -6,13 +6,13 @@ Inspect the existing project configuration and build output before changing depl
 
 | Task | Documentation |
 | --- | --- |
-| Set build commands, root/output directories, and build variables | [Build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/) |
-| Manage Wrangler configuration, environments, and dashboard migration | [Functions configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/) |
-| Configure resource bindings, variables, and secrets | [Bindings](https://developers.cloudflare.com/pages/functions/bindings/) |
-| Set static response headers | [Headers](https://developers.cloudflare.com/pages/configuration/headers/) |
-| Configure static redirects and rewrites | [Redirects](https://developers.cloudflare.com/pages/configuration/redirects/) |
-| Choose which requests invoke Functions | [Routing](https://developers.cloudflare.com/pages/functions/routing/) |
-| Configure monorepo project boundaries | [Monorepos](https://developers.cloudflare.com/pages/configuration/monorepos/) |
-| Run the project locally | [Local development](https://developers.cloudflare.com/pages/functions/local-development/) |
+| Set build commands, root/output directories, and build variables | [Build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/index.md) |
+| Manage Wrangler configuration, environments, and dashboard migration | [Functions configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/index.md) |
+| Configure resource bindings, variables, and secrets | [Bindings](https://developers.cloudflare.com/pages/functions/bindings/index.md) |
+| Set static response headers | [Headers](https://developers.cloudflare.com/pages/configuration/headers/index.md) |
+| Configure static redirects and rewrites | [Redirects](https://developers.cloudflare.com/pages/configuration/redirects/index.md) |
+| Choose which requests invoke Functions | [Routing](https://developers.cloudflare.com/pages/functions/routing/index.md) |
+| Configure monorepo project boundaries | [Monorepos](https://developers.cloudflare.com/pages/configuration/monorepos/index.md) |
+| Run the project locally | [Local development](https://developers.cloudflare.com/pages/functions/local-development/index.md) |
 
 Distinguish build-time variables from runtime bindings, and check preview and production separately. Determine whether the framework owns generated routing files before editing them. See [Pages Functions configuration](../pages-functions/configuration.md) for types and placement.

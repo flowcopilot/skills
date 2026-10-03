@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Network Interconnect (CNI)
 
@@ -31,7 +31,7 @@ Private, high-performance connectivity to Cloudflare's network. **Enterprise-onl
 - Enterprise plan
 - IPv4 /24+ or IPv6 /48+ prefixes
 - BGP ASN for v1
-- See [locations PDF](https://developers.cloudflare.com/network-interconnect/static/cni-locations-05-may-2026.pdf)
+- See [locations PDF](https://developers.cloudflare.com/network-interconnect/locations/index.md)
 
 ## Specs
 

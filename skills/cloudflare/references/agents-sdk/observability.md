@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Observability
 
-Fetch https://developers.cloudflare.com/agents/api-reference/observability/ for complete documentation.
+Fetch https://developers.cloudflare.com/agents/runtime/operations/observability/index.md for complete documentation.
 
 Agents emit structured events via Node.js `diagnostics_channel`. Subscribe in development or forward via Tail Workers in production.
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Workers Playground Skill Reference
 
@@ -123,7 +123,7 @@ export default {
 
 ## See Also
 
-- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
-- [Workers Examples](https://developers.cloudflare.com/workers/examples/)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
-- [Workers API Reference](https://developers.cloudflare.com/workers/runtime-apis/)
+- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/index.md)
+- [Workers Examples](https://developers.cloudflare.com/workers/examples/index.md)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/index.md)
+- [Workers API Reference](https://developers.cloudflare.com/workers/runtime-apis/index.md)

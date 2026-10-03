@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # CNI API Reference
 
@@ -77,7 +77,7 @@ await client.magicTransit.tunnels.update(accountId, tunnelId, {
 });
 ```
 
-Rates: `high` | `medium` | `low`. Types: `request` | `reply`. See [Magic Transit docs](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/#add-tunnels).
+Rates: `high` | `medium` | `low`. Types: `request` | `reply`. See [Magic Transit docs](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/index.md#add-tunnels).
 
 ## Settings
 
@@ -196,6 +196,6 @@ curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/cni/interconne
 
 ## Resources
 
-- [API Docs](https://developers.cloudflare.com/api/resources/network_interconnects/)
+- [API Docs](https://developers.cloudflare.com/api/resources/network_interconnects/index.md)
 - [TypeScript SDK](https://github.com/cloudflare/cloudflare-typescript)
 - [Python SDK](https://github.com/cloudflare/cloudflare-python)

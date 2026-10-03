@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Pulumi Provider
 
@@ -98,5 +98,5 @@ const accountId = new pulumi.Config("cloudflare").require("accountId");
 
 ## See Also
 - [terraform](../terraform/) - Alternative IaC for Cloudflare
-- [wrangler](https://developers.cloudflare.com/workers/wrangler/) - CLI deployment alternative
-- [workers](https://developers.cloudflare.com/workers/) - Worker runtime documentation
+- [wrangler](https://developers.cloudflare.com/workers/wrangler/index.md) - CLI deployment alternative
+- [workers](https://developers.cloudflare.com/workers/index.md) - Worker runtime documentation

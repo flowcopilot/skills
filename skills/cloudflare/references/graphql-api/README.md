@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare GraphQL Analytics API
 
@@ -141,7 +141,7 @@ Dataset names follow a consistent pattern visible in the schema:
 
 ## See Also
 
-- [GraphQL Analytics API Docs](https://developers.cloudflare.com/analytics/graphql-api/)
+- [GraphQL Analytics API Docs](https://developers.cloudflare.com/analytics/graphql-api/index.md)
 - [GraphQL API Explorer](https://graphql.cloudflare.com/)
 - [Observability Reference](../observability/) - Workers Logs, Tail Workers, console logging
 - [Analytics Engine Reference](../analytics-engine/) - Custom high-cardinality analytics via Workers

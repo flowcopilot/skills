@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Think (Experimental)
 
-Fetch https://developers.cloudflare.com/agents/api-reference/think/ for complete documentation.
+Fetch https://developers.cloudflare.com/agents/harnesses/think/index.md for complete documentation.
 
 `@cloudflare/think` — a higher-level chat agent class that handles the `streamText` loop, tool execution, and message persistence for you. You provide `getModel()` and `getSystemPrompt()`; Think handles the rest.
 

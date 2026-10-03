@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 ## Best Practices Summary
 
@@ -106,8 +106,8 @@ try {
 
 ## Additional Resources
 
-- [Official Argo Smart Routing Docs](https://developers.cloudflare.com/argo-smart-routing/)
-- [Cloudflare Smart Shield](https://developers.cloudflare.com/smart-shield/)
-- [API Authentication](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+- [Official Argo Smart Routing Docs](https://developers.cloudflare.com/argo-smart-routing/index.md)
+- [Cloudflare Smart Shield](https://developers.cloudflare.com/smart-shield/index.md)
+- [API Authentication](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/index.md)
 - [Cloudflare TypeScript SDK](https://github.com/cloudflare/cloudflare-typescript)
 - [Cloudflare Python SDK](https://github.com/cloudflare/cloudflare-python)

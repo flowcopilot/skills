@@ -4,10 +4,10 @@ description: Build, review, test, secure, migrate, and operate Convex backends. 
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: get-convex/agent-skills@0aa10576821c6928f6a0f498c087af4ee231536e
+  upstream: get-convex/agent-skills@2cfe645c87f971242cfc8ef3eb53662cbec26a53
 ---
 
-<!-- Modified by Flow Copilot from get-convex/agent-skills revision 0aa10576821c6928f6a0f498c087af4ee231536e. -->
+<!-- Modified by Flow Copilot from get-convex/agent-skills revision 2cfe645c87f971242cfc8ef3eb53662cbec26a53. -->
 
 # Convex
 
@@ -34,7 +34,7 @@ For deployment reads or writes, first read [convex-deploy-guard](references/conv
 - [convex-env](references/convex-env.md): Set and wire Convex deployment env vars / secrets for the app.
 - [convex-expert](references/convex-expert.md): Convex backend specialist. Use this agent for any code inside a `convex/` directory — function definitions, schemas, indexes, queries, mutations, actions, HTTP endpoints, cron jobs, file storage, auth wiring, and component installation. Knows the object-form function syntax, validator patterns, resource limits, and component ecosystem that generic Claude routinely gets wrong.
 - [convex-explain-app](references/convex-explain-app.md): Explain an existing Convex app — data model + relationships, public vs internal functions, auth/ownership model, components, a request→data flow — read from the schema and function surface. Read-only.
-- [convex-improve-convex-plugin](references/convex-improve-convex-plugin.md): Send this coding session's transcript to the Convex team for an AI post-mortem that improves the quickstart system.
+- [convex-improve-convex-plugin](references/convex-improve-convex-plugin.md): Send this coding session's transcript to the Convex team for an AI post-mortem that improves the quickstart system. Run only when the user explicitly asks.
 - [convex-insights](references/convex-insights.md): Query a running Convex app's logs + health in natural language (official MCP): failures, slow/expensive functions, deploy causality — scoped, evidence-backed, with a dashboard deep link.
 - [convex-launch-readiness](references/convex-launch-readiness.md): Run every Convex audit (authz, reviewer, advisor, insights) into one scored, deduped readiness report with an ordered fix plan — Lighthouse for your backend.
 - [convex-migrate](references/convex-migrate.md): Migrate schema + backfill data on a deployed Convex app using @convex-dev/migrations.

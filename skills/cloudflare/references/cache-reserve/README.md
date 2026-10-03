@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 626547c06881a20b3322bdc2ed6e6451b33a4fb6. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
 
 # Cloudflare Cache Reserve
 
@@ -146,4 +146,4 @@ curl -I https://example.com/asset.jpg | grep -i cache
 
 ## See Also
 - [r2](../r2/) - Cache Reserve built on R2 storage
-- [workers](https://developers.cloudflare.com/workers/) - Workers integration with Cache API
+- [workers](https://developers.cloudflare.com/workers/index.md) - Workers integration with Cache API
