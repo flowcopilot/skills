@@ -19,7 +19,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -530,12 +530,20 @@ ${routes}
 
 const reactNativeSources = ["software-mansion", "callstack"] as const;
 const designEngineeringSources = ["emil-kowalski", "jakub-krehel"] as const;
-type TreeSource = typeof reactNativeSources[number] | typeof designEngineeringSources[number];
+const claritySources = ["pstack", "matt-pocock"] as const;
+type TreeSource =
+  | typeof reactNativeSources[number]
+  | typeof designEngineeringSources[number]
+  | typeof claritySources[number];
 
 // Multi-source bundles keep each source's skills/ tree and rename entry files to index.md.
-function readSkillTree(name: TreeSource, checkout: Checkout) {
-  const sourceRoot = resolve(checkout.root, "skills");
-  const files = filesUnder(sourceRoot).filter((path) => !relativePath(path, sourceRoot).split("/").includes("agents"));
+// `include` limits the import to the named top-level skill directories.
+function readSkillTree(name: TreeSource, checkout: Checkout, root = "skills", include?: string[]) {
+  const sourceRoot = resolve(checkout.root, root);
+  const files = filesUnder(sourceRoot).filter((path) => {
+    const parts = relativePath(path, sourceRoot).split("/");
+    return !parts.includes("agents") && (!include || include.includes(parts[0]));
+  });
   const skills = files.filter((path) => basename(path) === "SKILL.md").map((path) => ({
     ...parseSkill(path),
     path: relativePath(path, sourceRoot).replace(/SKILL\.md$/, "index.md"),
@@ -702,6 +710,202 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 ${sections.join("\n\n")}
 `, "emilkowalski/skills", first.revision);
   return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
+}
+
+// Clarity imports selected skills. `userOnly` records the upstream invocation
+// (Claude `disable-model-invocation`, Codex `policy.allow_implicit_invocation`).
+// The router sets the Flow Copilot policy; a changed upstream flag stops the sync for review.
+const clarityImports = {
+  pstack: {
+    label: "pstack",
+    holder: "Lauren Tan",
+    root: "pstack/skills",
+    skills: { unslop: { userOnly: true }, "technical-writing": { userOnly: true }, how: { userOnly: true }, why: { userOnly: true } },
+  },
+  "matt-pocock": {
+    label: "Matt Pocock",
+    holder: "Matt Pocock",
+    root: "skills/productivity",
+    skills: { "writing-for-agents": { userOnly: false }, "wait-what": { userOnly: true } },
+  },
+} satisfies Record<typeof claritySources[number], {
+  label: string;
+  holder: string;
+  root: string;
+  skills: Record<string, { userOnly: boolean }>;
+}>;
+
+// pstack names a model role line and a default for each subagent in how and why.
+// The router maps each line to a Flow Copilot role; a new line or default stops the sync.
+const clarityModelRoles: Record<string, { fallback: string; role: "reasoning" | "exploration" }> = {
+  "how explorer": { fallback: "grok-4.7-xhigh-fast", role: "exploration" },
+  "how explainer": { fallback: "claude-opus-5-5-max", role: "reasoning" },
+  "why investigators": { fallback: "grok-4.7-xhigh-fast", role: "exploration" },
+  "why synthesizer": { fallback: "claude-opus-5-5-max", role: "reasoning" },
+};
+
+function upstreamUserOnly(skillRoot: string): boolean {
+  const flag = /^disable-model-invocation: true$/m.test(readFileSync(resolve(skillRoot, "SKILL.md"), "utf8"));
+  const codexPath = resolve(skillRoot, "agents", "openai.yaml");
+  if (existsSync(codexPath)) {
+    const codex = Bun.YAML.parse(readFileSync(codexPath, "utf8")) as { policy?: { allow_implicit_invocation?: boolean } };
+    if ((codex.policy?.allow_implicit_invocation === false) !== flag) {
+      throw new Error(`${skillRoot}: Claude and Codex invocation flags disagree`);
+    }
+  }
+  return flag;
+}
+
+function assertClarityModelRoles(skillRoot: string) {
+  const roles = [...["how", "why"].flatMap((skill) =>
+    [...readFileSync(resolve(skillRoot, skill, "SKILL.md"), "utf8")
+      .matchAll(/the `([^`]+)` line, default `([^`]+)`/g)]),
+  ].map(([, line, fallback]) => `${line}=${fallback}`);
+  const expected = Object.entries(clarityModelRoles).map(([line, { fallback }]) => `${line}=${fallback}`);
+  if ([...new Set(roles)].sort().join("\n") !== expected.sort().join("\n")) {
+    throw new Error(`pstack: model roles changed in how or why: ${[...new Set(roles)].join(", ")}`);
+  }
+}
+
+// The router keeps pstack's reply and comment rules. The playbook paragraph is dropped
+// because the bundle imports no playbooks.
+function clarityReplyRules(checkout: Checkout): string {
+  const body = parseSkill(resolve(checkout.root, "pstack/skills/poteto-mode/SKILL.md")).body;
+  const section = body.match(/^## Writing the reply\n[\s\S]*?(?=^## Playbooks\n)/m)?.[0];
+  const playbooks = "Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. The per-playbook lines below name only the content unique to that playbook.\n\n";
+  const playbookReply = "every section the playbook's reply names stays";
+  if (!section?.includes("\n## Comments\n") || !section.includes(playbooks) || !section.includes(playbookReply)) {
+    throw new Error("pstack: poteto-mode reply or comment rules changed");
+  }
+  return section.replace(playbooks, "").replace(playbookReply, "every section the workflow's reply names stays").trim();
+}
+
+function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>): string {
+  const bundle = "clarity";
+  const target = resolve(repositoryRoot, "skills", bundle);
+  const imports = claritySources.map((name) => {
+    const { root, holder, skills } = clarityImports[name];
+    const checkout = checkouts[name];
+    const tree = readSkillTree(name, checkout, root, Object.keys(skills));
+    for (const [skill, { userOnly }] of Object.entries(skills)) {
+      if (!tree.skills.some((source) => source.path === `${skill}/index.md`)) {
+        throw new Error(`${name}: missing ${skill} skill`);
+      }
+      if (upstreamUserOnly(resolve(tree.sourceRoot, skill)) !== userOnly) {
+        throw new Error(`${name}: ${skill} changed its upstream invocation policy`);
+      }
+    }
+    const license = readFileSync(resolve(checkout.root, name === "pstack" ? "pstack/LICENSE" : "LICENSE"), "utf8");
+    if (!license.includes("MIT License") || !license.includes("Permission is hereby granted") ||
+        !license.includes(`Copyright (c) 2026 ${holder}`)) {
+      throw new Error(`${name}: upstream license changed`);
+    }
+    return tree;
+  });
+  const pstack = checkouts.pstack;
+  assertClarityModelRoles(resolve(pstack.root, "pstack/skills"));
+  if (!existsSync(resolve(pstack.root, "pstack/skills/figure-it-out/SKILL.md"))) {
+    throw new Error("pstack: figure-it-out skill removed");
+  }
+  const replyRules = clarityReplyRules(pstack);
+
+  resetDirectory(target, bundle);
+  const notices: string[] = [];
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  for (const tree of imports) {
+    const { name, checkout } = tree;
+    const sourceName = writeSkillTree(tree, bundle);
+    const { label, root } = clarityImports[name];
+    const licenseFile = `${name}-LICENSE`;
+    copyFileSync(resolve(checkout.root, name === "pstack" ? "pstack/LICENSE" : "LICENSE"), resolve(target, "licenses", licenseFile));
+    notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. It imports the ${new Intl.ListFormat("en", { type: "conjunction" }).format(Object.keys(clarityImports[name].skills).map((skill) => `\`${skill}\``))} skills from \`${root}/\`. The upstream MIT license and copyright notice are retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
+  }
+
+  const rolesFor = (role: string) => Object.entries(clarityModelRoles)
+    .filter(([, value]) => value.role === role).map(([line]) => line).join(", ");
+  mkdirSync(resolve(target, "agents"), { recursive: true });
+  writeFileSync(resolve(target, "agents", "openai.yaml"), `interface:
+  display_name: "Clarity"
+  short_description: "Write clearly for people and agents, and explain how and why"
+policy:
+  allow_implicit_invocation: true
+`);
+  writeFileSync(resolve(target, "references", "figure-it-out.md"), normalized(`<!-- Flow Copilot text based on ideas from cursor/plugins pstack/skills/figure-it-out revision ${pstack.revision}. -->
+
+# Figure it out
+
+Use this workflow when the user says "figure it out yourself", or hands off a large task to finish without them. Design the plan first. Then run it as a series of experiments.
+
+1. Write the done condition before you start. It must be a check that can fail: a command, a test, or a value in the real artifact.
+2. Set the amount of checking from the risk. A change that cannot be undone, or that touches many parts, gets more checks. A small change that you can revert gets fewer.
+3. Split the work into small units that each end in a state you can check. Do the most uncertain unit first. Build the check before the work, and record its value before the change.
+4. For each unit, state a hypothesis, make the smallest change, and measure the result on the real artifact. Keep the change when it moves toward the done condition. Revert it when it does not.
+5. Give each check one verdict: VERIFIED, NOT VERIFIED, or INCONCLUSIVE. INCONCLUSIVE is not a pass. Read the artifact, not the report of a worker. When a check passes too easily, examine the check before the system.
+6. At the end, send the result and the done condition to the adversarial role in the Clarity model roles. That reviewer attacks the work against the done condition.
+7. Reply with the plan, the risk level and its reason, the decisions you made, what is verified, and what is still open.
+
+Units with defined steps go to the investigation role. The parent session keeps the plan and the verdicts.
+`));
+
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
+    "Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, or code comment. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.",
+    "cursor/plugins", pstack.revision,
+    { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
+    `# Clarity
+
+Write every text so that its reader understands it on the first read. Answer how and why questions with evidence. Read only the references that the task needs.
+
+## Pick the rules by reader
+
+- Text that a person reads: chat replies, PR bodies, commit messages, docs, issues, and code comments. Write it clean as you draft, to the reply rules below and the [unslop](references/pstack/unslop/index.md) catalog.
+- Technical text that a person reads: docs, READMEs, RFCs, PR descriptions, commit messages, and explanations of how code works, how it was built, or why a bug occurs. Also apply [technical-writing](references/pstack/technical-writing/index.md).
+- Text that an agent reads: skills, \`AGENTS.md\`, \`CLAUDE.md\`, files under \`docs/agents/\`, and prompts for subagents. Apply [writing-for-agents](references/matt-pocock/writing-for-agents/index.md) and the sentence rules of technical-writing. Leading words from writing-for-agents are correct here, although unslop rules 26 and 32 remove metaphors from text for people.
+
+## Workflows
+
+- [how](references/pstack/how/index.md): the user asks how code works, where something belongs, or which layer owns it.
+- [why](references/pstack/why/index.md): the user asks why code has its shape, why a decision was made, or what caused a regression. Start with the light path: answer alone or with one exploration agent, and follow [the epistemics guide](references/pstack/why/references/epistemics.md). Run the full investigation only when the user names \`why\`, or when the evidence spans more than one system.
+
+Only when the user asks for them:
+
+- [bro](references/matt-pocock/wait-what/index.md): the user says "I didn't get that", "repeat", "make it shorter", "wait, what", or "bro". Re-pitch the last message. Its upstream name is \`wait-what\`.
+- [figure-it-out](references/figure-it-out.md): the user says "figure it out yourself", or hands off a large task to finish alone.
+
+The user selects a workflow by name: \`/clarity bro\` in Claude Code, \`$clarity bro\` in Codex.
+
+Imported text names upstream skills. \`unslop\`, \`technical-writing\`, \`how\`, and \`why\` mean the references above. Other pstack skills, such as \`poteto-mode\`, \`show-me-your-work\`, \`teach\`, \`architect\`, and \`arena\`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
+
+${replyRules}
+
+## Model roles
+
+This table replaces the pstack \`pstack-models.mdc\` rule. An imported role line or default model means the role in this table.
+
+| Role | Upstream roles | Claude Code | Codex | T3 |
+| --- | --- | --- | --- | --- |
+| reasoning | ${rolesFor("reasoning")} | \`claude-opus-5-5\` | \`gpt-6-astra\` high | \`claudeAgent/claude-opus-5-5\` high |
+| exploration | ${rolesFor("exploration")} | \`claude-sonnet-5-5\` | \`gpt-6.1-sol\` high | \`codex/gpt-6.1-sol\` high |
+| investigation | figure-it-out units | \`claude-opus-5-5\` | \`gpt-6.1-sol\` xhigh | \`codex/gpt-6.1-sol\` xhigh |
+| adversarial | figure-it-out review, debates | \`gpt-6-astra\` high, through the Codex CLI | \`claude-opus-5-5\` high, through the Claude CLI | the other family: \`codex/gpt-6-astra\` high reviews Claude work, \`claudeAgent/claude-opus-5-5\` high reviews Codex work |
+
+Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` means Codex. The \`Agent\` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column, and \`delegate_task\` otherwise. The Claude Code \`Agent\` tool sets the model only, so its subagents use the effort of the session.
+
+- Exploration reads and does not edit. Claude Code: the \`Explore\` agent with model \`sonnet\`. Codex: \`spawn_agent\` with agent type \`explorer\`. T3: \`interactionMode: plan\`.
+- Investigation edits only in its own worktree, and never commits or pushes. Claude Code: \`isolation: worktree\`. Codex: \`spawn_agent\` with agent type \`worker\`. T3: \`runtimeMode: auto-accept-edits\`. The parent session checks the result.
+- Adversarial review uses the first option that works. First, T3 \`delegate_task\`. Second, the CLI of the other harness, read-only: \`codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only "<prompt>"\` or \`claude -p --model claude-opus-5-5 --effort high --permission-mode plan "<prompt>"\`. Third, a new subagent of the same family that gets only the artifact and the goal. The reply names the reviewer model and the option used.
+- If the harness rejects a model, use the parent model and say so in the reply.
+
+## Cursor terms in how and why
+
+- The \`Task\` tool and \`subagent_type: generalPurpose\` mean the spawn tool for the role.
+- \`readonly: true\` means the exploration permissions. \`readonly: false\` for MCP access means a subagent that has the MCP tools and writes nothing.
+- The Cursor environment and its \`mcps/\` directory mean the MCP tools of the current harness. In Claude Code, these are the \`mcp__<server>__<tool>\` tools, including deferred tools that ToolSearch lists.
+
+## Sources
+
+This bundle imports selected skills from cursor/plugins (pstack) and mattpocock/skills. Each reference keeps its upstream text. Only this file and \`references/figure-it-out.md\` hold Flow Copilot text. Upstream metadata, plugin files, and agent UI files are not included.
+`, "cursor/plugins", pstack.revision);
+  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router also keeps the reply and comment rules from pstack \`poteto-mode\`, without its playbook paragraph. The \`wait-what\` skill is listed as \`bro\`. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk groups skills by category. "all" imports every skill in a category, including
@@ -889,7 +1093,7 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -911,13 +1115,19 @@ function syncBundle(name: BundleName): string {
     for (const source of designEngineeringSources) console.log(`${source}: ${checkouts[source].revision}`);
     return notice;
   }
+  if (name === "clarity") {
+    const checkouts = { pstack: clone("pstack"), "matt-pocock": clone("matt-pocock") };
+    const notice = syncClarity(checkouts);
+    for (const source of claritySources) console.log(`${source}: ${checkouts[source].revision}`);
+    return notice;
+  }
   const checkout = clone(name);
   if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
   const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
-  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering">, string> = {
+  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity">, string> = {
     ax: `## Ax skill
 
 The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.
