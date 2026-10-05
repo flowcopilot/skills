@@ -160,6 +160,38 @@ for (const [name, holder] of [["emil-kowalski", "Emil Kowalski"], ["jakub-krehel
   }
 }
 
+const clarity = resolve(skillsRoot, "clarity");
+const claritySkill = readSkill(resolve(clarity, "SKILL.md"));
+if (claritySkill.metadata.license !== "MIT") errors.push("clarity: expected MIT license metadata");
+for (const heading of ["## Writing the reply", "## Comments", "## Model roles"]) {
+  if (!claritySkill.text.includes(`\n${heading}\n`)) errors.push(`clarity: router is missing ${heading}`);
+}
+if (!claritySkill.text.includes("references/figure-it-out.md") || !existsSync(resolve(clarity, "references/figure-it-out.md"))) {
+  errors.push("clarity: missing figure-it-out reference");
+}
+if (!/allow_implicit_invocation: true/.test(readFileSync(resolve(clarity, "agents/openai.yaml"), "utf8"))) {
+  errors.push("clarity: Codex metadata must allow implicit invocation");
+}
+for (const [name, holder] of [["pstack", "Lauren Tan"], ["matt-pocock", "Matt Pocock"]]) {
+  const source = manifest[name];
+  if (source.bundle !== "clarity") errors.push(`${name}: expected clarity bundle`);
+  const directory = resolve(clarity, "references", name);
+  const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
+  for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
+    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+      errors.push(`${name}: missing or incorrect source attribution in ${file}`);
+    }
+  }
+  for (const workflow of source.workflows) {
+    if (!workflow.startsWith(`${name}/`)) errors.push(`${name}: workflow escapes its source directory`);
+  }
+  const indexes = filesUnder(directory).filter((path) => path.endsWith("/index.md"));
+  if (indexes.length !== source.workflows.length) errors.push(`${name}: workflow inventory mismatch`);
+  if (!readFileSync(resolve(clarity, `licenses/${name}-LICENSE`), "utf8").includes(`Copyright (c) 2026 ${holder}`)) {
+    errors.push(`${name}: missing upstream copyright notice`);
+  }
+}
+
 const clerk = resolve(skillsRoot, "clerk");
 if (readSkill(resolve(clerk, "SKILL.md")).metadata.license !== "MIT") {
   errors.push("clerk: expected MIT license metadata");

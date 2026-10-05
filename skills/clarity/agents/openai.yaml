@@ -1,0 +1,5 @@
+interface:
+  display_name: "Clarity"
+  short_description: "Write clearly for people and agents, and explain how and why"
+policy:
+  allow_implicit_invocation: true

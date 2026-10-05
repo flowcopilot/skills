@@ -169,6 +169,18 @@ Skills whose upstream frontmatter sets `disable-model-invocation: true` are list
 
 Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. Run `bun run sync --only design-engineering` to update both sources together.
 
+## Clarity sources
+
+The `pstack` and `matt-pocock` manifest entries both set `"bundle": "clarity"`. The `clarityImports` constant in `scripts/sync-upstreams.ts` names the imported skills and their source roots: `pstack/skills` in `cursor/plugins`, and `skills/productivity` in `mattpocock/skills`. `readSkillTree` imports only those skill directories. Each source keeps its own directory under `references/`.
+
+The router sets the Flow Copilot invocation policy. The constant also records the upstream invocation of each skill: Claude `disable-model-invocation` and, when the skill has `agents/openai.yaml`, Codex `policy.allow_implicit_invocation`. The sync stops when the two upstream flags disagree, or when one differs from the recorded value. Review the router policy, then update the record.
+
+The pstack `how` and `why` skills name a model role line and a default model for each subagent. `clarityModelRoles` maps each line to a router role. The sync stops when upstream adds a line, removes a line, or changes a default. Map the new line in the router table before you update the constant.
+
+The router copies the `Writing the reply` and `Comments` sections from pstack `poteto-mode/SKILL.md`. The sync drops the paragraph about playbooks and replaces one mention of "the playbook's reply". It stops when that text changes. `references/figure-it-out.md` is Flow Copilot text, not upstream content. The generator writes it and the Codex metadata in `agents/openai.yaml`.
+
+Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync --only clarity` to update both sources together.
+
 ## Repository validation
 
 Run `bun run check` and `uv run --script scripts/validate.py` to run every validation layer without fetching or regenerating skill sources. The Python script declares its pinned dependencies. `uv` installs them when it runs the script.
