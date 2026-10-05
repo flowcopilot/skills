@@ -2,9 +2,9 @@
 
 ## Ax skill
 
-The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `46a1ced876ffc1e17257c8dd8167f11ca45fdde3`, licensed under Apache License 2.0.
+The files under `skills/ax/` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision `e0ff075c3ba572bfe94cf277336a00479d51206d`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-10-03. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
+The imported revision is dated 2026-10-04. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
 
 ## Convex skill
 

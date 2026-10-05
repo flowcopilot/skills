@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "46a1ced876ffc1e17257c8dd8167f11ca45fdde3",
+    "revision": "e0ff075c3ba572bfe94cf277336a00479d51206d",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
