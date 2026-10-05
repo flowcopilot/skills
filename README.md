@@ -12,6 +12,8 @@ Agent skills maintained by Flow Copilot.
 
 - [`expo`](skills/expo/SKILL.md): Build, debug, upgrade, and deploy Expo apps and operate EAS through one progressively disclosed skill.
 
+- [`paper-drift`](skills/paper-drift/SKILL.md): Report drift between the Paper "Flow" file's `--flow-*` tokens and `flow-tokens.ts` in flowcopilot-app. Flow Copilot wrote this skill; it has no upstream source.
+
 - [`react-native`](skills/react-native/SKILL.md): Build, profile, upgrade, and migrate React Native apps with Software Mansion and Callstack community skills.
 
 Each directory under `skills/` follows the [Agent Skills specification](https://agentskills.io/specification). Install the whole skill directory, not an individual file from `references/`.

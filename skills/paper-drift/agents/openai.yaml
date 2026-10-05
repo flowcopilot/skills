@@ -1,0 +1,4 @@
+interface:
+  display_name: Paper Drift
+  short_description: Report drift between Paper --flow-* tokens and openui flow-tokens.ts.
+  default_prompt: Use Paper Drift to check the Paper tokens against the code tokens.
