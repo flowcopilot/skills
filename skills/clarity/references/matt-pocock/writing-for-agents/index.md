@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from mattpocock/skills revision 4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d. -->
+<!-- Modified by Flow Copilot from mattpocock/skills revision f3fc5632f401156837ee3872f14fe33ccf1024ea. -->
 
 Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, a doc reached by a pointer. The packaging differs; the writing does not: the same levers make each one predictable, since the agent takes the same _process_ every run rather than producing the same output.
 

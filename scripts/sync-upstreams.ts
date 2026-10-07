@@ -736,12 +736,13 @@ const clarityImports = {
 }>;
 
 // pstack names a model role line and a default for each subagent in how and why.
-// The router maps each line to a Flow Copilot role; a new line or default stops the sync.
-const clarityModelRoles: Record<string, { fallback: string; role: "reasoning" | "exploration" }> = {
-  "how explorer": { fallback: "grok-4.7-xhigh-fast", role: "exploration" },
-  "how explainer": { fallback: "claude-opus-5-5-max", role: "reasoning" },
-  "why investigators": { fallback: "grok-4.7-xhigh-fast", role: "exploration" },
-  "why synthesizer": { fallback: "claude-opus-5-5-max", role: "reasoning" },
+// The router maps each line to a Flow Copilot role, so a new or removed line stops the sync.
+// The router replaces the upstream defaults, so a new default model does not stop it.
+const clarityModelRoles: Record<string, { role: "reasoning" | "exploration" }> = {
+  "how explorer": { role: "exploration" },
+  "how explainer": { role: "reasoning" },
+  "why investigators": { role: "exploration" },
+  "why synthesizer": { role: "reasoning" },
 };
 
 function upstreamUserOnly(skillRoot: string): boolean {
@@ -759,9 +760,9 @@ function upstreamUserOnly(skillRoot: string): boolean {
 function assertClarityModelRoles(skillRoot: string) {
   const roles = [...["how", "why"].flatMap((skill) =>
     [...readFileSync(resolve(skillRoot, skill, "SKILL.md"), "utf8")
-      .matchAll(/the `([^`]+)` line, default `([^`]+)`/g)]),
-  ].map(([, line, fallback]) => `${line}=${fallback}`);
-  const expected = Object.entries(clarityModelRoles).map(([line, { fallback }]) => `${line}=${fallback}`);
+      .matchAll(/the `([^`]+)` line, default `[^`]+`/g)]),
+  ].map(([, line]) => line);
+  const expected = Object.keys(clarityModelRoles);
   if ([...new Set(roles)].sort().join("\n") !== expected.sort().join("\n")) {
     throw new Error(`pstack: model roles changed in how or why: ${[...new Set(roles)].join(", ")}`);
   }

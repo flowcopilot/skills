@@ -4,11 +4,11 @@ description: Write clear text for people and agents, and explain code with evide
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: cursor/plugins@e5a8186d7b43be8d6ac4452440fbead5f1a51c70
-  upstream_matt_pocock: "mattpocock/skills@4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d"
+  upstream: cursor/plugins@d0ef80d86795816da932a153458c5dbe192d294e
+  upstream_matt_pocock: "mattpocock/skills@f3fc5632f401156837ee3872f14fe33ccf1024ea"
 ---
 
-<!-- Modified by Flow Copilot from cursor/plugins revision e5a8186d7b43be8d6ac4452440fbead5f1a51c70. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision d0ef80d86795816da932a153458c5dbe192d294e. -->
 
 # Clarity
 

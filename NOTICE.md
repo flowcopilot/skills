@@ -60,8 +60,8 @@ Flow Copilot combines selected skills from both sources into one skill. It repla
 
 ### pstack
 
-Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `e5a8186d7b43be8d6ac4452440fbead5f1a51c70`, dated 2026-10-05. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
+Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `d0ef80d86795816da932a153458c5dbe192d294e`, dated 2026-10-06. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
 
 ### Matt Pocock
 
-Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d`, dated 2026-10-05. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
+Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `f3fc5632f401156837ee3872f14fe33ccf1024ea`, dated 2026-10-07. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.

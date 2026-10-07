@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cursor/plugins revision e5a8186d7b43be8d6ac4452440fbead5f1a51c70. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision d0ef80d86795816da932a153458c5dbe192d294e. -->
 
 # Why
 
@@ -121,7 +121,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 Spawn one synthesizer subagent:
 
 - `subagent_type`: `generalPurpose`
-- `model`: the `why synthesizer` line, default `claude-opus-5-5-max`
+- `model`: the `why synthesizer` line, default `claude-opus-5-5-xhigh`
 - `readonly`: `false` (agent mode). The synthesizer's quality check spot-verifies citations, which can require MCP access. Readonly/Ask mode strips MCPs and defeats that.
 
 The synthesizer gets:

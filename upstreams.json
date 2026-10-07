@@ -218,7 +218,7 @@
   },
   "pstack": {
     "repository": "https://github.com/cursor/plugins.git",
-    "revision": "e5a8186d7b43be8d6ac4452440fbead5f1a51c70",
+    "revision": "d0ef80d86795816da932a153458c5dbe192d294e",
     "workflows": [
       "pstack/how/index",
       "pstack/technical-writing/index",
@@ -229,7 +229,7 @@
   },
   "matt-pocock": {
     "repository": "https://github.com/mattpocock/skills.git",
-    "revision": "4588b32ecab9ecc9fc8cc6b6c5e7d675b6004b0d",
+    "revision": "f3fc5632f401156837ee3872f14fe33ccf1024ea",
     "workflows": [
       "matt-pocock/wait-what/index",
       "matt-pocock/writing-for-agents/index"
