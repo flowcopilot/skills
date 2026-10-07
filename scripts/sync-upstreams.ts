@@ -848,7 +848,7 @@ Units with defined steps go to the investigation role. The parent session keeps 
 `));
 
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, or code comment. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.",
+    "Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, code comment, or product copy. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity
@@ -857,7 +857,7 @@ Write every text so that its reader understands it on the first read. Answer how
 
 ## Pick the rules by reader
 
-- Text that a person reads: chat replies, PR bodies, commit messages, docs, issues, and code comments. Write it clean as you draft, to the reply rules below and the [unslop](references/pstack/unslop/index.md) catalog.
+- Prose that a person reads: chat replies, PR bodies, commit messages, docs, issues, code comments, and product or marketing copy. Read [unslop](references/pstack/unslop/index.md) before you write the first sentence, and again when its rules are no longer in your context. Write the prose clean as you draft, to the unslop rules and the reply rules below.
 - Technical text that a person reads: docs, READMEs, RFCs, PR descriptions, commit messages, and explanations of how code works, how it was built, or why a bug occurs. Also apply [technical-writing](references/pstack/technical-writing/index.md).
 - Text that an agent reads: skills, \`AGENTS.md\`, \`CLAUDE.md\`, files under \`docs/agents/\`, and prompts for subagents. Apply [writing-for-agents](references/matt-pocock/writing-for-agents/index.md) and the sentence rules of technical-writing. Leading words from writing-for-agents are correct here, although unslop rules 26 and 32 remove metaphors from text for people.
 
