@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cursor/plugins revision e5a8186d7b43be8d6ac4452440fbead5f1a51c70. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision d0ef80d86795816da932a153458c5dbe192d294e. -->
 
 # Slack Conversations
 
