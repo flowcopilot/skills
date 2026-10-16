@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
+import { reachableMarkdown } from "./markdown-links";
 
 type Manifest = Record<
   string,
@@ -26,6 +27,29 @@ function readSkill(path: string) {
   if (!match) throw new Error(`${path}: missing YAML frontmatter`);
   const metadata = Bun.YAML.parse(match[1]) as Record<string, unknown>;
   return { metadata, text };
+}
+
+if (process.argv.includes("--reach")) {
+  for (const entry of readdirSync(skillsRoot, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    if (!entry.isDirectory()) continue;
+    const skillRoot = resolve(skillsRoot, entry.name);
+    const markdown = filesUnder(skillRoot).filter((path) => path.endsWith(".md"));
+    const references = markdown.filter(
+      (path) => path.startsWith(`${skillRoot}/references/`) && path.endsWith(".md"),
+    );
+    const reached = reachableMarkdown(resolve(skillRoot, "SKILL.md"), markdown);
+    for (const file of references.sort()) {
+      if (!reached.has(file)) {
+        errors.push(`${entry.name}: unreachable reference ${relative(skillRoot, file)}`);
+      }
+    }
+  }
+  if (errors.length > 0) {
+    for (const error of errors) console.error(error);
+    process.exit(1);
+  }
+  console.log("All Markdown references are reachable from their bundle SKILL.md.");
+  process.exit(0);
 }
 
 for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {

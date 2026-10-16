@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ax-llm/ax": "25.0.0"
+  }
+}

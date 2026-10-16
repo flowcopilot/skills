@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@clerk/react": "6.17.8",
+    "react": "19.0.0",
+    "react-router-dom": "7.6.2"
+  }
+}

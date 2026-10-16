@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "4.11.1",
+    "@cloudflare/workers-types": "4.20250417.0"
+  }
+}

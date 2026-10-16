@@ -22,5 +22,6 @@ jobs:
       - name: Validate all skill bundles
         run: |
           bun run check
+          bun test benchmarks/skills
           uv run --script scripts/validate.py
           lychee --offline --no-progress './**/*.md'

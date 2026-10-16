@@ -1,0 +1,44 @@
+{
+  "models": [
+    { "cli": "codex", "model": "gpt-6-luna", "effort": "low" },
+    { "cli": "codex", "model": "gpt-6.1-sol", "effort": "low" },
+    { "cli": "claude", "model": "claude-haiku-5-5", "effort": "low" },
+    { "cli": "claude", "model": "claude-sonnet-5-5", "effort": "low" }
+  ],
+  "conditions": [
+    { "id": "no-skills", "bundles": [] },
+    {
+      "id": "all-bundles",
+      "bundles": ["ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"]
+    },
+    {
+      "id": "upstream-layout",
+      "layout": "upstream",
+      "sourceManifest": "../../upstreams.json",
+      "sources": [
+        { "id": "ax", "root": "src/ax/skills", "entries": "*.md" },
+        { "id": "clerk", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "cloudflare", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "convex", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "expo", "root": "plugins/expo/skills", "entries": "**/SKILL.md" },
+        { "id": "software-mansion", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "callstack", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "emil-kowalski", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "jakub-krehel", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "pstack", "root": "pstack/skills", "entries": "**/SKILL.md" },
+        { "id": "matt-pocock", "root": "skills", "entries": "**/SKILL.md" }
+      ]
+    },
+    {
+      "id": "expo-overview-entry",
+      "bundles": ["ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"],
+      "taskIds": ["expo-navigation", "expo-networking", "expo-upgrade"],
+      "entryOverride": {
+        "bundle": "expo",
+        "bodyFrom": "references/expo-overview.md",
+        "preserveFrontmatter": ["name", "description"]
+      }
+    }
+  ],
+  "repeats": 3
+}
