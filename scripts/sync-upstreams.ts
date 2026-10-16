@@ -768,17 +768,14 @@ function assertClarityModelRoles(skillRoot: string) {
   }
 }
 
-// The router keeps pstack's reply and comment rules. The playbook paragraph is dropped
-// because the bundle imports no playbooks.
-function clarityReplyRules(checkout: Checkout): string {
+// Reply rules are local so upstream sync cannot restore the longer chat format.
+function clarityCommentRules(checkout: Checkout): string {
   const body = parseSkill(resolve(checkout.root, "pstack/skills/poteto-mode/SKILL.md")).body;
-  const section = body.match(/^## Writing the reply\n[\s\S]*?(?=^## Playbooks\n)/m)?.[0];
-  const playbooks = "Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. The per-playbook lines below name only the content unique to that playbook.\n\n";
-  const playbookReply = "every section the playbook's reply names stays";
-  if (!section?.includes("\n## Comments\n") || !section.includes(playbooks) || !section.includes(playbookReply)) {
-    throw new Error("pstack: poteto-mode reply or comment rules changed");
+  const section = body.match(/^## Comments\n[\s\S]*?(?=^## Playbooks\n)/m)?.[0];
+  if (!section?.trim().startsWith("## Comments\n\nComments follow the same rule as the reply.")) {
+    throw new Error("pstack: poteto-mode comment rules changed");
   }
-  return section.replace(playbooks, "").replace(playbookReply, "every section the workflow's reply names stays").trim();
+  return section.trim();
 }
 
 function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>): string {
@@ -808,7 +805,7 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
   if (!existsSync(resolve(pstack.root, "pstack/skills/figure-it-out/SKILL.md"))) {
     throw new Error("pstack: figure-it-out skill removed");
   }
-  const replyRules = clarityReplyRules(pstack);
+  const commentRules = clarityCommentRules(pstack);
 
   resetDirectory(target, bundle);
   const notices: string[] = [];
@@ -859,13 +856,14 @@ Write every text so that its reader understands it on the first read. Answer how
 ## Pick the rules by reader
 
 - Prose that a person reads: chat replies, PR bodies, commit messages, docs, issues, code comments, and product or marketing copy. Read [unslop](references/pstack/unslop/index.md) before you write the first sentence, and again when its rules are no longer in your context. Write the prose clean as you draft, to the unslop rules and the reply rules below.
-- Technical text that a person reads: docs, READMEs, RFCs, PR descriptions, commit messages, and explanations of how code works, how it was built, or why a bug occurs. Also apply [technical-writing](references/pstack/technical-writing/index.md).
+- Technical text that a person reads: apply [technical-writing](references/pstack/technical-writing/index.md) to docs, READMEs, RFCs, PR descriptions, and commit messages. For technical explanations in chat, apply its sentence rules and use the reply rules below to choose length and structure.
 - Text that an agent reads: skills, \`AGENTS.md\`, \`CLAUDE.md\`, files under \`docs/agents/\`, and prompts for subagents. Apply [writing-for-agents](references/matt-pocock/writing-for-agents/index.md) and the sentence rules of technical-writing. Leading words from writing-for-agents are correct here, although unslop rules 26 and 32 remove metaphors from text for people.
 
 ## Workflows
 
-- [how](references/pstack/how/index.md): the user asks how code works, where something belongs, or which layer owns it.
-- [why](references/pstack/why/index.md): the user asks why code has its shape, why a decision was made, or what caused a regression. Start with the light path: answer alone or with one exploration agent, and follow [the epistemics guide](references/pstack/why/references/epistemics.md). Run the full investigation only when the user names \`why\`, or when the evidence spans more than one system.
+- Answer a narrow how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
+- [how](references/pstack/how/index.md): use for a requested architecture walkthrough or an explanation that needs several independent exploration tasks.
+- [why](references/pstack/why/index.md): use for an explicit \`clarity why\` invocation or a historical investigation that needs several independent evidence sources. For a narrow rationale question, use [the epistemics guide](references/pstack/why/references/epistemics.md) and answer directly.
 
 Only when the user asks for them:
 
@@ -876,7 +874,17 @@ The user selects a workflow by name: \`/clarity bro\` in Claude Code, \`$clarity
 
 Imported text names upstream skills. \`unslop\`, \`technical-writing\`, \`how\`, and \`why\` mean the references above. Other pstack skills, such as \`poteto-mode\`, \`show-me-your-work\`, \`teach\`, \`architect\`, and \`arena\`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
 
-${replyRules}
+## Writing the reply
+
+Answer the current question first. For a routine question or completion update, default to one short paragraph or up to three short bullets. Expand when the user asks for depth or the task needs more detail.
+
+- Include the facts needed to understand the answer, make a decision, or use the result safely. Explain any distinction that the reader needs to connect the evidence to your answer. Preserve requested deliverables, material risks, unresolved decisions, and verification limits.
+- Choose sections for the current request. Chat does not need a section template or separate consumer and maintainer framing. These chat rules take precedence over presentation templates in this skill's imported references.
+- Summarize worker findings once. Report the conclusion, relevant verification, and unresolved issues. Link a detailed artifact when useful. Include a full plan or worker report when the user requests it.
+- Cite evidence where it supports a material claim. Distinguish observation from inference when the difference matters. Routine statements need no repeated confidence labels. Link only artifacts you produced or read this session.
+- Write complete, plain sentences with one thought each. Follow unslop as you draft. Use periods instead of long dashes. A colon before a list is fine.
+
+${commentRules}
 
 ## Model roles
 
@@ -906,7 +914,7 @@ Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` me
 
 This bundle imports selected skills from cursor/plugins (pstack) and mattpocock/skills. Each reference keeps its upstream text. Only this file and \`references/figure-it-out.md\` hold Flow Copilot text. Upstream metadata, plugin files, and agent UI files are not included.
 `, "cursor/plugins", pstack.revision);
-  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router also keeps the reply and comment rules from pstack \`poteto-mode\`, without its playbook paragraph. The \`wait-what\` skill is listed as \`bro\`. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
+  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router defines local reply rules for concise chat and keeps the comment rules from pstack \`poteto-mode\`. Narrow how and why questions use a direct answer. Detailed workflows run when the request needs them. The \`wait-what\` skill is listed as \`bro\`. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk groups skills by category. "all" imports every skill in a category, including
