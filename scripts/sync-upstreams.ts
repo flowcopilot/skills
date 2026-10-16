@@ -513,7 +513,7 @@ function syncExpo(checkout: Checkout): string[] {
   }
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "expo",
-    "Build, debug, upgrade, and deploy Expo apps and operate Expo Application Services (EAS). Use when the task mentions Expo or EAS, or the project has an expo dependency; includes routing, native UI, native modules, web migrations, builds, hosting, updates, and monitoring.",
+    "Use for any task in a project that has an expo dependency or mentions Expo or EAS, including bug fixes, routes and navigation, data fetching, native UI, native modules, SDK upgrades, builds, hosting, OTA updates, and monitoring.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Expo
 
@@ -626,7 +626,7 @@ function syncReactNative(checkouts: Record<typeof reactNativeSources[number], Ch
   }
   const first = checkouts["software-mansion"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Build, review, profile, and upgrade React Native apps with Software Mansion and Callstack guidance. Use for React Native performance, animations, gestures, native integration, navigation, TV, migration, and related libraries used by the project.",
+    "Use for any task in a project that has a react-native dependency, including crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, TV, upgrades, and profiling. Guidance from Software Mansion and Callstack.",
     "software-mansion-labs/skills", first.revision,
     { upstream_callstack: `callstackincubator/agent-skills@${checkouts.callstack.revision}` }, "MIT"),
     `# React Native
@@ -688,7 +688,7 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
   }
   const first = checkouts["emil-kowalski"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Design, build, and review polished web and React Native interfaces with Emil Kowalski and Jakub Krehel guidance. Use for animation and motion, UI polish, typography, color systems, layout, accessibility, product copy, mobile web feel, interface reviews, and UI variants.",
+    "Use when a task changes or reviews UI components in a web or React Native app, including forms and accessibility, toasts and other notifications, animation and motion, typography, color, layout, product copy, and interface polish. Guidance from Emil Kowalski and Jakub Krehel.",
     "emilkowalski/skills", first.revision,
     { upstream_jakub_krehel: `jakubkrehel/skills@${checkouts["jakub-krehel"].revision}` }, "MIT"),
     `# Design Engineering
@@ -849,7 +849,7 @@ Units with defined steps go to the investigation role. The parent session keeps 
 `));
 
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, code comment, or product copy. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.",
+    "Use when the output is prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md. Use when the user asks how code works or why it is built this way, did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself. Do not use for code-only changes.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity

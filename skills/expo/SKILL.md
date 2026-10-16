@@ -1,6 +1,6 @@
 ---
 name: expo
-description: Build, debug, upgrade, and deploy Expo apps and operate Expo Application Services (EAS). Use when the task mentions Expo or EAS, or the project has an expo dependency; includes routing, native UI, native modules, web migrations, builds, hosting, updates, and monitoring.
+description: Use for any task in a project that has an expo dependency or mentions Expo or EAS, including bug fixes, routes and navigation, data fetching, native UI, native modules, SDK upgrades, builds, hosting, OTA updates, and monitoring.
 license: MIT
 metadata:
   author: flowcopilot
