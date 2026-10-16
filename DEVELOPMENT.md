@@ -177,7 +177,7 @@ The router sets the Flow Copilot invocation policy. The constant also records th
 
 The pstack `how` and `why` skills name a model role line and a default model for each subagent. `clarityModelRoles` maps each line to a router role. The sync stops when upstream adds a line, removes a line, or changes a default. Map the new line in the router table before you update the constant.
 
-The router copies the `Writing the reply` and `Comments` sections from pstack `poteto-mode/SKILL.md`. The sync drops the paragraph about playbooks and replaces one mention of "the playbook's reply". It stops when that text changes. `references/figure-it-out.md` is Flow Copilot text, not upstream content. The generator writes it and the Codex metadata in `agents/openai.yaml`.
+The router defines its own `Writing the reply` section in `scripts/sync-upstreams.ts`. Routine chat defaults to a short direct answer. Requested detail, evidence distinctions, risks, and verification limits remain required. Narrow how and why questions do not trigger a full investigation. The router imports only the `Comments` section from pstack `poteto-mode/SKILL.md`. The sync stops if that section or its opening rule cannot be found. `references/figure-it-out.md` is Flow Copilot text, not upstream content. The generator writes it and the Codex metadata in `agents/openai.yaml`.
 
 Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync --only clarity` to update both sources together.
 

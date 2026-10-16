@@ -17,13 +17,14 @@ Write every text so that its reader understands it on the first read. Answer how
 ## Pick the rules by reader
 
 - Prose that a person reads: chat replies, PR bodies, commit messages, docs, issues, code comments, and product or marketing copy. Read [unslop](references/pstack/unslop/index.md) before you write the first sentence, and again when its rules are no longer in your context. Write the prose clean as you draft, to the unslop rules and the reply rules below.
-- Technical text that a person reads: docs, READMEs, RFCs, PR descriptions, commit messages, and explanations of how code works, how it was built, or why a bug occurs. Also apply [technical-writing](references/pstack/technical-writing/index.md).
+- Technical text that a person reads: apply [technical-writing](references/pstack/technical-writing/index.md) to docs, READMEs, RFCs, PR descriptions, and commit messages. For technical explanations in chat, apply its sentence rules and use the reply rules below to choose length and structure.
 - Text that an agent reads: skills, `AGENTS.md`, `CLAUDE.md`, files under `docs/agents/`, and prompts for subagents. Apply [writing-for-agents](references/matt-pocock/writing-for-agents/index.md) and the sentence rules of technical-writing. Leading words from writing-for-agents are correct here, although unslop rules 26 and 32 remove metaphors from text for people.
 
 ## Workflows
 
-- [how](references/pstack/how/index.md): the user asks how code works, where something belongs, or which layer owns it.
-- [why](references/pstack/why/index.md): the user asks why code has its shape, why a decision was made, or what caused a regression. Start with the light path: answer alone or with one exploration agent, and follow [the epistemics guide](references/pstack/why/references/epistemics.md). Run the full investigation only when the user names `why`, or when the evidence spans more than one system.
+- Answer a narrow how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
+- [how](references/pstack/how/index.md): use for a requested architecture walkthrough or an explanation that needs several independent exploration tasks.
+- [why](references/pstack/why/index.md): use for an explicit `clarity why` invocation or a historical investigation that needs several independent evidence sources. For a narrow rationale question, use [the epistemics guide](references/pstack/why/references/epistemics.md) and answer directly.
 
 Only when the user asks for them:
 
@@ -36,15 +37,13 @@ Imported text names upstream skills. `unslop`, `technical-writing`, `how`, and `
 
 ## Writing the reply
 
-Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
+Answer the current question first. For a routine question or completion update, default to one short paragraph or up to three short bullets. Expand when the user asks for depth or the task needs more detail.
 
-- **Short declarative sentences.** One thought per sentence, ended with a period.
-- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
-- **Terse is not an excuse to drop content.** Short sentences, but every section the workflow's reply names stays: details, tradeoffs, choices, open decisions.
-- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
-- **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
+- Include the facts needed to understand the answer, make a decision, or use the result safely. Explain any distinction that the reader needs to connect the evidence to your answer. Preserve requested deliverables, material risks, unresolved decisions, and verification limits.
+- Choose sections for the current request. Chat does not need a section template or separate consumer and maintainer framing. These chat rules take precedence over presentation templates in this skill's imported references.
+- Summarize worker findings once. Report the conclusion, relevant verification, and unresolved issues. Link a detailed artifact when useful. Include a full plan or worker report when the user requests it.
+- Cite evidence where it supports a material claim. Distinguish observation from inference when the difference matters. Routine statements need no repeated confidence labels. Link only artifacts you produced or read this session.
+- Write complete, plain sentences with one thought each. Follow unslop as you draft. Use periods instead of long dashes. A colon before a list is fine.
 
 ## Comments
 
