@@ -1,6 +1,6 @@
 ---
 name: cloudflare
-description: Choose, build, review, test, deploy, and operate Cloudflare products. Use for Workers, Pages, storage, Durable Objects, Agents SDK, email, Cloudflare One, Sandbox, Turnstile, Wrangler, security, networking, performance, or Cloudflare configuration and migrations.
+description: Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Then read SKILL.md and open only the reference that matches the task. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.
 license: Apache-2.0
 metadata:
   author: flowcopilot

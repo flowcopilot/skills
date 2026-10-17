@@ -1,6 +1,6 @@
 ---
 name: design-engineering
-description: Use when a task changes or reviews UI components in a web or React Native app, including forms and accessibility, toasts and other notifications, animation and motion, typography, color, layout, product copy, and interface polish. Guidance from Emil Kowalski and Jakub Krehel.
+description: Load this skill before you build, change, or review UI components in a web or React Native app. Then read SKILL.md and open only the reference that matches the task. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.
 license: MIT
 metadata:
   author: flowcopilot

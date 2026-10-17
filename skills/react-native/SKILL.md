@@ -1,6 +1,6 @@
 ---
 name: react-native
-description: Use for any task in a project that has a react-native dependency, including crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, TV, upgrades, and profiling. Guidance from Software Mansion and Callstack.
+description: Load this skill before you read or change code in a project whose package.json lists react-native. Then read SKILL.md and open only the reference that matches the task. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.
 license: MIT
 metadata:
   author: flowcopilot

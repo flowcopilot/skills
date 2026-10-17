@@ -119,6 +119,26 @@ Here, an overview can cover a focused subject rather than every skill in a repos
 
 The sync script does not import Matt Pocock's router. Its existence is verified in the [pinned `ask-matt` entry](https://github.com/mattpocock/skills/blob/f3fc5632f401156837ee3872f14fe33ccf1024ea/skills/engineering/ask-matt/SKILL.md#L1-L6). The overview bodies retained in [Ax](../../skills/ax/references/ax-llm.md), [Emil's source](../../skills/design-engineering/references/emil-kowalski/emil-design-eng/index.md), and [Jakub's source](../../skills/design-engineering/references/jakub-krehel/better-interface/index.md) establish their roles beyond the sync script's file discovery.
 
+## Description formats
+
+`variants/descriptions.json` has three description formats for all 8 bundles. `imperative` starts with "Always apply this skill when". `when-how-what` uses three plain sentences. `labeled` puts the same content after `When:`, `How:`, and `What:` labels. The bundles now use `when-how-what`, and `AGENTS.md` makes it the rule.
+
+T3 `delegate_task` ran each task once per model on October 17, 2026, with low effort. Each cell shows the tasks that loaded the expected bundle, out of 17, and the required references read, out of 22. "Before" is the description at commit `14f833e`.
+
+| Harness and model | Before | Imperative | Sentences | Labels |
+| --- | --- | --- | --- | --- |
+| Codex `gpt-6-luna` | 0, 0 | 3, 3 | 3, 4 | 5, 4 |
+| Codex `gpt-6.1-sol` | 17, 13 | 17, 15 | 17, 15 | 17, 15 |
+| Claude Code `claude-haiku-5-5` | 1, 1 | 5, 5 | 10, 5 | 3, 3 |
+| Claude Code `claude-sonnet-5-5` | 4, 1 | 7, 3 | 15, 5 | 11, 5 |
+| Cursor `grok-4.7` | 17, 12 | | 16, 17 | 17, 17 |
+| Cursor `gemini-4-argon` | 17, 22 | | 17, 20 | 17, 21 |
+| OpenCode `deepseek-v4.1-flash-free` | 7, 5 | | 7, 9 | 5 of 11, 6 of 14 |
+| OpenCode `glm-5.3-flash-free` | 4, 5 | | 2, 2 | 4 of 11, 5 of 14 |
+| Pi `xai/grok-4.7` | 17, 22 | | 17, 22 | 17, 21 |
+
+The imperative format ran only on Codex and Claude Code. The OpenCode free tier hit its rate limit during the labels run, so those cells count only the 11 tasks that finished. No run loaded a skill on the negative control. One run per cell is a small sample, so a difference of one or two tasks is noise.
+
 ## Transcript parsers
 
 `src/claude.ts` exports `parseClaudeTranscript`. `src/codex.ts` exports `parseCodexTranscript`. Each accepts a JSONL string or parsed event array and returns `{ bundle, path, tool, complete }` reads. Invalid JSON throws. Options accept a fallback `cwd` and additional absolute `skillRoots`.

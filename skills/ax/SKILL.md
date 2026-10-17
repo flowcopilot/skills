@@ -1,6 +1,6 @@
 ---
 name: ax
-description: Build, review, debug, and optimize TypeScript LLM applications with @ax-llm/ax. Use for Ax signatures, model providers, structured generation, agents, context, memory, MCP, workflows, events, audio, observability, GEPA, refinement, or playbooks.
+description: Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Then read SKILL.md and open only the reference that matches the task. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.
 license: Apache-2.0
 metadata:
   author: flowcopilot
