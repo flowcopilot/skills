@@ -208,23 +208,32 @@ function syncAx(checkout: Checkout): string[] {
   if (typeof version !== "string" || version.length === 0) {
     throw new Error("Ax package version is missing");
   }
-  const workflows = sourceMarkdownSkills(
-    resolve(checkout.root, "src", "ax", "skills"),
-  );
+  const sourceRoot = resolve(checkout.root, "src", "ax", "skills");
+  const workflows = sourceMarkdownSkills(sourceRoot);
   if (!workflows.some((skill) => skill.name === "ax-llm")) {
     throw new Error("Ax source has no ax-llm skill");
   }
 
   const references = resolve(target, "references");
   mkdirSync(references, { recursive: true });
+  // Ax keeps files that several skills share in references/; they move to references/shared/.
   for (const skill of workflows) {
     writeMarkdown(
       resolve(references, `${skill.name}.md`),
-      skill.body.replaceAll("__VERSION__", version),
+      skill.body
+        .replaceAll("__VERSION__", version)
+        .replace(/\]\((?:\.\/)?references\//g, "](shared/"),
       sourceName,
       checkout.revision,
     );
   }
+  copyTree(
+    resolve(sourceRoot, "references"),
+    resolve(references, "shared"),
+    sourceName,
+    checkout.revision,
+    (text) => text.replaceAll("__VERSION__", version),
+  );
 
   const metadata = frontmatter(
     "ax",
@@ -358,7 +367,12 @@ function syncCloudflare(checkout: Checkout): string[] {
 
   for (const skill of workflows) {
     let body = linkWorkflowMentions(
-      skill.body.replace(/(?:\.\/)?references\//g, `${skill.name}/`),
+      skill.body
+        .replace(/(?:\.\/)?references\//g, `${skill.name}/`)
+        // Sibling skill links point to references next to this one, and the root skill to the router.
+        .replace(/\.\.\/cloudflare\/SKILL\.md/g, "../SKILL.md")
+        .replace(/\.\.\/([a-z0-9-]+)\/SKILL\.md/g, (match, name: string) =>
+          workflowNames.has(name) ? `${name}.md` : match),
       "",
     );
     if (skill.name === "turnstile-spin") {
@@ -760,7 +774,7 @@ function upstreamUserOnly(skillRoot: string): boolean {
 function assertClarityModelRoles(skillRoot: string) {
   const roles = [...["how", "why"].flatMap((skill) =>
     [...readFileSync(resolve(skillRoot, skill, "SKILL.md"), "utf8")
-      .matchAll(/the `([^`]+)` line, default `[^`]+`/g)]),
+      .matchAll(/the `([^`]+)` line(?:, | \(| in the `pstack-models\.mdc` rule \()default `[^`]+`/g)]),
   ].map(([, line]) => line);
   const expected = Object.keys(clarityModelRoles);
   if ([...new Set(roles)].sort().join("\n") !== expected.sort().join("\n")) {
@@ -917,20 +931,24 @@ This bundle imports selected skills from cursor/plugins (pstack) and mattpocock/
   return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router defines local reply rules for concise chat and keeps the comment rules from pstack \`poteto-mode\`. Narrow how and why questions use a direct answer. Detailed workflows run when the request needs them. The \`wait-what\` skill is listed as \`bro\`. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
 }
 
-// Clerk groups skills by category. "all" imports every skill in a category, including
-// future ones; a list imports only the named skills. New categories stop the sync.
-const clerkSelection: Record<string, "all" | string[]> = {
-  core: "all",
-  features: "all",
-  frameworks: ["clerk-react-patterns", "clerk-tanstack-patterns"],
-  mobile: ["clerk-expo"],
+// Clerk publishes a flat skills/ directory. Each bundled skill is listed under its router
+// section; each skipped skill is listed in clerkExcluded. An unlisted skill stops the sync.
+const clerkSections: Record<string, string[]> = {
+  Core: ["clerk-backend-api", "clerk-cli", "clerk-custom-ui", "clerk-setup"],
+  Features: ["clerk-billing", "clerk-orgs", "clerk-testing", "clerk-webhooks"],
+  Frameworks: ["clerk-react-patterns", "clerk-tanstack-patterns"],
+  Mobile: ["clerk-expo"],
 };
-const clerkCategoryTitles: Record<string, string> = {
-  core: "Core",
-  features: "Features",
-  frameworks: "Frameworks",
-  mobile: "Mobile",
-};
+const clerkExcluded = [
+  "clerk-android",
+  "clerk-astro-patterns",
+  "clerk-chrome-extension-patterns",
+  "clerk-nextjs-patterns",
+  "clerk-nuxt-patterns",
+  "clerk-react-router-patterns",
+  "clerk-swift",
+  "clerk-vue-patterns",
+];
 
 // Apply a rewrite outside fenced code blocks only.
 function outsideCode(text: string, rewrite: (prose: string) => string): string {
@@ -949,36 +967,28 @@ function rewriteLocalPaths(text: string, directory: string, target: string): str
 function syncClerk(checkout: Checkout): string[] {
   const sourceName = "clerk/skills";
   const sourceRoot = resolve(checkout.root, "skills");
-  const categories = readdirSync(sourceRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
-  for (const category of categories) {
-    if (!(category in clerkSelection)) {
-      throw new Error(`Clerk added category ${category}; update clerkSelection`);
+  const upstream = readdirSync(sourceRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(resolve(sourceRoot, entry.name, "SKILL.md")))
+    .map((entry) => parseSkill(resolve(sourceRoot, entry.name, "SKILL.md")));
+  const upstreamNames = new Set(upstream.map((skill) => skill.name));
+  const sectionOf = new Map(Object.entries(clerkSections).flatMap(([section, skills]) =>
+    skills.map((name) => [name, section] as const)));
+  for (const name of [...sectionOf.keys(), ...clerkExcluded]) {
+    if (!upstreamNames.has(name)) throw new Error(`Clerk no longer has ${name}`);
+  }
+  for (const name of upstreamNames) {
+    if (name !== "clerk" && !sectionOf.has(name) && !clerkExcluded.includes(name)) {
+      throw new Error(`Clerk added ${name}; add it to clerkSections or clerkExcluded`);
     }
   }
-  const selected = Object.entries(clerkSelection).flatMap(([category, choice]) => {
-    const skills = readdirSync(resolve(sourceRoot, category), { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => resolve(sourceRoot, category, entry.name, "SKILL.md"))
-      .filter(existsSync)
-      .map(parseSkill);
-    const names = new Set(skills.map((skill) => skill.name));
-    if (choice !== "all") {
-      for (const name of choice) {
-        if (!names.has(name)) throw new Error(`Clerk ${category} no longer has ${name}`);
-      }
-    }
-    return skills
-      .filter((skill) => skill.name !== "clerk")
-      .filter((skill) => choice === "all" || choice.includes(skill.name))
-      .map((skill) => ({ ...skill, category }));
-  }).sort((left, right) => left.name.localeCompare(right.name));
-  const rootSkill = parseSkill(resolve(sourceRoot, "core", "clerk", "SKILL.md"));
+  const selected = upstream
+    .filter((skill) => sectionOf.has(skill.name))
+    .map((skill) => ({ ...skill, section: sectionOf.get(skill.name)! }))
+    .sort((left, right) => left.name.localeCompare(right.name));
+  const rootSkill = parseSkill(resolve(sourceRoot, "clerk", "SKILL.md"));
 
   // Clerk has no standalone LICENSE file; the README and plugin metadata declare MIT.
-  const plugin = JSON.parse(readFileSync(resolve(checkout.root, ".codex-plugin", "plugin.json"), "utf8"));
+  const plugin = JSON.parse(readFileSync(resolve(checkout.root, "plugin.json"), "utf8"));
   const readme = readFileSync(resolve(checkout.root, "README.md"), "utf8");
   if (plugin.license !== "MIT" || !/^## License\n\nMIT\n/m.test(readme)) {
     throw new Error("Clerk upstream license changed");
@@ -1058,17 +1068,14 @@ function syncClerk(checkout: Checkout): string[] {
   }
 
   mkdirSync(resolve(target, "licenses"), { recursive: true });
-  copyFileSync(resolve(checkout.root, ".codex-plugin", "plugin.json"), resolve(target, "licenses", "clerk-plugin.json"));
+  copyFileSync(resolve(checkout.root, "plugin.json"), resolve(target, "licenses", "clerk-plugin.json"));
 
   const versionSection = rootSkill.body.match(/^## Version Detection\n[\s\S]*?(?=\n---\n)/m);
   if (!versionSection) throw new Error("Clerk router version section changed upstream");
-  const excluded = categories.flatMap((category) =>
-    readdirSync(resolve(sourceRoot, category), { withFileTypes: true })
-      .filter((entry) => entry.isDirectory() && entry.name !== "clerk" && !names.has(entry.name))
-      .map((entry) => `\`${entry.name}\``));
-  const sections = Object.keys(clerkSelection).map((category) => {
-    const skills = selected.filter((skill) => skill.category === category);
-    return `### ${clerkCategoryTitles[category]}\n\n${workflowList(skills)}`;
+  const excluded = clerkExcluded.map((name) => `\`${name}\``);
+  const sections = Object.keys(clerkSections).map((section) => {
+    const skills = selected.filter((skill) => skill.section === section);
+    return `### ${section}\n\n${workflowList(skills)}`;
   }).join("\n\n");
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "clerk",
@@ -1141,7 +1148,7 @@ function syncBundle(name: BundleName): string {
 
 The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.
 
-The imported revision is dated ${checkout.date}. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, and records the source package version.
+The imported revision is dated ${checkout.date}. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, moves shared reference files to \`references/shared/\` with adjusted links, and records the source package version.
 `,
     convex: `## Convex skill
 

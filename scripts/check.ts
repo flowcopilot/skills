@@ -31,7 +31,6 @@ function readSkill(path: string) {
 
 // Upstream files that no file points to and that give agents no instructions.
 const notForAgents: Record<string, string> = {
-  "cloudflare/references/zaraz/IMPLEMENTATION_SUMMARY.md": "an author's note that lists the files it created",
   "react-native/references/callstack/react-native-best-practices/POWER.md": "a Kiro power copy of index.md",
   "react-native/references/software-mansion/detour/README.md": "a collection README for people; the router links each sub-skill",
   "react-native/references/software-mansion/react-native-best-practices/README.md":
