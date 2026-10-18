@@ -1,6 +1,6 @@
 ---
 name: design-engineering
-description: Design, build, and review polished web and React Native interfaces with Emil Kowalski and Jakub Krehel guidance. Use for animation and motion, UI polish, typography, color systems, layout, accessibility, product copy, mobile web feel, interface reviews, and UI variants.
+description: Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.
 license: MIT
 metadata:
   author: flowcopilot

@@ -1,6 +1,6 @@
 ---
 name: clarity
-description: Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, code comment, or product copy. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.
+description: Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.
 license: MIT
 metadata:
   author: flowcopilot

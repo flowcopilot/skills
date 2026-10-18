@@ -1,6 +1,6 @@
 ---
 name: clerk
-description: Add, configure, and operate Clerk authentication. Use when a project uses Clerk or @clerk packages, or the task involves Clerk setup, the Clerk CLI or Backend API, custom sign-in UI, organizations, billing, webhooks, E2E auth testing, React SPA, TanStack Start, or Expo auth.
+description: Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.
 license: MIT
 metadata:
   author: flowcopilot

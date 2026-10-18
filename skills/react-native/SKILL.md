@@ -1,6 +1,6 @@
 ---
 name: react-native
-description: Build, review, profile, and upgrade React Native apps with Software Mansion and Callstack guidance. Use for React Native performance, animations, gestures, native integration, navigation, TV, migration, and related libraries used by the project.
+description: Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.
 license: MIT
 metadata:
   author: flowcopilot

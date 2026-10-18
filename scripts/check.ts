@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
+import { reachableMarkdown } from "./markdown-links";
 
 type Manifest = Record<
   string,
@@ -26,6 +27,45 @@ function readSkill(path: string) {
   if (!match) throw new Error(`${path}: missing YAML frontmatter`);
   const metadata = Bun.YAML.parse(match[1]) as Record<string, unknown>;
   return { metadata, text };
+}
+
+// Upstream files that no file points to and that give agents no instructions.
+const notForAgents: Record<string, string> = {
+  "cloudflare/references/zaraz/IMPLEMENTATION_SUMMARY.md": "an author's note that lists the files it created",
+  "react-native/references/callstack/react-native-best-practices/POWER.md": "a Kiro power copy of index.md",
+  "react-native/references/software-mansion/detour/README.md": "a collection README for people; the router links each sub-skill",
+  "react-native/references/software-mansion/react-native-best-practices/README.md":
+    "a collection README for people; the router links index.md",
+};
+
+if (process.argv.includes("--reach")) {
+  for (const path of Object.keys(notForAgents)) {
+    if (!existsSync(resolve(skillsRoot, path))) errors.push(`${path}: listed as not for agents, but the file is gone`);
+  }
+  for (const entry of readdirSync(skillsRoot, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    if (!entry.isDirectory()) continue;
+    const skillRoot = resolve(skillsRoot, entry.name);
+    const markdown = filesUnder(skillRoot).filter((path) => path.endsWith(".md"));
+    const references = markdown.filter(
+      (path) => path.startsWith(`${skillRoot}/references/`) && path.endsWith(".md"),
+    );
+    const reached = reachableMarkdown(resolve(skillRoot, "SKILL.md"), markdown);
+    for (const file of references.sort()) {
+      const listed = relative(skillsRoot, file) in notForAgents;
+      if (listed && reached.has(file)) {
+        errors.push(`${relative(skillsRoot, file)}: listed as not for agents, but a file now points to it`);
+      }
+      if (!reached.has(file) && !listed) {
+        errors.push(`${entry.name}: unreachable reference ${relative(skillRoot, file)}`);
+      }
+    }
+  }
+  if (errors.length > 0) {
+    for (const error of errors) console.error(error);
+    process.exit(1);
+  }
+  console.log("All Markdown references are reachable from their bundle SKILL.md.");
+  process.exit(0);
 }
 
 for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {

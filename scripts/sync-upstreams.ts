@@ -228,7 +228,7 @@ function syncAx(checkout: Checkout): string[] {
 
   const metadata = frontmatter(
     "ax",
-    "Build, review, debug, and optimize TypeScript LLM applications with @ax-llm/ax. Use for Ax signatures, model providers, structured generation, agents, context, memory, MCP, workflows, events, audio, observability, GEPA, refinement, or playbooks.",
+    "Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.",
     sourceName,
     checkout.revision,
     { upstream_version: version },
@@ -289,7 +289,7 @@ function syncConvex(checkout: Checkout): string[] {
 
   const metadata = frontmatter(
     "convex",
-    "Build, review, test, secure, migrate, and operate Convex backends. Use when a project has a convex directory, uses Convex or @convex-dev packages, or needs Convex schemas, functions, components, authentication, billing, deployments, monitoring, backups, cost work, or production repair.",
+    "Load this skill before you read or change code in a project that has a convex directory or whose package.json lists convex or @convex-dev packages. Covers schemas, queries, mutations, actions, indexes, crons, auth, components, migrations, and deployments.",
     sourceName,
     checkout.revision,
   );
@@ -437,7 +437,7 @@ function syncCloudflare(checkout: Checkout): string[] {
   rootBody = `${rootBody.slice(0, insertion).trimEnd()}\n\n## Specialized workflows\n\n${workflowList(workflows)}${rootBody.slice(insertion)}`;
   const metadata = frontmatter(
     "cloudflare",
-    "Choose, build, review, test, deploy, and operate Cloudflare products. Use for Workers, Pages, storage, Durable Objects, Agents SDK, email, Cloudflare One, Sandbox, Turnstile, Wrangler, security, networking, performance, or Cloudflare configuration and migrations.",
+    "Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.",
     sourceName,
     checkout.revision,
   );
@@ -513,7 +513,7 @@ function syncExpo(checkout: Checkout): string[] {
   }
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "expo",
-    "Build, debug, upgrade, and deploy Expo apps and operate Expo Application Services (EAS). Use when the task mentions Expo or EAS, or the project has an expo dependency; includes routing, native UI, native modules, web migrations, builds, hosting, updates, and monitoring.",
+    "Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Expo
 
@@ -626,7 +626,7 @@ function syncReactNative(checkouts: Record<typeof reactNativeSources[number], Ch
   }
   const first = checkouts["software-mansion"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Build, review, profile, and upgrade React Native apps with Software Mansion and Callstack guidance. Use for React Native performance, animations, gestures, native integration, navigation, TV, migration, and related libraries used by the project.",
+    "Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.",
     "software-mansion-labs/skills", first.revision,
     { upstream_callstack: `callstackincubator/agent-skills@${checkouts.callstack.revision}` }, "MIT"),
     `# React Native
@@ -688,7 +688,7 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
   }
   const first = checkouts["emil-kowalski"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Design, build, and review polished web and React Native interfaces with Emil Kowalski and Jakub Krehel guidance. Use for animation and motion, UI polish, typography, color systems, layout, accessibility, product copy, mobile web feel, interface reviews, and UI variants.",
+    "Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.",
     "emilkowalski/skills", first.revision,
     { upstream_jakub_krehel: `jakubkrehel/skills@${checkouts["jakub-krehel"].revision}` }, "MIT"),
     `# Design Engineering
@@ -846,7 +846,7 @@ Units with defined steps go to the investigation role. The parent session keeps 
 `));
 
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Write clear text for people and agents, and explain code with evidence. Use before any reply, doc, PR, commit message, code comment, or product copy. Use when you write or edit skills, AGENTS.md, CLAUDE.md, or docs/agents files. Use when the user asks how code works or why it is built this way. Use when the user did not understand a message (bro, wait what, repeat, make it shorter), or says to figure it out yourself.",
+    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity
@@ -1072,7 +1072,7 @@ function syncClerk(checkout: Checkout): string[] {
   }).join("\n\n");
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "clerk",
-    "Add, configure, and operate Clerk authentication. Use when a project uses Clerk or @clerk packages, or the task involves Clerk setup, the Clerk CLI or Backend API, custom sign-in UI, organizations, billing, webhooks, E2E auth testing, React SPA, TanStack Start, or Expo auth.",
+    "Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Clerk
 
