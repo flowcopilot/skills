@@ -139,6 +139,29 @@ T3 `delegate_task` ran each task once per model on October 17, 2026, with low ef
 
 The imperative format ran only on Codex and Claude Code. The OpenCode free tier hit its rate limit during the labels run, so those cells count only the 11 tasks that finished. No run loaded a skill on the negative control. One run per cell is a small sample, so a difference of one or two tasks is noise.
 
+## Description parts
+
+`variants/formats.json` splits the `when-how-what` text into parts and recombines them. W is the "Load this skill before you" sentence. H is the "Then read SKILL.md and open only the reference" sentence, and HS is the same sentence without "read SKILL.md". Wh is the "Covers" sentence. M joins W and Wh in one sentence with "including". A puts W, HS, and Wh in one sentence.
+
+T3 `delegate_task` ran each task 3 times per model on October 18, 2026, with low effort. Each cell shows the runs that loaded the expected bundle, out of 51, and the required references read, out of 66. `AGENTS.md` and `CLAUDE.md` were removed from the repository root during the runs, except in the last row.
+
+| Variant | Codex `gpt-6-luna` | Claude Code `claude-haiku-5-5` | Claude Code `claude-sonnet-5-5` |
+| --- | --- | --- | --- |
+| W, H, Wh (current) | 10, 8 | 25, 10 | 41, 18 |
+| W, HS, Wh | 5, 6 | 27, 13 | 37, 17 |
+| W, Wh | 5, 6 | 32, 12 | 41, 14 |
+| HS, Wh | 0, 0 | 0, 0 | 11, 9 |
+| Wh, W, HS | 0, 0 | 24, 7 | 45, 21 |
+| W | 11, 10 | 29, 10 | 46, 19 |
+| M, HS | 11, 11 | 29, 15 | 41, 15 |
+| M | 7, 5 | 31, 10 | 40, 16 |
+| A | 8, 7 | 21, 12 | 41, 24 |
+| W, H, Wh with `AGENTS.md` | 7, 7 | 5, 3 | 27, 7 |
+
+With 51 runs, the 95% interval of a count near 25 is about plus or minus 7. Differences between the variants that start with W are inside that interval. Three effects are larger. Without W, loads fall to 0 for Luna and Haiku. With Wh first, Luna loads nothing. The repository `AGENTS.md` and `CLAUDE.md` lower Haiku from 25 to 5 and Sonnet from 41 to 27 with the same descriptions.
+
+DeepSeek on the OpenCode free tier ran only the first two variants and part of the third, and then every run failed with "Rate limit exceeded". Its results are not in the table. The design-engineering tasks are among the lowest in every variant. Their trigger names UI work and has no package signal.
+
 ## Transcript parsers
 
 `src/claude.ts` exports `parseClaudeTranscript`. `src/codex.ts` exports `parseCodexTranscript`. Each accepts a JSONL string or parsed event array and returns `{ bundle, path, tool, complete }` reads. Invalid JSON throws. Options accept a fallback `cwd` and additional absolute `skillRoots`.
