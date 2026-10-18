@@ -162,6 +162,19 @@ With 51 runs, the 95% interval of a count near 25 is about plus or minus 7. Diff
 
 DeepSeek on the OpenCode free tier ran only the first two variants and part of the third, and then every run failed with "Rate limit exceeded". Its results are not in the table. The design-engineering tasks are among the lowest in every variant. Their trigger names UI work and has no package signal.
 
+## When alone against When and What
+
+This test compares W alone with W and Wh, the format now in use. Each task ran 5 times per model per variant on October 18, 2026, with low effort. The two variants alternated batch by batch. `AGENTS.md`, `CLAUDE.md`, and the global clarity rule were off. Each cell shows loads of the expected bundle out of 85 runs and required references read out of 110. The interval is a 95% bootstrap interval of the paired difference, with the task as the resampled unit.
+
+| Model | W loads | W, Wh loads | Difference | W refs | W, Wh refs | Difference |
+| --- | --- | --- | --- | --- | --- | --- |
+| Codex `gpt-6-luna` | 15 | 10 | -5 (-18 to 7) | 18 | 5 | -13 (-32 to 1) |
+| Claude Code `claude-haiku-5-5` | 49 | 63 | +14 (3 to 26) | 25 | 22 | -3 (-9 to 4) |
+| Claude Code `claude-sonnet-5-5` | 74 | 80 | +6 (-4 to 19) | 25 | 23 | -2 (-12 to 9) |
+| All three | 138 of 255 | 153 of 255 | +15 (-6 to 37) | 68 of 330 | 50 of 330 | -18 (-41 to 2) |
+
+Only the Haiku load gain excludes 0 at 95%. At 99%, its interval is -1 to 30, so the gain does not survive a correction for three models. No other difference excludes 0. No run failed, and the negative control had no false loads.
+
 ## Transcript parsers
 
 `src/claude.ts` exports `parseClaudeTranscript`. `src/codex.ts` exports `parseCodexTranscript`. Each accepts a JSONL string or parsed event array and returns `{ bundle, path, tool, complete }` reads. Invalid JSON throws. Options accept a fallback `cwd` and additional absolute `skillRoots`.
