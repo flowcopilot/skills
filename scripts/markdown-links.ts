@@ -57,6 +57,32 @@ export function markdownLinks(markdown: string): string[] {
   return links.map((link) => link.replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\]\\^_`{|}~])/g, "$1"));
 }
 
+// Upstream routers list references as a directory tree in a code block: a `folder/` line,
+// then indented bare file names. This returns those names joined with their folders.
+export function treeMentions(text: string): string[] {
+  const mentions: string[] = [];
+  let fence = "";
+  let folders: { indent: number; name: string }[] = [];
+  for (const line of text.split("\n")) {
+    const marker = line.match(/^\s*(`{3,}|~{3,})/);
+    if (marker) {
+      if (!fence) [fence, folders] = [marker[1], []];
+      else if (marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = "";
+      continue;
+    }
+    if (!fence) continue;
+    const item = line.match(/^([\s|`├└│─-]*)([\w.-]+(?:\/[\w.-]+)*)(\/)?(?=\s|$)/);
+    if (!item) continue;
+    const indent = item[1].length;
+    while (folders.length > 0 && folders.at(-1)!.indent >= indent) folders.pop();
+    if (item[3]) folders.push({ indent, name: item[2] });
+    else if (item[2].endsWith(".md") && folders.length > 0) {
+      mentions.push([...folders.map((folder) => folder.name), item[2]].join("/"));
+    }
+  }
+  return mentions;
+}
+
 export function reachableMarkdown(entry: string, files: string[]): Set<string> {
   const available = new Set(files);
   const reached = new Set<string>();
@@ -68,7 +94,8 @@ export function reachableMarkdown(entry: string, files: string[]): Set<string> {
     reached.add(file);
     const text = readFileSync(file, "utf8");
     // Upstream skills often name references as code or plain paths, and agents follow those too.
-    for (const [mention] of text.matchAll(/(?<![\w./:-])(?:\.{1,2}\/)?[\w-]+(?:\/[\w.-]+)*\.md\b/g)) {
+    const mentions = [...text.matchAll(/(?<![\w./:-])(?:\.{1,2}\/)?[\w-]+(?:\/[\w.-]+)*\.md\b/g)].map(([mention]) => mention);
+    for (const mention of [...mentions, ...treeMentions(text)]) {
       const target = [dirname(file), ...bases].map((base) => resolve(base, mention)).find((path) => available.has(path));
       if (target) pending.push(target);
     }

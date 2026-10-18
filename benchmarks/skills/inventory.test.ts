@@ -1,7 +1,7 @@
 import { afterEach, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { markdownLinks, reachableMarkdown } from "../../scripts/markdown-links";
+import { markdownLinks, reachableMarkdown, treeMentions } from "../../scripts/markdown-links";
 
 const directories: string[] = [];
 afterEach(() => {
@@ -84,4 +84,16 @@ test("follows code and plain path mentions relative to the file or the reference
   expect([...reachableMarkdown(resolve(directory, "SKILL.md"), files)].sort()).toEqual([
     "SKILL.md", "references/router.md", "references/router/routes.md", "references/router/tabs.md",
   ].map((name) => resolve(directory, name)).sort());
+});
+
+test("joins bare file names in a code block tree with their folders", () => {
+  expect(treeMentions([
+    "Consult these resources:", "", "```", "expo-router/",
+    "  tabs.md                NativeTabs and iOS 26 features",
+    "  nested/", "    deep.md  Nested entry", "  search.md  Search bar", "```",
+    "", "tabs.md outside the block", "```text", "orphan.md  no folder", "```",
+  ].join("\n"))).toEqual(["expo-router/tabs.md", "expo-router/nested/deep.md", "expo-router/search.md"]);
+  expect(treeMentions("```text\nskills/example/\n|-- SKILL.md\n`-- references/\n    `-- workflow-a.md\n```")).toEqual([
+    "skills/example/SKILL.md", "skills/example/references/workflow-a.md",
+  ]);
 });
