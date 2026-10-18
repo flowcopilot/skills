@@ -1,6 +1,6 @@
 ---
 name: expo
-description: Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Then read SKILL.md and open only the reference that matches the task. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.
+description: Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.
 license: MIT
 metadata:
   author: flowcopilot

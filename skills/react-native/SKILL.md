@@ -1,6 +1,6 @@
 ---
 name: react-native
-description: Load this skill before you read or change code in a project whose package.json lists react-native. Then read SKILL.md and open only the reference that matches the task. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.
+description: Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.
 license: MIT
 metadata:
   author: flowcopilot

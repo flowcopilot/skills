@@ -1,6 +1,6 @@
 ---
 name: ax
-description: Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Then read SKILL.md and open only the reference that matches the task. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.
+description: Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.
 license: Apache-2.0
 metadata:
   author: flowcopilot

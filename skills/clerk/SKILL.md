@@ -1,6 +1,6 @@
 ---
 name: clerk
-description: Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Then read SKILL.md and open only the reference that matches the task. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.
+description: Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.
 license: MIT
 metadata:
   author: flowcopilot

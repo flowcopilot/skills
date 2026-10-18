@@ -1,6 +1,6 @@
 ---
 name: clarity
-description: Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Then read SKILL.md and open the writing rules it names. Do not load it for code-only changes.
+description: Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.
 license: MIT
 metadata:
   author: flowcopilot

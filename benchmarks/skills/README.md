@@ -121,7 +121,7 @@ The sync script does not import Matt Pocock's router. Its existence is verified 
 
 ## Description formats
 
-`variants/descriptions.json` has three description formats for all 8 bundles. `imperative` starts with "Always apply this skill when". `when-how-what` uses three plain sentences. `labeled` puts the same content after `When:`, `How:`, and `What:` labels. The bundles now use `when-how-what`, and `AGENTS.md` makes it the rule.
+`variants/descriptions.json` has three description formats for all 8 bundles. `imperative` starts with "Always apply this skill when". `when-how-what` uses three plain sentences. `labeled` puts the same content after `When:`, `How:`, and `What:` labels. The bundles used `when-how-what` until the description part results below. They now use `w-wh` from `variants/formats.json`, and `AGENTS.md` makes it the rule.
 
 T3 `delegate_task` ran each task once per model on October 17, 2026, with low effort. Each cell shows the tasks that loaded the expected bundle, out of 17, and the required references read, out of 22. "Before" is the description at commit `14f833e`.
 
@@ -149,7 +149,7 @@ T3 `delegate_task` ran each task 3 times per model on October 18, 2026, with low
 | --- | --- | --- | --- |
 | W, H, Wh (current) | 10, 8 | 25, 10 | 41, 18 |
 | W, HS, Wh | 5, 6 | 27, 13 | 37, 17 |
-| W, Wh | 5, 6 | 32, 12 | 41, 14 |
+| W, Wh (now in use) | 5, 6 | 32, 12 | 41, 14 |
 | HS, Wh | 0, 0 | 0, 0 | 11, 9 |
 | Wh, W, HS | 0, 0 | 24, 7 | 45, 21 |
 | W | 11, 10 | 29, 10 | 46, 19 |

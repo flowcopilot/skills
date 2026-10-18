@@ -1,6 +1,6 @@
 ---
 name: convex
-description: Load this skill before you read or change code in a project that has a convex directory or whose package.json lists convex or @convex-dev packages. Then read SKILL.md and open only the reference that matches the task. Covers schemas, queries, mutations, actions, indexes, crons, auth, components, migrations, and deployments.
+description: Load this skill before you read or change code in a project that has a convex directory or whose package.json lists convex or @convex-dev packages. Covers schemas, queries, mutations, actions, indexes, crons, auth, components, migrations, and deployments.
 license: Apache-2.0
 metadata:
   author: flowcopilot

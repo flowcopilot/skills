@@ -1,6 +1,6 @@
 ---
 name: design-engineering
-description: Load this skill before you build, change, or review UI components in a web or React Native app. Then read SKILL.md and open only the reference that matches the task. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.
+description: Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.
 license: MIT
 metadata:
   author: flowcopilot

@@ -228,7 +228,7 @@ function syncAx(checkout: Checkout): string[] {
 
   const metadata = frontmatter(
     "ax",
-    "Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Then read SKILL.md and open only the reference that matches the task. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.",
+    "Load this skill before you read or change code in a project whose package.json lists @ax-llm/ax. Covers signatures, structured generation, agents, model providers, MCP, flows, optimization, and refinement.",
     sourceName,
     checkout.revision,
     { upstream_version: version },
@@ -289,7 +289,7 @@ function syncConvex(checkout: Checkout): string[] {
 
   const metadata = frontmatter(
     "convex",
-    "Load this skill before you read or change code in a project that has a convex directory or whose package.json lists convex or @convex-dev packages. Then read SKILL.md and open only the reference that matches the task. Covers schemas, queries, mutations, actions, indexes, crons, auth, components, migrations, and deployments.",
+    "Load this skill before you read or change code in a project that has a convex directory or whose package.json lists convex or @convex-dev packages. Covers schemas, queries, mutations, actions, indexes, crons, auth, components, migrations, and deployments.",
     sourceName,
     checkout.revision,
   );
@@ -437,7 +437,7 @@ function syncCloudflare(checkout: Checkout): string[] {
   rootBody = `${rootBody.slice(0, insertion).trimEnd()}\n\n## Specialized workflows\n\n${workflowList(workflows)}${rootBody.slice(insertion)}`;
   const metadata = frontmatter(
     "cloudflare",
-    "Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Then read SKILL.md and open only the reference that matches the task. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.",
+    "Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.",
     sourceName,
     checkout.revision,
   );
@@ -513,7 +513,7 @@ function syncExpo(checkout: Checkout): string[] {
   }
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "expo",
-    "Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Then read SKILL.md and open only the reference that matches the task. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.",
+    "Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Expo
 
@@ -626,7 +626,7 @@ function syncReactNative(checkouts: Record<typeof reactNativeSources[number], Ch
   }
   const first = checkouts["software-mansion"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you read or change code in a project whose package.json lists react-native. Then read SKILL.md and open only the reference that matches the task. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.",
+    "Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.",
     "software-mansion-labs/skills", first.revision,
     { upstream_callstack: `callstackincubator/agent-skills@${checkouts.callstack.revision}` }, "MIT"),
     `# React Native
@@ -688,7 +688,7 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
   }
   const first = checkouts["emil-kowalski"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you build, change, or review UI components in a web or React Native app. Then read SKILL.md and open only the reference that matches the task. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.",
+    "Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.",
     "emilkowalski/skills", first.revision,
     { upstream_jakub_krehel: `jakubkrehel/skills@${checkouts["jakub-krehel"].revision}` }, "MIT"),
     `# Design Engineering
@@ -849,7 +849,7 @@ Units with defined steps go to the investigation role. The parent session keeps 
 `));
 
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Then read SKILL.md and open the writing rules it names. Do not load it for code-only changes.",
+    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity
@@ -1064,7 +1064,7 @@ function syncClerk(checkout: Checkout): string[] {
   }).join("\n\n");
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "clerk",
-    "Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Then read SKILL.md and open only the reference that matches the task. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.",
+    "Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Clerk
 
