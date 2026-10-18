@@ -16,6 +16,7 @@ Load this skill before you read or change code in a project whose package.json l
 ```
 
 - Put the When sentence first. Descriptions without it, or with the topics first, loaded the skill much less often in the benchmark.
+- Keep the Covers sentence. With it, Haiku loaded the expected bundle in 63 of 85 runs, against 49 without it.
 - Write sentences without labels such as `When:`. Labels loaded the skill less often, and a `: ` in the text needs YAML quotes.
 - Add a sentence that starts with `Do not load it for` only when a near-miss task loads the skill by mistake.
 - Keep the description under 1024 characters.
