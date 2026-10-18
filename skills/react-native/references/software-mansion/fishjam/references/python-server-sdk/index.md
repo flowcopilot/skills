@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # Fishjam Python Server SDK
 
@@ -48,6 +48,7 @@ peer, peer_token = fishjam_client.create_peer(
 | `FishjamNotifier` (async) | Persistent WebSocket; one handler via decorator gets every event. | `notifier.md` |
 | `receive_binary(bytes)` (sync) | Decode an HTTP webhook body to a typed event. | `webhooks.md` |
 | `Agent` + `AgentSession` (async) | Server-side voice agent — async iter over incoming, `await track.send_chunk(...)`. | `agent.md` |
+| `CompositionClient` (sync) | Compositions: register inputs and outputs, deploy templates, send events. Concepts in `../composition/index.md`. | `composition.md` |
 
 ## When to read which reference
 
@@ -61,6 +62,7 @@ peer, peer_token = fishjam_client.create_peer(
 | FastAPI / Flask wiring patterns | `fastapi.md` |
 | Issue livestream / MoQ tokens | `livestream-and-moq.md` |
 | Use manual subscribe mode | `selective-subscriptions.md` |
+| Compose streams: `CompositionClient` calls, forwarding a room | `composition.md` |
 
 ## Key rules
 
@@ -85,3 +87,4 @@ peer, peer_token = fishjam_client.create_peer(
 | `fastapi.md` | FastAPI patterns (`Depends`-injected client, async webhook route, background notifier). |
 | `livestream-and-moq.md` | `create_livestream_streamer_token`, `create_livestream_viewer_token`, `create_moq_token`. |
 | `selective-subscriptions.md` | `subscribe_peer` / `subscribe_tracks` with `subscribe_mode='manual'` rooms. |
+| `composition.md` | `CompositionClient`: compositions, inputs, outputs, template deploy, events, `type_` enums in scene models. |

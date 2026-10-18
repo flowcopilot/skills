@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # AI Provider Codegen Rules (@ax-llm/ax)
 
@@ -50,8 +50,14 @@ hybrid examples. The two interfaces serve different output contracts:
 
 | Need | Interface |
 |---|---|
-| Required boolean/class outputs with normal signature-shaped results | `ai({ name: 'typesafe', apiKey, trueThreshold: 0.9 })` and `ax(...).forward()` |
-| Native probabilities, structured state/criteria, or Score | `typesafe({ apiKey }).systemOne({ state, questions })` |
+| Required boolean/class/rubric score outputs through Ax signatures | `ai({ name: 'typesafe', apiKey, trueThreshold: 0.9 })` and `ax(...).forward()` |
+| Explicit provider request shapes or structured state/criteria | `typesafe({ apiKey }).systemOne({ state, questions })` |
+
+Use `.withEvidence()` on boolean/class fields or `f.score(levels).withEvidence()`
+to retain probabilities, native scores, and confidence through normal AxGen
+outputs. The string forms use `(evidence)`. See the
+[decision evidence guide](ax-typesafe.md#decision-evidence-and-reranking) for
+result shapes, provenance, and reranking with both Jev and OpenAI Decisions.
 
 Both default to `jev-latest`. Set the adapter's model with `config.model`; set
 native defaults with `model`. Native `listModels()` retrieves the provider's
@@ -69,7 +75,7 @@ The [signature skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-si
 covers the string and fluent `.describeValues(...)` forms.
 
 Numeric outputs, including bounded numbers, are unsupported; scoring uses
-explicit native rubrics. Freeform text, optional/array/nested outputs, media,
+explicit `score` rubrics in signatures. Freeform text, optional/array/nested outputs, media,
 tools, and sampling controls are also unsupported. Ax sends its normal prompt
 as state. Use a separate generative program for prose or tools.
 
@@ -133,6 +139,35 @@ const llm = ai({
 ```
 <!-- axir-nonportable:end webllm -->
 
+<!-- axir-nonportable:start chrome-ai -->
+### Chrome Built-in AI (TypeScript/JavaScript only)
+
+The `chrome-ai` provider calls Chrome's browser `LanguageModel` API and runs
+Gemini Nano locally without an API key. It is available only to the
+TypeScript/JavaScript package inside Chrome, not to Node.js or the generated
+Python, Java, C++, Go, and Rust packages. It has a browser-only AxIR exemption;
+do not add it to portable provider catalogs or migration backlogs.
+
+```typescript
+import { ai, ax } from '@ax-llm/ax';
+
+const llm = ai({ name: 'chrome-ai' });
+const program = ax('question -> answer');
+// Call from a user interaction in a supported Chrome browser.
+const result = await program.forward(llm, { question: 'What is 2+2?' });
+```
+
+The default uses Chrome's sampling settings. Chrome extensions can specify
+`temperature` and `topK` together; when only one is supplied, Ax obtains the
+other from `LanguageModel.params()`. An incomplete pair without defaults fails
+before session creation. Web pages do not support these legacy numeric settings.
+Streaming chunks contain successive text and are passed through unchanged.
+Ax releases each session on completion, cancellation, or failure. The adapter
+supports native JSON Schema output and text conversations, with no tools or
+embeddings. For a runnable browser demo, build Ax and open
+`src/examples/chrome-ai-chat.html` through a local web server.
+<!-- axir-nonportable:end chrome-ai -->
+
 ## Model Presets
 
 ```typescript
@@ -141,15 +176,19 @@ import { ai, AxAIGoogleGeminiModel } from '@ax-llm/ax';
 const gemini = ai({
   name: 'google-gemini',
   apiKey: process.env.GOOGLE_APIKEY!,
-  config: { model: 'simple' },
+  config: { model: AxAIGoogleGeminiModel.Gemini38Flash },
   models: [
-    { key: 'tiny', model: AxAIGoogleGeminiModel.Gemini35FlashLite, description: 'Fast + cheap', config: { maxTokens: 1024 } },
+    { key: 'tiny', model: AxAIGoogleGeminiModel.Gemini35FlashLite, description: 'Fast + cheap', modelConfig: { maxTokens: 1024 } },
     { key: 'simple', model: AxAIGoogleGeminiModel.Gemini38Flash, description: 'Balanced' },
   ],
 });
 
 await gemini.chat({ model: 'tiny', chatPrompt: [{ role: 'user', content: 'Hi' }] });
 ```
+
+`config.model` names the provider's default model. Use preset keys such as
+`'tiny'` or `'simple'` in per-call `model` overrides; preset settings belong in
+`modelConfig`.
 
 ## Model Catalog
 
@@ -233,6 +272,12 @@ Choose the primitive by responsibility:
 - `AxBalancer` without a strategy orders equivalent services once with a comparator, retries transient provider failures, and fails over in that order.
 - `AxBalancer` with `strategy.type: 'adaptive'` selects among services exposing the same logical model aliases using learned provider reliability, successful latency, and estimated cost.
 
+In TypeScript, `capabilities.requiresAudioOutput` or
+`modelConfig.audio.output.enabled` requires a service with
+`media.audio.output.supported`. Audio input and output are separate requirements.
+Balancer output formats come only from children that support output; compatibility
+reports count requested input and output independently.
+
 Adaptive balancing is operational routing, not semantic prompt-to-model routing. Every provider model behind an alias must be an acceptable substitute for that application. Keep quality evaluation and content-aware model selection outside the balancer.
 
 ```typescript
@@ -293,6 +338,7 @@ const res = await llm.chat({
     { role: 'user', content: 'Write a haiku about the ocean.' },
   ],
 });
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.content);
 ```
 
@@ -430,8 +476,10 @@ Anthropic and Gemini, and `temperature: 0.7` with `topP: 1` for
   shape; `presencePenalty` is never sent to Gemini and is warned about.
 
 ```typescript
-const llm = ai({ name: 'openai', apiKey, config: { model: 'gpt-5.6-luna' } });
-// GPT-5.6 takes temperature with reasoning off, so this one is sent.
+import { ai, AxAIOpenAIModel } from '@ax-llm/ax';
+
+const llm = ai({ name: 'openai', apiKey, config: { model: AxAIOpenAIModel.GPT6Luna } });
+// GPT-6 Luna takes temperature with reasoning off, so this one is sent.
 await gen.forward(llm, values, {
   thinkingTokenBudget: 'none',
   modelConfig: { temperature: 0.2 },
@@ -573,13 +621,14 @@ import { ai, AxAIAnthropicModel } from '@ax-llm/ax';
 const claude = ai({
   name: 'anthropic',
   apiKey: process.env.ANTHROPIC_APIKEY!,
-  config: { model: AxAIAnthropicModel.Claude48Opus },
+  config: { model: AxAIAnthropicModel.Claude55Opus },
 });
 
 const res = await claude.chat(
   { chatPrompt: [{ role: 'user', content: 'Solve step by step...' }] },
   { thinkingTokenBudget: 'medium', showThoughts: true },
 );
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.thought);
 console.log(res.results[0]?.content);
 ```
@@ -610,16 +659,17 @@ rules, including when configured for Vertex with `projectId` and `region`. The
 separate OpenAI-compatible `vertex-ai` profile keeps its own request rules and
 does not inherit native Gemini fields from a Gemini-looking model ID.
 
-For GPT-5.6 and GPT-6 (Astra, Sol, Luna), these map to `none`, `low`, `low`,
-`medium`, `high`, and a top rung that depends on the API surface: `xhigh` on
+For GPT-5.6 and GPT-6 (Astra, Sol, Luna, GPT-6.1 Sol), these map to `none`,
+`low`, `low`, `medium`, `high`, and a top rung that depends on the API surface: `xhigh` on
 Chat Completions, which rejects `max`, and `max` on the Responses API, which is
 the only place it is served. These models default an omitted effort to
-`medium`, so `none` is sent explicitly; GPT-6 Astra refuses `none` and Ax throws.
+`medium`, so `none` is sent explicitly; GPT-6 Astra and GPT-6.1 Sol refuse
+`none` and Ax throws.
 Earlier OpenAI models retain their existing mapping.
 
 ### Anthropic Model-Specific Behavior
 
-- Opus 5.5, Fable 5.1, Fable 5, Opus 5, Opus 4.8, 4.7, and 4.6 plus Sonnet 5:
+- Opus 5.5, Fable 5.1, Fable 5, Opus 5, Opus 4.8, 4.7, and 4.6 plus Sonnet 5, Sonnet 5.5, and Haiku 5.5:
   adaptive thinking, no manual `budget_tokens`, and no `temperature` / `topP` /
   `topK`. When thoughts are requested, Ax asks Anthropic for summarized
   display; when they are hidden, Ax explicitly requests `display: 'omitted'`.
@@ -628,12 +678,32 @@ Earlier OpenAI models retain their existing mapping.
 - Opus 5 and Sonnet 5 think by default, so `'none'` sends
   `thinking: { type: 'disabled' }`. Opus 5 only allows that at effort `'high'`
   or below, so Ax rejects `'none'` combined with `'xhigh'` or `'max'`.
-- Opus 5.5 and Fable 5.1 refuse forced tool choice: Ax throws for
+- Sonnet 5.5 uses `thinking: { type: 'between_tools' }` for `'none'`,
+  allowed at effort `'high'` or below. Its signed between-tool updates are
+  retained in `thoughtBlocks` for replay even when display thoughts are hidden.
+  Streaming and non-streaming responses preserve both thinking and redacted
+  blocks; `showThoughts: false` suppresses the display `thought` field.
+  The generated Python, Go, Java, C++, and Rust clients share these rules,
+  including effort validation, native structured output, and signed replay.
+- Opus 5.5, Sonnet 5.5, and Fable 5.1 refuse forced tool choice: Ax throws for
   `functionCall: 'required'` or a named function, and structured output uses
   the native `output_config.format` path.
-- Opus 4.8, Opus 5, Opus 5.5, Fable 5, and Fable 5.1 keep a later system
+- Haiku 5.5 (`AxAIAnthropicModel.Claude55Haiku`, also on Vertex):
+  adaptive thinking defaults to medium effort. `'none'` sends
+  `thinking: { type: 'disabled' }`; combining it with `'xhigh'` or `'max'`
+  fails locally. Other thinking levels use adaptive thinking with effort.
+  Forced tool choice is supported, as are native JSON Schema and function-based
+  structured outputs. Empty signed thinking blocks remain available for replay;
+  keep history append-only, including later system messages on both APIs.
+  The context window is 1M tokens and the output limit is 128K. Per million
+  tokens, input/output pricing is $0.10/$0.50 through 100K input tokens and
+  $0.50/$2.50 above 100K, counting cached input toward the threshold. Cache
+  reads and 5-minute writes use the corresponding tier. These semantics are
+  shared with the generated Python, Go, Java, C++, and Rust packages.
+- Opus 4.8, Opus 5, Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5, and Fable 5.1 keep a later system
   message in place on the first-party API; other models hoist it into the
-  system prompt.
+  system prompt. Sonnet 5.5 and Haiku 5.5 preserve later system messages on Vertex,
+  keeping the prefix before signed thinking unchanged.
 - Opus 4.5: budget_tokens + effort levels (capped at `'high'`)
 - Other thinking models: budget tokens only
 
@@ -823,8 +893,9 @@ To reach OpenAI's GPT models on those endpoints through the `openai` or
 on bedrock-mantle, or a cross-Region inference profile such as
 `us.openai.gpt-6-sol` or `global.openai.gpt-6-astra` on bedrock-runtime. Ax
 applies the named model's contracts: its built-in model info (so `temperature`
-and `top_p` are not sent), the GPT-5.6 and GPT-6 effort ladders, Astra's rules,
-and, on `openai`, routing the GPT-6 family to `<apiURL>/responses`. It leaves
+and `top_p` are not sent), the GPT-5.6 and GPT-6 effort ladders, the reasoning
+rules of Astra and GPT-6.1 Sol, and, on `openai`, routing the GPT-6 family to
+`<apiURL>/responses`. It leaves
 off what Bedrock does not serve: prompt-cache breakpoints on Chat Completions
 (Bedrock caches these models on the Responses API only) and Astra chat
 sessions, since async tools, steering, and reasoning updates are not available
@@ -854,8 +925,9 @@ const bedrock = new AxAIBedrock({
 
 The native client uses Bedrock `Converse` and `ConverseStream`. Claude models
 advertise native functions, streaming, image/document input, prompt-cache
-breakpoints, and their verified thinking modes. GPT-6 Sol, Luna, and Astra
-(`AxAIBedrockModel.Gpt6Sol`, `Gpt6Luna`, `Gpt6Astra`) advertise native
+breakpoints, and their verified thinking modes. GPT-6 Sol, Luna, Astra, and
+GPT-6.1 Sol (`AxAIBedrockModel.Gpt6Sol`, `Gpt6Luna`, `Gpt6Astra`, `Gpt61Sol`)
+advertise native
 functions, streaming, image input, and reasoning effort. Structured-output and
 service-tier support remain model-specific; query `bedrock.getFeatures(model)`
 instead of assuming every Bedrock model has the same capabilities. The AWS SDK
@@ -886,7 +958,7 @@ On the native Bedrock client, Claude Sonnet 5 and Opus 5.5 always use adaptive
 thinking and reject `thinkingTokenBudget: 'none'`; Claude Opus 5 permits
 disabling it. On GPT-6, `thinkingTokenBudget` sets the reasoning effort
 (`minimal` → `low`, `highest` → `max`, `none` turns reasoning off), except
-that Astra rejects `'none'` before sending. GPT-6 requests omit `temperature`
+that Astra and GPT-6.1 Sol reject `'none'` before sending. GPT-6 requests omit `temperature`
 and `topP`, which these models do not accept.
 
 ## Vercel AI SDK Integration
@@ -988,6 +1060,20 @@ while they reason. Unlike Astra they accept `thinkingTokenBudget: 'none'`, and
 chat sessions and `configuration_update` remain Astra-only. OpenAI reports a
 GPT-6 priority request's served tier as `fast`; Ax records it as `priority`.
 
+GPT-6.1 Sol (`AxAIOpenAIModel.GPT61Sol`) is a GPT-6 family member: it routes
+through Responses, caches at breakpoints with `ttl: '30m'`, and drops sampling
+and log-probability options while reasoning. Like Astra it cannot disable
+reasoning, so `thinkingTokenBudget: 'none'` throws and Chat Completions refuses
+its function tools at every effort. Ax does not yet expose chat sessions or
+`configuration_update` for this model.
+
+Its Standard input/cache-read/cache-write/output rates per million tokens are
+$2/$0.10/$2.50/$10, rising to $4/$0.20/$5/$15 above 272K total input tokens.
+Priority costs 2x Standard and Flex costs 0.5x, including cache tokens and the
+long-context rates. A served `fast` tier is recorded as `priority` for cost
+accounting. On profiles without model metadata, fixed Bedrock OpenAI IDs use
+the corresponding OpenAI sampling restrictions; unknown IDs remain unchanged.
+
 Keep calling `forward()` and `streamingForward()`. Declare independent tools with
 `fn('lookup').description('...').execution('background').handler(...).build()`.
 Ordinary tools default to blocking. JavaScript promises and MCP annotations do
@@ -1049,3 +1135,113 @@ natively. For unsupported providers, extracted text or a configured file-to-text
 callback supplies text; fallback policy can degrade, skip, or reject the file.
 The original conversation retains the file for later turns. Generated Python, Go,
 Java, C++, and Rust routers apply this policy in shared Core after selection.
+
+## OpenAI Decisions
+
+Use `ai({ name: 'openai-decisions', apiKey })` for required boolean, class, and rubric score
+outputs through the dedicated `/v1/decisions` endpoint. The default model is
+`gpt-6-luna`. This is a separate provider profile from OpenAI Chat and Responses.
+
+```typescript
+import { ai, ax } from '@ax-llm/ax';
+const model = ai({ name: 'openai-decisions', apiKey, trueThreshold: 0.9 });
+const triage = ax('ticket:string -> urgent:boolean, team:class "support, billing"');
+const values = await triage.forward(model, { ticket: 'I was charged twice.' });
+
+const judge = ax(
+  'query:string, document:string -> relevant:boolean(evidence, threshold 0.7), relevance:score "Irrelevant, Related, Partial answer, Direct answer"(evidence)'
+);
+const result = await judge.forward(model, {
+  query: 'How do I request a refund?',
+  document: 'Request a refund through your account billing page.',
+});
+console.log(result.relevant.probability, result.relevance.value);
+```
+
+The signature adapter maps booleans to predicates, classes to choices, and
+ordered `score` labels to native score levels.
+Boolean value descriptions become question instruction lines; class value
+descriptions become each choice's `description`. `trueThreshold` defaults to
+`0.5`, must be finite in `[0, 1]`, and converts probabilities with an inclusive
+comparison. It is local conversion policy. Raw native answers remain in
+`program.getChatLog().at(-1)?.providerMetadata?.openaiDecisions?.answers`.
+Evidence-bearing fields retain probabilities, provider-selected classes, continuous
+scores, and native confidence in normal program outputs. Boolean evidence uses
+its field threshold, defaulting to `0.5`; scalar fields retain `trueThreshold`.
+Ax attaches provenance, and a generative model uses the same signature with
+`source: 'elicited'`, values derived from probabilities, and no native confidence.
+These shared shapes do not imply comparable calibration across providers.
+
+Usage uses existing `getUsage()` APIs. Evidence refusals raise terminal
+`AxDecisionRefusalError` by default; `(evidence, refusal return)` gives an
+answered/refused union without correction retries. Optional, numeric, array, nested, and freeform outputs,
+tools, and generation controls are rejected before transport. A completed result
+can be delivered through `streamingForward()`; the endpoint has no token stream.
+
+For custom native question/request shapes and provider-specific input, use
+`openaiDecisions({ apiKey, model?, apiURL?, credentialProvider?, headers?, options? }).create(request, options?)`.
+Questions are an ordered array of `predicate`, `choice`, and `score` objects.
+Each has string `instructions` and an optional unique `name`. Choices use
+`choices: [{ value: string | boolean, description?: string }]`; boolean values
+and strings with the same spelling stay distinct. Choice requires 2–255 options.
+Scores require 2–10 levels and use
+`levels: [{ label, description? }, ...]`. The score is a fractional native
+level index starting at zero. Ax does not infer rubrics from numeric bounds.
+
+The response preserves answer order, model, full usage, and per-question
+`{ type: 'refusal', name }` outcomes. Narrow refusals before accessing values.
+Predicates return `probability`; choices return `choice`, `confidence`, and
+`probabilities: [{ value, probability }]`; scores return `score`, `confidence`,
+and `probabilities: [{ value, label, probability }]`. Ax validates the response
+against the questions and preserves probabilities without normalization (an
+inclusive `0.01` sum tolerance accommodates rounding). Question dependencies
+require separate requests.
+
+Native `input` is text or an array of user messages with text and inline image
+parts: `{ role: 'user', content: [{ type: 'input_text', text },
+{ type: 'input_image', image_url: 'data:image/png;base64,...', detail?: 'auto' }] }`.
+There are at most 128 images per request; hosted image URLs, file IDs, audio,
+non-user roles, and tool items are unsupported. The signature adapter preserves
+Ax's text prompt/history as role-labelled evidence in a user message and passes
+inline images through. It does not give those labels native role authority.
+
+Both interfaces accept `apiURL` including `/v1` (default
+`https://api.openai.com/v1`) and renewable credentials. Native and adapter
+transport options support fetch, timeout, retry, and cancellation. Both instance
+and per-call cancellation apply to native requests. Credential-provider headers
+override static credentials and native custom headers regardless of header-name
+capitalization. Native requests can include
+`safety_identifier`; adapter instances accept `safetyIdentifier`. Unsupported
+requests are excluded from router/balancer selection and fallbacks.
+
+Run the public examples from the repository root:
+
+```bash
+npm run tsx src/examples/typescript/generation/decision-evidence.ts
+npm run tsx src/examples/typescript/generation/openai-decisions.ts
+npm run tsx src/examples/typescript/generation/openai-decisions-native.ts
+npm run tsx src/examples/typescript/generation/openai-decisions-image.ts
+```
+
+They use `OPENAI_API_KEY` or `OPENAI_APIKEY`. Python, Java, C++, Go, and Rust
+also support the signature adapter and native ordered questions. Their native
+factories are `openai_decisions`, `Ax.openaiDecisions`, `axllm::openai_decisions`,
+`axllm.OpenAIDecisions`, and `openai_decisions`, respectively. Native requests and
+responses use the language JSON map/value representation and preserve refusals
+and all usage fields. Runnable examples are under each language generation
+directory as `openai-decisions` and `openai-decisions-native` (Java uses
+`OpenAIDecisionsExample` and `OpenAIDecisionsNativeExample`). See the [Decisions guide](https://developers.openai.com/api/docs/guides/decisions)
+for the current provider contract and availability.
+
+## Streaming Usage And Incomplete Responses
+
+OpenAI Responses reports a token-limit stop as `length` and a content-filter
+stop as `content_filter`. The terminal response status takes precedence even
+when no message was produced or an earlier message completed. Incomplete
+streams retain their token usage and the served service tier. Reusing a client
+keeps each stream's usage separate; consume the terminal event for final totals.
+
+Anthropic `message_delta` counts are cumulative. Present input and cache counts
+replace earlier counts, including explicit zero; omitted or null fields retain
+previous values. Successive deltas retain the latest input, cache, and speed
+metadata while updating output tokens.

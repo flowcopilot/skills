@@ -4,16 +4,16 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: clerk/skills@cc508f98dfca1ada6b420d2910e6aa150013e80c
+  upstream: clerk/skills@8482d43fe12a5f06a2b5ab3008615875747a3e4e
 ---
 
-<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 8482d43fe12a5f06a2b5ab3008615875747a3e4e. -->
 
 # Clerk
 
 Detect the installed Clerk SDK version first, then read only the references that match the task. A former `clerk-*` skill name now refers to its file below. Do not expect separate Clerk skills to be installed. Script paths in references are relative to this skill directory.
 
-This bundle imports a subset of Clerk's skills. Not bundled: `clerk-astro-patterns`, `clerk-nuxt-patterns`, `clerk-nextjs-patterns`, `clerk-react-router-patterns`, `clerk-vue-patterns`, `clerk-chrome-extension-patterns`, `clerk-swift`, `clerk-android`. When a reference points to one of these, use the current Clerk documentation for that framework instead.
+This bundle imports a subset of Clerk's skills. Not bundled: `clerk-android`, `clerk-astro-patterns`, `clerk-chrome-extension-patterns`, `clerk-nextjs-patterns`, `clerk-nuxt-patterns`, `clerk-react-router-patterns`, `clerk-swift`, `clerk-vue-patterns`. When a reference points to one of these, use the current Clerk documentation for that framework instead.
 
 ## Version Detection
 
@@ -50,7 +50,7 @@ All skills are written for the current SDK. When something differs in Core 2, it
 ### Frameworks
 
 - [clerk-react-patterns](references/clerk-react-patterns.md): React SPA auth patterns with @clerk/react for Vite/CRA - ClerkProvider setup, useAuth/useUser/useClerk hooks, React Router protected routes, custom sign-in flows. Triggers on: Vite Clerk setup, React Router auth, useAuth hook, protected route, custom sign-in form React.
-- [clerk-tanstack-patterns](references/clerk-tanstack-patterns.md): TanStack React Start auth patterns with @clerk/tanstack-react-start - createServerFn, beforeLoad guards, loaders, Vinxi server. Triggers on: TanStack auth, createServerFn clerk, beforeLoad protection, TanStack Start middleware.
+- [clerk-tanstack-patterns](references/clerk-tanstack-patterns.md): TanStack React Start auth patterns with @clerk/tanstack-react-start - createServerFn, beforeLoad guards, loaders, Vite plugin, server middleware. Triggers on: TanStack auth, createServerFn clerk, beforeLoad protection, TanStack Start middleware.
 
 ### Mobile
 

@@ -4,10 +4,10 @@ description: Load this skill before you read or change code in a project that ha
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: get-convex/agent-skills@2cfe645c87f971242cfc8ef3eb53662cbec26a53
+  upstream: get-convex/agent-skills@191a5c33a7e7a22ec9d5ff13930f84748bbcf8f8
 ---
 
-<!-- Modified by Flow Copilot from get-convex/agent-skills revision 2cfe645c87f971242cfc8ef3eb53662cbec26a53. -->
+<!-- Modified by Flow Copilot from get-convex/agent-skills revision 191a5c33a7e7a22ec9d5ff13930f84748bbcf8f8. -->
 
 # Convex
 

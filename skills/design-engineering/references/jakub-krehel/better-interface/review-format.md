@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 267330e1adfc66a718fb65fa6918c1f06d0a689e. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
 
 # Review output format
 
-This is the format for a review `better-interface` orchestrates. A domain skill reporting on its own carries its own smaller format, in its `## Reporting` section.
+This is the format for a review `better-interface` orchestrates.
 
 ## Scope and coverage
 
@@ -10,9 +10,9 @@ State the exact scope, stack and styling conventions, the project convention doc
 
 | Domain | Evidence inspected | Result |
 | --- | --- | --- |
-| Accessibility | Files, components, states, or checks | Findings count or `Clear` |
+| Accessibility | Files, components, states or checks | Findings count or `Clear` |
 
-Include every domain listed under `better-interface`'s **Use domain skills as the sources of truth**. `Clear` means inspected with no actionable finding; `Not reviewed` must explain why.
+Include every domain listed under **Use domain skills as the sources of truth**. `Clear` means inspected with no actionable finding; `Not reviewed` must explain why.
 
 ## Findings
 
@@ -22,13 +22,13 @@ One table, ordered by severity, then by reach:
 | --- | --- | --- | --- | --- | --- |
 | HIGH | Accessibility | `src/Dialog.tsx:42` | `<button><XIcon /></button>` | Add `aria-label="Close"` and hide the icon from the accessibility tree | The icon-only control has no accessible name |
 
-- **Severity** comes from `better-interface`'s **Rank by user impact**.
-- **Location** cites `path/to/file:line`. Cite the exact screen and component when the artifact has no source files.
-- **Before / After** show the current implementation and an actionable replacement. Never split them into separate "Before:" and "After:" lines.
-- **Why** names the violated principle and its user impact.
+- **Severity** comes from **Rank by user impact**.
 - **Domain** is the owning skill without the `better-` prefix.
+- **Location** is `path/to/file:line`, or the exact screen and component when the artifact has no source files.
+- **Before** and **After** show the current implementation and an actionable replacement, each in its own cell.
+- **Why** names the violated principle and its user impact.
 
-Each row is one root cause. Consolidate a repeated systemic issue into one row and list every affected location. Respect the finding cap. With no findings, omit the table and state "No actionable interface findings."
+With no findings, omit the table and state "No actionable interface findings."
 
 ## Verification
 
@@ -41,8 +41,8 @@ End with one of two:
 - `Block`: one or more `HIGH` findings remain. Do not ship until they are fixed.
 - `Approve`: no `HIGH` findings remain. Any `MEDIUM` and `LOW` findings stay in the table as work to do.
 
-`Approve` claims the coverage you reported, so never issue it for a domain you did not inspect.
+`Approve` covers only the domains the coverage table shows as inspected. Name every `Not reviewed` domain in the verdict line.
 
 ## Change-scoped reviews
 
-When `interface-review` resolved the scope from version control, it supplies the scope block, a status on every finding and the change-scoped format, which its `## Review output format` holds. Severity, ranking, the cap and the verdict are the ones above, and all four cover `Introduced` and `Regression` only.
+When `interface-review` hands the review back, use its `## Review output format`. It adds the scope block, a `Status` column and the pre-existing section to the sections above.

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 86505e44f87d801aa1864a3c4109e9a8ae5c409f. -->
 
 # Tail Workers Processing Decisions
 
@@ -6,7 +6,7 @@ Define the destination contract and required event coverage before writing trans
 
 | Task | Documentation |
 | --- | --- |
-| Export supported telemetry without a custom consumer | [Exporting OpenTelemetry Data](https://developers.cloudflare.com/workers/observability/exporting-opentelemetry-data/index.md) |
+| Export supported telemetry without a custom consumer | [OpenTelemetry export](https://developers.cloudflare.com/observability/export/opentelemetry/index.md) |
 | Process and forward custom execution events | [Tail Workers](https://developers.cloudflare.com/workers/observability/logs/tail-workers/index.md) |
 | Aggregate metrics rather than retain individual events | [Analytics Engine from Tail Workers](https://developers.cloudflare.com/workers/observability/logs/tail-workers/index.md#use-analytics-engine-for-aggregated-metrics) |
 | Choose filters based on execution and request fields | [Tail handler](https://developers.cloudflare.com/workers/runtime-apis/handlers/tail/index.md) |

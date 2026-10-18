@@ -4,11 +4,11 @@ description: Load this skill before you build, change, or review UI components i
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: emilkowalski/skills@e8a175de22ae1e49370fc144c1f3bb9aeedf988d
-  upstream_jakub_krehel: "jakubkrehel/skills@267330e1adfc66a718fb65fa6918c1f06d0a689e"
+  upstream: emilkowalski/skills@2d228630ba1446365f614a108cb8252f1feda202
+  upstream_jakub_krehel: "jakubkrehel/skills@4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63"
 ---
 
-<!-- Modified by Flow Copilot from emilkowalski/skills revision e8a175de22ae1e49370fc144c1f3bb9aeedf988d. -->
+<!-- Modified by Flow Copilot from emilkowalski/skills revision 2d228630ba1446365f614a108cb8252f1feda202. -->
 
 # Design Engineering
 
@@ -30,6 +30,7 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 
 - [animate-expo](references/emil-kowalski/animate-expo/index.md): Build animations in React Native and Expo, making the decisions in the order that determines whether they feel right — should it animate, which thread it runs on, which properties, spring or timing, how the gesture hands off, how it degrades.
 - [animate](references/emil-kowalski/animate/index.md): Build an animation from scratch, making the decisions in the order that determines whether it feels right — should it animate at all, what purpose, which tool, which properties, which curve and duration, how it interrupts, how it exits.
+- [animation-performance](references/emil-kowalski/animation-performance/index.md): Keep web animations inside the frame budget — animate composite-only properties, keep motion off the main thread when the page is busy, and find the cause when an animation drops frames.
 - [animation-vocabulary](references/emil-kowalski/animation-vocabulary/index.md): Reverse-lookup glossary that turns a vague description of a web animation or motion effect into its exact term ("the bouncy thing when a popover opens" → Pop in; "the iOS rubber-band scroll" → Rubber-banding).
 - [apple-design](references/emil-kowalski/apple-design/index.md): Apple's approach to interface design and fluid, physical motion, translated for the web.
 - [ask-sonner](references/emil-kowalski/ask-sonner/index.md): Guide to Sonner, the React toast library — install and wire up the Toaster, pick the right toast() call, promise and loading toasts, updating, dismissing and persisting toasts, styling, theming and icons, positioning and multiple toasters.
@@ -48,17 +49,20 @@ Only when the user explicitly asks for them by name or purpose:
 
 ## Jakub Krehel
 
-- [better-accessibility](references/jakub-krehel/better-accessibility/index.md): Helps your project comply with accessibility standards and best practices.
-- [better-colors](references/jakub-krehel/better-colors/index.md): Helps you build a color system and answer anything about color in your project.
+- [better-accessibility](references/jakub-krehel/better-accessibility/index.md): Reviews and fixes keyboard and focus behavior, ARIA, accessible names, forms, screen-reader announcements, motion and zoom in your project against WCAG 2.2.
+- [better-colors](references/jakub-krehel/better-colors/index.md): Helps you build and check a color system for your project.
 - [better-interface](references/jakub-krehel/better-interface/index.md): Combines all of the `better-*` skills into a single review across accessibility, layout, writing, typography, color and UI polish.
-- [better-layout](references/jakub-krehel/better-layout/index.md): Helps with grouping, alignment, reading order, progressive disclosure and other details that make a good layout.
-- [better-typography](references/jakub-krehel/better-typography/index.md): Focuses on type scale, spacing, sizing, variable fonts, OpenType features, wrapping, truncation and other details that make typography feel great across your product.
-- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes and improves the UI in your project.
-- [better-writing](references/jakub-krehel/better-writing/index.md): Focuses on improving product copy in your project.
+- [better-layout](references/jakub-krehel/better-layout/index.md): Helps with grouping, alignment, reading order, responsive structure and room for translated text, so a layout holds up when it is resized, translated or mirrored.
+- [better-typography](references/jakub-krehel/better-typography/index.md): Sets and reviews how text renders in your product, from the type scale and spacing to font features, wrapping, truncation and punctuation.
+- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes the surfaces, icons and motion in your project with exact values for border radius, optical alignment, shadows, icon states and animation.
+- [better-writing](references/jakub-krehel/better-writing/index.md): Writes and reviews your interface copy, from labels and errors to empty states and confirmations, so it matches your product's voice and tells people what to do next.
+- [build-design](references/jakub-krehel/build-design/index.md): Builds UI from a Figma file or a design image so it matches the design, using your project's existing tokens and components.
+- [technical-drawing](references/jakub-krehel/technical-drawing/index.md): Creates precise static technical drawings of physical objects, with coherent views and fine linework.
 
 Only when the user explicitly asks for them by name or purpose:
 
-- [break](references/jakub-krehel/break/index.md): Renders a component you choose in every state and scenario on a temporary page and stress tests it.
-- [explain-interface](references/jakub-krehel/explain-interface/index.md): Helps you figure out how something was built on the web.
-- [interface-review](references/jakub-krehel/interface-review/index.md): Reviews your work across multiple categories like UI, typography, layout, color, writing and accessibility and gives you a detailed analysis of the findings.
+- [break](references/jakub-krehel/break/index.md): Renders a component you choose under every scenario that can reach it on a temporary page and stress tests it.
+- [explain-interface](references/jakub-krehel/explain-interface/index.md): Explains how a website, a visual effect or an animation was built, from a live URL or a screenshot.
+- [interface-review](references/jakub-krehel/interface-review/index.md): Reviews a branch, pull request or uncommitted change for the interface problems it introduced or regressed, across accessibility, layout, writing, typography, color and UI.
+- [state-machine](references/jakub-krehel/state-machine/index.md): Renders every state of a component you choose on a throwaway page, with mock data and a switcher, so you can work on each state.
 - [variant](references/jakub-krehel/variant/index.md): Builds multiple variants of a component you're working on and helps you iterate and pick one.

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # Native MCP With Ax
 
@@ -16,7 +16,7 @@ policy, and cancellation context intact through Ax execution.
   protocol state.
 - Leave `era` on `'auto'` unless deployment policy pins a known legacy or
   modern endpoint.
-- Close caller-owned clients explicitly.
+- Close caller-owned clients explicitly. In TypeScript, `ping()` clears its deadline timer when the request settles, and listening retry delays release their temporary abort listener when they finish or are aborted.
 - Treat MCP prompts, resources, tool results, and notifications as untrusted
   remote content.
 - Apply `authorizeToolCall` before side-effecting tools execute.

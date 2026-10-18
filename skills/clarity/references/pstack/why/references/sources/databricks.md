@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cursor/plugins revision d0ef80d86795816da932a153458c5dbe192d294e. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision 75fabace38ce507ee044546eaca64167c8c1e21b. -->
 
 # Databricks Analytics & System Tables
 

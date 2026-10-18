@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
+<!-- Modified by Flow Copilot from expo/skills revision 7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1. -->
 
 # `expo-overview` — router & shared rules for Expo / EAS
 
@@ -89,6 +89,12 @@ Apply the rules that match the project and the requested task.
   native-setup steps differ — note which one the project is in.
 - **Install packages with `npx expo install <pkg>`**, not raw `npm`/`yarn`/`pnpm add`,
   so versions stay compatible with the project's SDK.
+- **Launching the app yourself?** When you open Expo Go or a development build to look
+  at, screenshot, or drive it, skip the first-launch onboarding, the dev menu that opens
+  at launch, and the floating Tools button. On SDK 58+, Expo CLI does this for launches
+  it starts from a non-interactive shell. On SDK 57 and earlier, and for any URL you open
+  yourself (`simctl openurl`, `adb`, a controller), follow
+  `expo-overview/launch-without-dev-menu.md`.
 - **EAS auth & linking** (only needed for build/submit/update/observe/workflows): check
   login with `eas whoami`, log in with `eas login`. A project is linked when
   `extra.eas.projectId` exists in the app config; create it with `eas init` if missing.

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # Fishjam Platform
 
@@ -79,3 +79,5 @@ Detail: `notifier-vs-webhook.md` and `notifications-taxonomy.md`.
 | `rest-endpoints.md`         | Raw HTTP surface — flat endpoint list, auth header, deprecation header.         |
 | `lifecycle-flow.md`         | End-to-end client↔backend↔Fishjam sequence.                                     |
 | `llms-and-docs.md`          | Pointers to upstream docs, llms.txt, OpenAPI spec, protobuf, dashboard.         |
+
+Mixing several streams into one composed output (a call as a broadcast, restreaming, overlays) is covered in `../composition/index.md`.

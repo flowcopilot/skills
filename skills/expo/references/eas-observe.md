@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
+<!-- Modified by Flow Copilot from expo/skills revision 7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1. -->
 
 # EAS Observe
 
 > **EAS service - costs apply.** EAS Observe is an Expo Application Services product. The free EAS plan allows up to 10,000 monthly active users, with a limited set of features; higher usage requires a paid subscription. For details, see https://expo.dev/pricing#plan-features.
 
-EAS Observe tracks startup, navigation, and custom-event performance from production Expo apps. It needs a development or production build — the native library is not in Expo Go.
+EAS Observe tracks startup, navigation, and custom-event performance from production Expo apps, and records JavaScript errors and native crashes. It needs a development or production build — the native library is not in Expo Go.
 
 > **Source of truth:** https://docs.expo.dev/eas/observe/ — always consult the canonical docs when API details matter, especially get-started, configuration, integrations, and the metrics reference. EAS Observe is evolving; this skill's references are written to stay accurate but may lag the docs.
 
@@ -13,7 +13,7 @@ EAS Observe tracks startup, navigation, and custom-event performance from produc
 The four reference files in `eas-observe/` cover what people typically need this skill for:
 
 - **Adding EAS Observe to a project** → [`eas-observe/setup.md`](eas-observe/setup.md). Install, wrap the root layout (`AppMetricsRoot` on SDK 55, `ObserveRoot` on SDK 56+), mark the app interactive (global `markInteractive()` on SDK 55, the `useObserve()` hook or `<ObserveInteractiveMarker />` on SDK 56+), optional per-route navigation metrics through the Expo Router / React Navigation integrations, user-defined events via `Observe.logEvent` (SDK 56+), error reporting, and runtime configuration (sampling, dispatch, environments, custom endpoint).
-- **Querying metrics from the terminal** → [`eas-observe/queries.md`](eas-observe/queries.md). The six `eas observe:*` commands — `metrics-summary`, `metrics`, `routes`, `events`, `session`, `versions` — with flags, metric aliases, table layouts, JSON shapes, and common workflows.
+- **Querying metrics from the terminal** → [`eas-observe/queries.md`](eas-observe/queries.md). The `eas observe:*` commands — `metrics-summary`, `metrics`, `routes`, `events`, `session`, `versions`, `errors`, `event` — with flags, metric aliases, table layouts, JSON shapes, and common workflows.
 - **Reading a dashboard or CLI output** → [`eas-observe/metrics.md`](eas-observe/metrics.md). Target thresholds per metric, what the automatic TTI params mean (`frameRate.*`, `device.*`, `network.*`), and diagnostic patterns for telling slow-but-smooth startup apart from main-thread contention, hard blocks, or throttled devices.
 - **Shipping an Observe integration in a library** → [`eas-observe/third-party.md`](eas-observe/third-party.md). For package authors only (SDK 57+): optional peer dependency, config declaration merging, `Observe.registerIntegration()`, and event naming.
 
@@ -26,19 +26,11 @@ The four reference files in `eas-observe/` cover what people typically need this
 - Expo Router integration: https://docs.expo.dev/eas/observe/integrations/expo-router/
 - React Navigation integration: https://docs.expo.dev/eas/observe/integrations/react-navigation/
 - User-defined events: https://docs.expo.dev/eas/observe/events/
+- Error reporting: https://docs.expo.dev/eas/observe/errors/
 - Configuration: https://docs.expo.dev/eas/observe/configuration/
 - Third-party integrations: https://docs.expo.dev/eas/observe/integrations/third-party/
 - EAS Update download performance: https://docs.expo.dev/eas/observe/eas-update/
 - Troubleshooting: https://docs.expo.dev/eas/observe/reference/troubleshooting/
-
-## Known gaps between the docs and the shipped code
-
-Verified against `eas-cli` 21.8.0 and `expo-observe` 57.0.9. Trust this skill's references over the docs on these points, but re-check with `--help` and the installed package before relying on them:
-
-- All six CLI commands are on the [Querying with EAS CLI](https://docs.expo.dev/eas/observe/eas-cli/) page. Older doc builds list only four and omit `observe:routes` and `observe:session`.
-- Navigation metric aliases are `nav_cold_ttr`, `nav_warm_ttr`, and `nav_tti`. There are no bare `cold_ttr` / `warm_ttr` aliases in the CLI.
-- Sorting uses `--sort <slowest|fastest|newest|oldest>`. There is no `--order` flag.
-- `ObserveErrorBoundary`, `Observe.reportError`, and `configure({ errorHandlingEnabled })` are exported but undocumented. Observe still has no crash reporting; use Sentry or BugSnag for that.
 
 ## Submitting Feedback
 If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
