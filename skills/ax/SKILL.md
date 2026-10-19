@@ -4,11 +4,11 @@ description: Load this skill before you read or change code in a project whose p
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: ax-llm/ax@46a1ced876ffc1e17257c8dd8167f11ca45fdde3
-  upstream_version: "25.0.0"
+  upstream: ax-llm/ax@818d15b02d57de8f215f6d2cb23bd3d3921a6e5e
+  upstream_version: "25.4.3"
 ---
 
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # Ax
 
@@ -28,12 +28,12 @@ Use the installed `@ax-llm/ax` package and its types as the source of truth. Rea
 - [ax-flow](references/ax-flow.md): This skill helps an LLM generate correct AxFlow workflow code using @ax-llm/ax. Use when the user asks about flow(), AxFlow, workflow orchestration, parallel execution, DAG workflows, conditional routing, map/reduce patterns, or multi-node AI pipelines.
 - [ax-gen](references/ax-gen.md): This skill helps an LLM generate correct AxGen code using @ax-llm/ax. Use when the user asks about ax(), AxGen, generators, forward(), streamingForward(), validation, assertions, streaming assertions, field processors, step hooks, self-tuning, or structured outputs. For MCP clients, transports, prompts, resources, tasks, subscriptions, or authentication use ax-mcp alongside this skill.
 - [ax-gepa](references/ax-gepa.md): This skill helps an LLM generate correct AxGEPA optimization code using @ax-llm/ax. Use when the user asks about AxGEPA, GEPA, Pareto optimization, multi-objective prompt tuning, reflective prompt evolution, validationExamples, maxMetricCalls, or optimizing a generator, flow, or agent tree.
-- [ax-llm](references/ax-llm.md): This skill helps with using the @ax-llm/ax TypeScript library for building LLM applications. Use when the user asks about ax(), ai(), f(), s(), agent(), flow(), AxGen, AxAgent, AxFlow, signatures, streaming, or mentions @ax-llm/ax.
+- [ax-llm](references/ax-llm.md): Build or debug TypeScript LLM applications with @ax-llm/ax. Use for Ax providers, structured generation, signatures, agents and tools, memory, MCP, workflows, audio, and optimization.
 - [ax-mcp](references/ax-mcp.md): This skill helps an LLM build correct native Model Context Protocol integrations with @ax-llm/ax. Use when the user asks about AxMCPClient, MCP transports, tools, prompts, resources, subscriptions, tasks, sampling, elicitation, roots, authentication, OAuth, MCP Apps, recording/replay, or MCP integration with AxGen, AxAgent, AxFlow, chat, optimization, and AxEventRuntime.
 - [ax-playbook](references/ax-playbook.md): This skill helps an LLM generate correct playbook code using @ax-llm/ax. Use when the user asks about playbook(), AxPlaybook, context playbooks, evolving context, ACE / Agentic Context Engineering, agent.playbook(), or growing/applying task knowledge offline and online with evolve() and update().
 - [ax-refine](references/ax-refine.md): Use this skill when writing or reviewing Ax bestOfN/refine code, reward functions, thresholds, native sample selection, serial attempts, generated advice, and attempt diagnostics.
 - [ax-signature](references/ax-signature.md): This skill helps an LLM generate correct DSPy signature code using @ax-llm/ax. Use when the user asks about signatures, s(), f(), field types, string syntax, fluent builder API, validation constraints, or type-safe inputs/outputs.
-- [ax-typesafe](references/ax-typesafe.md): Use Typesafe Jev models with @ax-llm/ax in TypeScript. Covers boolean/class signatures with value descriptions, provider trueThreshold, native Noul/Choice/Score questions, structured criteria, probability-based decisions, and explicit hybrid generation.
+- [ax-typesafe](references/ax-typesafe.md): Use Typesafe Jev models with @ax-llm/ax in TypeScript. Covers images, box outputs, and boolean/class/rubric score signatures with decision evidence, value descriptions, provider trueThreshold, native Noul/Choice/Score questions, structured criteria, probability-based decisions, and explicit hybrid generation.
 
 ## Common rules
 

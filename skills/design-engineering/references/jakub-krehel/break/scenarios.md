@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 267330e1adfc66a718fb65fa6918c1f06d0a689e. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
 
 # Scenario axes
 
-The menu step 2 of [index.md](index.md) selects from. Each axis carries a cue: the property of the component that makes the axis worth running. Cue matches, axis stays; cue fails, axis is dropped and the drop is named in the plan.
+The menu **Infer the scenarios from the component** in [index.md](index.md) selects from. Each axis carries a cue: the property of the component that makes the axis worth running. Cue matches, axis stays; cue fails, axis is dropped and the drop is named in the plan.
 
-An axis that stays contributes its scenarios as written here, plus any value the component's own props make obviously worse, such as the longest option in a real dataset.
+An axis that stays contributes its scenarios as written here. Add any value the component's own props make obviously worse, such as the longest option in a real dataset, copied into a fixture.
 
 ## Content length
 

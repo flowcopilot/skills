@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "46a1ced876ffc1e17257c8dd8167f11ca45fdde3",
+    "revision": "818d15b02d57de8f215f6d2cb23bd3d3921a6e5e",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -25,14 +25,16 @@
   },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
-    "revision": "41e0d19858946d18af9ee2c2feebbe2e11d829ff",
+    "revision": "86505e44f87d801aa1864a3c4109e9a8ae5c409f",
     "workflows": [
       "agents-sdk",
       "basin",
+      "cf-cli",
       "cloudflare-email-service",
       "cloudflare-one",
       "cloudflare-one-migrations",
       "durable-objects",
+      "gateway-workers",
       "k2",
       "nextjs-on-cloudflare",
       "sandbox-migrate-to-next",
@@ -41,12 +43,13 @@
       "turnstile-spin",
       "web-perf",
       "workers-best-practices",
+      "workers-profiling",
       "wrangler"
     ]
   },
   "convex": {
     "repository": "https://github.com/get-convex/agent-skills.git",
-    "revision": "2cfe645c87f971242cfc8ef3eb53662cbec26a53",
+    "revision": "191a5c33a7e7a22ec9d5ff13930f84748bbcf8f8",
     "workflows": [
       "convex-add",
       "convex-advisor",
@@ -84,7 +87,7 @@
   },
   "expo": {
     "repository": "https://github.com/expo/skills.git",
-    "revision": "13ad8e05874195633b5c185f6947bb6400e228fc",
+    "revision": "7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1",
     "workflows": [
       "eas-app-stores",
       "eas-hosting",
@@ -115,12 +118,13 @@
   "software-mansion": {
     "repository": "https://github.com/software-mansion-labs/skills.git",
     "bundle": "react-native",
-    "revision": "e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9",
+    "revision": "58afa0a09b01dc47819af8fd48bb062561414108",
     "workflows": [
       "software-mansion/detour/detour-onboarding/index",
       "software-mansion/detour/migrate-to-detour/index",
       "software-mansion/expo-horizon/index",
       "software-mansion/fishjam/index",
+      "software-mansion/fishjam/references/composition/index",
       "software-mansion/fishjam/references/js-server-sdk/index",
       "software-mansion/fishjam/references/platform/index",
       "software-mansion/fishjam/references/python-server-sdk/index",
@@ -147,7 +151,7 @@
   "callstack": {
     "repository": "https://github.com/callstackincubator/agent-skills.git",
     "bundle": "react-native",
-    "revision": "61e6e7dfdf3a8ee862254c200d751fcb1fb863dc",
+    "revision": "59e9d17446a248b21d86f078fcd0bd2d36db1ca4",
     "workflows": [
       "callstack/assess-react-native-migration/index",
       "callstack/create-react-native-library/index",
@@ -162,7 +166,7 @@
   },
   "clerk": {
     "repository": "https://github.com/clerk/skills.git",
-    "revision": "cc508f98dfca1ada6b420d2910e6aa150013e80c",
+    "revision": "8482d43fe12a5f06a2b5ab3008615875747a3e4e",
     "workflows": [
       "clerk-backend-api",
       "clerk-billing",
@@ -179,10 +183,11 @@
   },
   "emil-kowalski": {
     "repository": "https://github.com/emilkowalski/skills.git",
-    "revision": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
+    "revision": "2d228630ba1446365f614a108cb8252f1feda202",
     "workflows": [
       "emil-kowalski/animate-expo/index",
       "emil-kowalski/animate/index",
+      "emil-kowalski/animation-performance/index",
       "emil-kowalski/animation-vocabulary/index",
       "emil-kowalski/apple-design/index",
       "emil-kowalski/ask-sonner/index",
@@ -200,7 +205,7 @@
   },
   "jakub-krehel": {
     "repository": "https://github.com/jakubkrehel/skills.git",
-    "revision": "267330e1adfc66a718fb65fa6918c1f06d0a689e",
+    "revision": "4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63",
     "workflows": [
       "jakub-krehel/better-accessibility/index",
       "jakub-krehel/better-colors/index",
@@ -210,15 +215,18 @@
       "jakub-krehel/better-ui/index",
       "jakub-krehel/better-writing/index",
       "jakub-krehel/break/index",
+      "jakub-krehel/build-design/index",
       "jakub-krehel/explain-interface/index",
       "jakub-krehel/interface-review/index",
+      "jakub-krehel/state-machine/index",
+      "jakub-krehel/technical-drawing/index",
       "jakub-krehel/variant/index"
     ],
     "bundle": "design-engineering"
   },
   "pstack": {
     "repository": "https://github.com/cursor/plugins.git",
-    "revision": "d0ef80d86795816da932a153458c5dbe192d294e",
+    "revision": "75fabace38ce507ee044546eaca64167c8c1e21b",
     "workflows": [
       "pstack/how/index",
       "pstack/technical-writing/index",
@@ -229,7 +237,7 @@
   },
   "matt-pocock": {
     "repository": "https://github.com/mattpocock/skills.git",
-    "revision": "f3fc5632f401156837ee3872f14fe33ccf1024ea",
+    "revision": "49dd158d1076134a641b33efb035946536778336",
     "workflows": [
       "matt-pocock/wait-what/index",
       "matt-pocock/writing-for-agents/index"

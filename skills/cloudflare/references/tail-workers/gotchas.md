@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 86505e44f87d801aa1864a3c4109e9a8ae5c409f. -->
 
 # Tail Workers Troubleshooting
 
@@ -11,7 +11,7 @@ Trace one known producer invocation through consumer execution and destination r
 | Filters confuse HTTP responses with execution failures | [TailItems](https://developers.cloudflare.com/workers/runtime-apis/handlers/tail/index.md#tailitems) |
 | Request data is missing or unexpectedly retained | [TailRequest](https://developers.cloudflare.com/workers/runtime-apis/handlers/tail/index.md#tailrequest) |
 | Inspect producer and consumer execution | [Real-time logs](https://developers.cloudflare.com/workers/observability/logs/real-time-logs/index.md) |
-| Reconsider a custom exporter at higher volume | [Exporting OpenTelemetry Data](https://developers.cloudflare.com/workers/observability/exporting-opentelemetry-data/index.md) |
+| Reconsider a custom exporter at higher volume | [OpenTelemetry export](https://developers.cloudflare.com/observability/export/opentelemetry/index.md) |
 
 Verify producer configuration, consumer identity, and destination credentials independently. Include both handled error responses and thrown exceptions when checking filters. Make destination failures observable without exposing the payload or credentials in diagnostic logs. Do not infer retention, retries, or batch guarantees from an example.
 

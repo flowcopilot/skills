@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 61e6e7dfdf3a8ee862254c200d751fcb1fb863dc. -->
+<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 59e9d17446a248b21d86f078fcd0bd2d36db1ca4. -->
 
 ---
 title: Expo Android Integration
@@ -16,6 +16,9 @@ Package and publish Expo Android AAR, then initialize host runtime and mount RN 
 npx brownfield package:android --module-name <android_module_name> --variant release
 npx brownfield publish:android --module-name <android_module_name>
 ```
+
+Record `moduleName`/`variant` and the `android.expo` plugin options in `brownfield.config.*`
+instead of repeating them — see [cli-and-config.md](./cli-and-config.md) for the full option set.
 
 ## When to Use
 
@@ -64,8 +67,11 @@ override fun onConfigurationChanged(newConfig: Configuration) {
 ```
 
 5. Render RN UI with JS-registered module name:
-   - `ReactNativeFragment.createReactNativeFragment("<registered_module_name>")`
-   - or `ReactNativeBrownfield.shared.createView(context, activity, "<registered_module_name>")`
+   - `ReactNativeFragment.createReactNativeFragment("<registered_module_name>", initialProps)`
+   - or `ReactNativeBrownfield.shared.createView(activity, "<registered_module_name>", reactDelegate, launchOptions)`
+   - in Compose, `AndroidFragment<ReactNativeFragment>` with the `ReactNativeFragmentArgNames`
+     constants
+   - see [runtime-api.md](./runtime-api.md#kotlin) for the full signatures
 
 ## Stop Conditions
 
@@ -89,5 +95,7 @@ Mark complete only if:
 
 ## Related Skills
 
+- [cli-and-config.md](./cli-and-config.md) - Full CLI option set, config file, artifact layout
+- [runtime-api.md](./runtime-api.md) - Host <-> RN API surface
 - [expo-quick-start.md](./expo-quick-start.md) - Expo setup and plugin wiring
 - [expo-ios-integration.md](./expo-ios-integration.md) - Expo iOS equivalent

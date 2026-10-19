@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # Fishjam JS Server SDK
 
@@ -6,13 +6,14 @@
 
 > **Read `../platform/index.md` first.** It defines rooms, peers, tracks, management tokens, peer tokens, and the WS-vs-webhook tradeoff that this skill builds on.
 
-## Three components
+## Four components
 
 | Component | What it does | Reference |
 |---|---|---|
 | `FishjamClient` | REST client — rooms, peers, agents, livestream/MoQ tokens, subscribe modes. | `client.md` |
 | `FishjamWSNotifier` | Subscribes to all 18 server events over a single WebSocket. Best for long-lived workers. | `ws-notifier.md` |
 | `FishjamAgent` | Programmatic peer — sends/receives audio frames over a server-side WS. Used for AI agents (Gemini, custom). | `agent.md` |
+| `CompositionClient` | Compositions: register inputs and outputs, deploy templates, send events. Concepts in `../composition/index.md`. | `composition.md` |
 
 Webhook receivers are not a class — you decode `ServerMessage` protobuf yourself; covered in `webhooks.md`.
 
@@ -50,6 +51,7 @@ const { peer, peerToken } = await fishjamClient.createPeer(room.id, {
 | Wire all of this into Express or Fastify | `express-fastify.md` |
 | Issue livestream streamer/viewer tokens or MoQ tokens | `livestream-and-moq.md` |
 | Use manual subscribe mode (cost / privacy / staging) | `selective-subscriptions.md` |
+| Compose streams: `CompositionClient` calls, forwarding a room | `composition.md` |
 
 ## Key rules
 
@@ -72,3 +74,4 @@ const { peer, peerToken } = await fishjamClient.createPeer(room.id, {
 | `express-fastify.md` | Production wiring — `/api/join-room`, error mapping, webhook routes, Fastify plugin. |
 | `livestream-and-moq.md` | `createLivestreamStreamerToken`, `createLivestreamViewerToken`, `createMoqToken`. |
 | `selective-subscriptions.md` | `subscribePeer` / `subscribeTracks` with peers created using `subscribeMode: 'manual'`. |
+| `composition.md` | `CompositionClient`: compositions, inputs, outputs, templates, events, exceptions. |

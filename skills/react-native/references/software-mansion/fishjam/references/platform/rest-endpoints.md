@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # Fishjam REST API Endpoints
 
@@ -68,7 +68,7 @@ Most apps interact with livestreams via the room endpoints; the `/livestream` fa
 
 | Method | Path | Purpose |
 |---|---|---|
-| `POST` | `/room/{room_id}/track_forwardings` | Forward a track from this room to another peer or room. Used for relay / fan-out patterns. |
+| `POST` | `/room/{room_id}/track_forwardings` | Forward the room's tracks into a composition. Body: `{ compositionURL }`. See `../composition/room-composition.md`; the Composition API itself is in `../composition/rest-endpoints.md`. |
 
 ## MoQ
 

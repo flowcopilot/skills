@@ -9,9 +9,16 @@ on:
 permissions:
   contents: read
 
+# actions/checkout runs git init with a temporary HOME; this keeps git from printing
+# the default branch hint on every run.
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out the repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803

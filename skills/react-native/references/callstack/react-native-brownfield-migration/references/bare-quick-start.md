@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 61e6e7dfdf3a8ee862254c200d751fcb1fb863dc. -->
+<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 59e9d17446a248b21d86f078fcd0bd2d36db1ca4. -->
 
 ---
 title: Bare React Native Quick Start
@@ -33,12 +33,16 @@ cd ios && pod install && cd ..
 Progress checklist:
 - [ ] Install package
 - [ ] Install pods
+- [ ] Create brownfield config
 - [ ] Continue to bare platform packaging
 ```
 
 1. Install package in RN app root.
 2. Run `pod install` for iOS.
-3. Continue with one platform packaging file:
+3. Create `brownfield.config.js` or `brownfield.config.json` with the iOS scheme and the Android
+   module name and variant, so packaging commands stay short — see
+   [cli-and-config.md](./cli-and-config.md).
+4. Continue with one platform packaging file:
    - [bare-ios-xcframework-generation.md](./bare-ios-xcframework-generation.md)
    - [bare-android-aar-generation.md](./bare-android-aar-generation.md)
 
@@ -55,6 +59,7 @@ Progress checklist:
 
 ## Related Skills
 
+- [cli-and-config.md](./cli-and-config.md) - CLI commands, config file, artifacts
 - [quick-start.md](./quick-start.md) - Shared path-selection gate
 - [bare-ios-xcframework-generation.md](./bare-ios-xcframework-generation.md) - Bare iOS artifact generation
 - [bare-android-aar-generation.md](./bare-android-aar-generation.md) - Bare Android artifact generation

@@ -4,11 +4,11 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: software-mansion-labs/skills@e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9
-  upstream_callstack: "callstackincubator/agent-skills@61e6e7dfdf3a8ee862254c200d751fcb1fb863dc"
+  upstream: software-mansion-labs/skills@58afa0a09b01dc47819af8fd48bb062561414108
+  upstream_callstack: "callstackincubator/agent-skills@59e9d17446a248b21d86f078fcd0bd2d36db1ca4"
 ---
 
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # React Native
 
@@ -30,7 +30,8 @@ This bundle imports the skills directories of both repositories, including neste
 - [detour-onboarding](references/software-mansion/detour/detour-onboarding/index.md): Complete onboarding guide for developers who are new to Detour, the open-source deferred deep linking SDK by Software Mansion.
 - [migrate-to-detour](references/software-mansion/detour/migrate-to-detour/index.md): Use when the user mentions migrating deep links, switching away from Branch or AppsFlyer, replacing their deep linking SDK, setting up Detour deep linking for the first time, or asks how Branch/AppsFlyer concepts map to Detour.
 - [expo-horizon](references/software-mansion/expo-horizon/index.md): Software Mansion's guide for migrating Expo SDK apps to Meta Quest using expo-horizon packages.
-- [fishjam](references/software-mansion/fishjam/index.md): Software Mansion's Fishjam — hosted WebRTC platform for video, audio, and one-to-many livestreaming.
+- [fishjam](references/software-mansion/fishjam/index.md): Software Mansion's Fishjam — hosted WebRTC platform for video, audio, one-to-many livestreaming, and compositions.
+- [fishjam-composition](references/software-mansion/fishjam/references/composition/index.md): Fishjam compositions: server-side, real-time mixing of several live streams (room peers, WHIP, RTMP, MP4) into new output streams with layouts, overlays, captions, and audio mixes, built on Smelter.
 - [fishjam-js-server-sdk](references/software-mansion/fishjam/references/js-server-sdk/index.md): Node.js / TypeScript server SDK for Fishjam — backends that create rooms, mint peer tokens, listen to server notifications, and run agents.
 - [fishjam-platform](references/software-mansion/fishjam/references/platform/index.md): Fishjam platform fundamentals — domain model and auth shared by all SDKs.
 - [fishjam-python-server-sdk](references/software-mansion/fishjam/references/python-server-sdk/index.md): Python server SDK for Fishjam — backends that create rooms, mint peer tokens, receive server notifications, and run voice agents.

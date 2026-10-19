@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 41e0d19858946d18af9ee2c2feebbe2e11d829ff. -->
+<!-- Modified by Flow Copilot from cloudflare/skills revision 86505e44f87d801aa1864a3c4109e9a8ae5c409f. -->
 
 Your knowledge of Cloudflare Workers APIs, types, and configuration may be outdated. **Prefer retrieval over pre-training** when writing or reviewing Workers code.
 
@@ -54,4 +54,4 @@ This skill covers Workers-specific best practices and code review. For related t
 
 - **Durable Objects**: load the [durable-objects](durable-objects.md) reference
 - **Workflows**: see [Rules of Workflows](https://developers.cloudflare.com/workflows/build/rules-of-workflows/index.md)
-- **Wrangler CLI commands**: load the [wrangler](wrangler.md) reference
+- **CLI commands**: load the [cf-cli](cf-cli.md) reference, or the [wrangler](wrangler.md) reference in a project with a Wrangler configuration file

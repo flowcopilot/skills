@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # Audio I/O Codegen Rules (@ax-llm/ax)
 
@@ -161,6 +161,7 @@ const res = await llm.chat({
   },
 });
 
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.content);
 console.log(res.results[0]?.audio?.data);
 console.log(res.results[0]?.audio?.transcript);
@@ -239,6 +240,7 @@ const res = await openai.chat({
   ],
 });
 
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.content);
 console.log(res.results[0]?.audio?.data);
 ```
@@ -336,6 +338,7 @@ const res = await gemini.chat({
   ],
 });
 
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.content);
 console.log(res.results[0]?.audio?.data);
 ```
@@ -375,6 +378,7 @@ const res = await grok.chat(
   { webSocket: WebSocket }
 );
 
+if (!('results' in res)) throw new Error('Expected a non-streaming chat response');
 console.log(res.results[0]?.content);
 console.log(res.results[0]?.audio?.data);
 ```

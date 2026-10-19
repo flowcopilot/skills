@@ -1,8 +1,8 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision e3f00cdb34942cee8b788abe10fe0d78a7f2b4e9. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
 
 # Fishjam
 
-Software Mansion's hosted WebRTC platform. Routes between platform fundamentals and the four SDKs.
+Software Mansion's hosted WebRTC platform. Routes between platform fundamentals, the four SDKs, and compositions.
 
 Read the **`references/platform/index.md`** first for the domain model (rooms, peers, tracks, tokens, notifications). Then read the SDK sub-skill that matches what you're building. All sub-skills are in `references/`.
 
@@ -16,6 +16,7 @@ Read the **`references/platform/index.md`** first for the domain model (rooms, p
 | A React app in a browser                                                          | `references/react-client/index.md`                                                              |
 | A React Native / Expo app for iOS or Android                                      | `references/react-native-client/index.md`                                                       |
 | Vanilla TS / Svelte / Vue / web worker (non-React)                                | `references/react-client/index.md` → `ts-client-escape.md` (drop to `@fishjam-cloud/ts-client`) |
+| A composed stream: a call as a broadcast, restreaming, overlays, React templates  | `references/composition/index.md`                                                               |
 | Just calling REST directly (no SDK)                                               | `references/platform/rest-endpoints.md`                                                         |
 
 A production Fishjam app always has **a backend (server SDK) + a client (client SDK)**. For prototyping you can skip the backend with the Sandbox API — see `references/platform/sandbox-vs-production.md`.

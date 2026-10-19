@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision cc508f98dfca1ada6b420d2910e6aa150013e80c. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 8482d43fe12a5f06a2b5ab3008615875747a3e4e. -->
 
 # `<Show>` Component
 
@@ -107,7 +107,7 @@ The `treatPendingAsSignedOut` prop controls how pending sessions (sessions with 
 
 ## Security Caveat
 
-**`<Show>` only visually hides content** — it remains in browser source. It is not a security boundary. For protecting sensitive data, always verify authentication server-side with `auth()` or use `auth.protect()` in middleware.
+**`<Show>` only visually hides content** — it remains in browser source. It is not a security boundary. For protecting sensitive data, always verify authentication server-side with `auth()` or `auth.protect()` in the page or Route Handler.
 
 ## Migration from Core 2
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # AxGen Codegen Rules (@ax-llm/ax)
 
@@ -42,7 +42,7 @@ const gen3 = ax('input -> output', {
   description: 'A helpful assistant',
   maxRetries: 3,
   maxSteps: 10,
-  temperature: 0.7,
+  modelConfig: { temperature: 0.7 },
 });
 
 const result = await gen.forward(llm, { input: 'Hello world' });
@@ -158,6 +158,7 @@ for await (const chunk of stream) {
 
 - Each chunk is `{ version, index, delta }`. Merge deltas per `index` (strings and arrays append, other values replace), and discard what you merged when `version` changes.
 - A new version starts on a validation or refusal retry, and when a later step replaces output an earlier step already emitted (for example after a field processor's feedback); the thought so far is re-emitted in the new version. Versions never decrease.
+- In TypeScript, partial JSON repair preserves string text such as `, t`, `, n`, trailing punctuation, and commas before brackets inside strings. Structural repair applies outside strings so these fragments do not change into literals or repeat in merged deltas.
 - A streamed `code` field drops its fences wherever the chunks split: a fence that may still be incomplete is held back, as a partial label is, so the merged deltas equal the non-streaming value.
 
 ## Stopping And Cancellation
@@ -356,8 +357,9 @@ Rules:
 In TypeScript, providers advertising `requiresStructuredOutput` (such as
 Typesafe) automatically receive a schema for scalar-only signatures too.
 Ax renders JSON instructions/examples and parses the resulting object without
-changing the program's signature. Typesafe accepts required boolean and class
-outputs; numeric scoring uses the provider-specific native client. Boolean/class
+changing the program's signature. Typesafe and OpenAI Decisions accept required
+boolean, class, and ordered rubric score outputs. Add `(evidence)` or
+`.withEvidence()` to retain probabilities and native values in AxGen. Boolean/class
 value descriptions map to native criteria, while conventional providers receive
 readable descriptions in prompts and schemas. See the
 [ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md)
@@ -615,3 +617,12 @@ required properties and argument types before their handlers start. Invalid
 arguments enter the correction loop; exhausting the step limit fails the run.
 This does not establish support for every JSON Schema constraint. Generated
 session parity remains open; see `docs/COMPILER.md`.
+
+## Decision model outputs
+
+Use boolean/class `.withEvidence()` or a rubric `f.score(levels).withEvidence()`
+to retain probabilities and native confidence through `forward()`. String equivalents
+are `boolean(evidence)` and `score "Low, Medium, High"(evidence)`. See
+[decision evidence](ax-typesafe.md#decision-evidence-and-reranking) for result shapes,
+provenance, refusal policy, and reranking. These are normal program outputs;
+processors, assertions, result selection, traces, and caches receive decoded evidence.

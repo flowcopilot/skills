@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # GEPA Optimization Codegen Rules (@ax-llm/ax)
 
@@ -204,7 +204,7 @@ const loaded = JSON.parse(saved);
 program.applyOptimization(loaded);
 ```
 
-- Single-target runs usually populate both `optimizedProgram.instruction` and `optimizedProgram.componentMap`.
+- Single-generator runs store optimized components in `optimizedProgram.componentMap`, with instructions keyed by `${programId}::instruction`. Other components, such as descriptions, have their own keys.
 - Tree-wide runs rely on `componentMap`, keyed by full component key.
 - Pareto points expose candidate configs under `point.configuration.componentMap`.
 

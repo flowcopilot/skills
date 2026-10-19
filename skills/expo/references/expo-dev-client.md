@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
+<!-- Modified by Flow Copilot from expo/skills revision 7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1. -->
 
 Use EAS Build to create development clients for testing native code changes on physical devices. Use this for creating custom Expo Go clients for testing branches of your app.
 
@@ -146,6 +146,8 @@ npx expo start --dev-client
 
 # Scan QR code with dev client or enter URL manually
 ```
+
+When you launch the dev client yourself to screenshot or drive it, skip the onboarding sheet, the dev menu at launch, and the Tools button. On SDK 58+, Expo CLI does this for launches it starts from a non-interactive shell; for a URL you open yourself, use `<scheme>://?__expo_url=<encoded dev server URL>&__expo_disable_onboarding=1&__expo_disable_fab=1&__expo_disable_auto_launch=1`. On SDK 57 and earlier, launch the iOS app with the `-EXDevMenu*` launch arguments, and on Android open `<scheme>://expo-development-client/?url=<encoded dev server URL>&disableOnboarding=1&disableFab=1&disableAutoLaunch=1`. See `../expo-overview/expo-dev-client/launch-without-dev-menu.md` for the exact commands.
 
 ## Troubleshooting
 

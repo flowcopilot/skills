@@ -143,7 +143,7 @@ Expo imports `plugins/expo/skills`. The adapter uses the skill directory README 
 
 ## Clerk source
 
-Clerk imports a subset of `skills/` from `clerk/skills`. The `clerkSelection` constant in `scripts/sync-upstreams.ts` chooses skills by category: `"all"` imports every current and future skill in that category, and a list imports only the named skills. The sync stops when Clerk adds a category or removes a listed skill. To bundle another Clerk skill, add it to that constant and run `bun run sync --only clerk`.
+Clerk imports a subset of `skills/` from `clerk/skills`. Upstream keeps all skills in one flat directory. The `clerkSections` constant in `scripts/sync-upstreams.ts` lists each bundled skill under its router section, and `clerkExcluded` lists each skill that is not bundled. The sync stops when Clerk adds a skill that neither constant lists, or removes a listed skill. To bundle another Clerk skill, move it from `clerkExcluded` to a section and run `bun run sync --only clerk`.
 
 The upstream `clerk` router is not imported as a workflow. The generated router keeps its version table and lists the skills this bundle excludes. Evaluation fixtures and starter templates are not imported because no imported instruction reads them. Backend API scripts move to `scripts/clerk-backend-api/` and keep their executable mode.
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 61e6e7dfdf3a8ee862254c200d751fcb1fb863dc. -->
+<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 59e9d17446a248b21d86f078fcd0bd2d36db1ca4. -->
 
 ---
 title: Bare Android Native Integration
@@ -56,8 +56,11 @@ ReactNativeHostManager.initialize(this.application) {
 ```
 
 4. Render RN UI:
-   - `ReactNativeFragment.createReactNativeFragment("<registered_module_name>")`
-   - or `ReactNativeBrownfield.shared.createView(...)`
+   - `ReactNativeFragment.createReactNativeFragment("<registered_module_name>", initialProps)`
+   - or `ReactNativeBrownfield.shared.createView(activity, "<registered_module_name>", reactDelegate, launchOptions)`
+   - in Compose, `AndroidFragment<ReactNativeFragment>` with the `ReactNativeFragmentArgNames`
+     constants (`ARG_MODULE_NAME`, `ARG_LAUNCH_OPTIONS`)
+   - see [runtime-api.md](./runtime-api.md#kotlin) for the full signatures
 5. Verify host app resolves dependency and RN module renders.
    - Capture agent-assisted device evidence, using `agent-device` when possible.
 
@@ -89,5 +92,6 @@ Mark complete only if:
 
 ## Related Skills
 
+- [runtime-api.md](./runtime-api.md) - Host <-> RN API surface
 - [bare-android-aar-generation.md](./bare-android-aar-generation.md) - Bare Android artifact generation
 - [bare-quick-start.md](./bare-quick-start.md) - Bare setup prerequisites

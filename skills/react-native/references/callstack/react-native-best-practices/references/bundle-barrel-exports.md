@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 61e6e7dfdf3a8ee862254c200d751fcb1fb863dc. -->
+<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 59e9d17446a248b21d86f078fcd0bd2d36db1ca4. -->
 
 ---
 title: Avoid Barrel Exports

@@ -9,13 +9,20 @@ permissions:
   contents: write
   pull-requests: write
 
+# actions/checkout runs git init with a temporary HOME; this keeps git from printing
+# the default branch hint on every run.
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
 concurrency:
   group: sync-upstream-skills
   cancel-in-progress: false
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       SYNC_TOKEN: ${{ secrets.SKILLS_SYNC_TOKEN }}
     steps:

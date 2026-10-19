@@ -4,10 +4,10 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: expo/skills@13ad8e05874195633b5c185f6947bb6400e228fc
+  upstream: expo/skills@7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1
 ---
 
-<!-- Modified by Flow Copilot from expo/skills revision 13ad8e05874195633b5c185f6947bb6400e228fc. -->
+<!-- Modified by Flow Copilot from expo/skills revision 7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1. -->
 
 # Expo
 

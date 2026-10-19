@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # Ax Signature Reference
 
@@ -107,13 +107,13 @@ original annotations remain separate in the signature and survive `toString()`
 round-trips. Rendering does not mutate the signature or duplicate descriptions.
 Boolean and class return types, optional/array behavior, and allowed values stay
 unchanged. Descriptions are guidance, not additional output validation. Number
-bounds still describe validation constraints; Typesafe Score rubrics remain native-only.
+bounds still describe validation constraints; use an explicit `score` field for an ordered rubric.
 The same descriptions, validation, serialization, schemas, and prompt semantics
 are generated for Python, Java, C++, Go, and Rust.
 
-For Jev, use these descriptions for boolean/class criteria. Full structured
-criteria, native probabilities, and Score rubrics use the separate native
-client; see the [ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md).
+For Jev, use these descriptions for boolean/class criteria. Add `.withEvidence()`
+to retain probabilities in AxGen and use `f.score(levels)` for ordered rubrics.
+Full structured criteria use the separate native client; see the [ax-typesafe skill](https://github.com/ax-llm/ax/blob/main/src/ax/skills/ax-typesafe.md).
 The adapter's `trueThreshold` is provider-wide conversion policy, not a field modifier.
 
 ### Existing modifier rules
@@ -124,6 +124,7 @@ The adapter's `trueThreshold` is provider-wide conversion policy, not a field mo
 - Inside `object{ ... }`, the `!` internal marker, media types, `cache`, and `item` are rejected (they only apply at the top level).
 - In quoted values, backslashes are doubled — a regex `\d` is written `pattern "\\d+"`.
 - `AxSignature.toString()` renders every construct back to this grammar losslessly, so a signature round-trips — this is what lets a whole flow serialize its node contracts into mermaid `%%ax` directives (see the ax-flow skill).
+- Signature-level descriptions preserve quotes and backslashes through `toString()` and reparsing. Fluent `.description(...)` accepts ordinary text; string signatures escape embedded quotes and backslashes inside their quoted description.
 
 ## Signature Gallery
 
@@ -325,7 +326,7 @@ const searchDocs = fn('searchDocs')
   .arg('query', z.string().min(1), { cache: true })
   .arg('limit', z.number().int().positive().optional())
   .returnsField('results', z.array(z.string()))
-  .handler(async ({ query }) => [])
+  .handler(async ({ query }) => ({ results: [] }))
   .build();
 ```
 
@@ -375,7 +376,7 @@ f.string('email').email()
 f.string('website').url()
 f.string('birthDate').date()
 f.string('timestamp').datetime()
-f.string('pattern').regex('^[A-Z0-9]')
+f.string('pattern').regex('^[A-Z0-9]', 'Must start with an uppercase letter or digit')
 ```
 
 ### Number Constraints
@@ -474,3 +475,29 @@ Fetch these for full working code:
 - [Fluent Signature](https://raw.githubusercontent.com/ax-llm/ax/refs/heads/main/src/examples/fluent-signature-example.ts) — native fluent f() API
 - [Structured Output](https://raw.githubusercontent.com/ax-llm/ax/refs/heads/main/src/examples/structured_output.ts) — structured output with validation
 - [Debug Schema](https://raw.githubusercontent.com/ax-llm/ax/refs/heads/main/src/examples/debug_schema.ts) — JSON schema validation
+
+## Evidence fields
+
+Boolean and class fields can opt in with `.withEvidence()` or `(evidence)`.
+A rubric `score "Low, Medium, High"` returns a continuous zero-based index;
+add `(evidence)` to keep ordered probabilities and provenance. Boolean
+`threshold 0.7` applies locally to evidence fields only. `refusal return` adds
+a tagged answered/refused union. See [decision evidence](ax-typesafe.md#decision-evidence-and-reranking).
+
+## Bounding boxes (TypeScript)
+
+`photo:image -> target:box` returns `AxBox`: normalized `top`, `bottom`, `left`,
+and `right` coordinates in `[0, 1]`, measured from the image top-left. Ax validates
+`top < bottom` and `left < right`. `target:box(evidence)` returns `AxBoxEvidence`:
+`{ value: AxBox, confidence?: number, provenance }`. Use `f.box()` or
+`f.box().withEvidence()` in fluent signatures. Arrays, optional boxes, nested
+boxes, and box inputs work with generative providers. Native Jev outputs must be
+flat, required, single boxes.
+
+Jev 1.14 supports native localization using PNG/JPEG image inputs. Ax supplies its
+required experimental image header. A Box does not indicate presence; pair it
+with a boolean when the target might be absent. Generative vision models use
+validated structured output with elicited provenance and no native confidence.
+OpenAI Decisions supports images but rejects Box outputs. See `ax-typesafe.md`
+for transport details, image preparation limits, and model selection. Generated
+language Box support remains tracked in the AxIR backlog.

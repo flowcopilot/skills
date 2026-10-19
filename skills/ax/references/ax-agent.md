@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 46a1ced876ffc1e17257c8dd8167f11ca45fdde3. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
 
 # AxAgent Codegen Rules (@ax-llm/ax)
 
@@ -47,7 +47,7 @@ Map user intent to agent shape before writing code:
 ## Critical Rules
 
 - Use `agent(...)` factory syntax for new code.
-- If an actor response contains multiple fenced code blocks, the runtime rejects the whole turn without executing any block and asks for one executable program.
+- If an actor response contains multiple fenced code blocks, the runtime rejects the whole turn without executing any block and asks for one executable program. This applies to text and structured JSON responses, with LF or CRLF line endings.
 - Add child agents to the parent's `functions: [...]` list. Each child's `agentIdentity.namespace` (or `utils`, the default) determines the runtime call site, e.g. `await team.writer({...})`.
 - If discovery is enabled, call `discover(...)` before using callables whose docs are not already in the prompt.
 - `autoUpgrade` is ON by default: large tool catalogs auto-enable discovery, and oversized undeclared input values are auto-kept runtime-only with a truncated prompt preview. Explicit `functionDiscovery` and declared `contextFields` always win; set `autoUpgrade: false` to opt out.
