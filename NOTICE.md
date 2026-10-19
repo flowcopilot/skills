@@ -60,7 +60,7 @@ Flow Copilot combines selected skills from both sources into one skill. It repla
 
 ### pstack
 
-Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `75fabace38ce507ee044546eaca64167c8c1e21b`, dated 2026-10-18. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
+Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `d457567332aa6989e753ea289f30ea2bfbc80bc0`, dated 2026-10-19. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
 
 ### Matt Pocock
 

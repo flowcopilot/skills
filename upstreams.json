@@ -226,7 +226,7 @@
   },
   "pstack": {
     "repository": "https://github.com/cursor/plugins.git",
-    "revision": "75fabace38ce507ee044546eaca64167c8c1e21b",
+    "revision": "d457567332aa6989e753ea289f30ea2bfbc80bc0",
     "workflows": [
       "pstack/how/index",
       "pstack/technical-writing/index",

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cursor/plugins revision 75fabace38ce507ee044546eaca64167c8c1e21b. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision d457567332aa6989e753ea289f30ea2bfbc80bc0. -->
 
 # Source playbooks
 
