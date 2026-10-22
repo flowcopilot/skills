@@ -8,6 +8,7 @@ Do not edit generated files under `skills/` by hand. Change `scripts/sync-upstre
 
 - Git
 - [Bun](https://bun.sh/)
+- Node.js 26.12.1 for bundled Node scripts, pinned in `mise.toml`
 - [uv](https://docs.astral.sh/uv/) with Python 3.11 or later
 - `actionlint` for GitHub Actions checks
 
@@ -187,6 +188,6 @@ Run `bun run check` and `uv run --script scripts/validate.py` to run every valid
 
 The reference implementation is pinned to an exact `agentskills/agentskills` commit. `scripts/validate.py` calls `skills_ref.validate` for each bundle, then checks optional field types against the published specification. It reports all bundle errors and returns a nonzero exit code on failure, including an empty skill collection or a missing root entry file.
 
-`scripts/check.ts` adds repository rules: one root entry file per bundle, at most 500 lines, manifest routes, source-specific provenance and license checks. Lychee checks local Markdown links. `mise.toml` defines Bun, uv, and Lychee. These are separate from standards compliance. This does not verify external URLs, execute imported helper scripts, or evaluate the accuracy or safety of imported instructions. Deep reference paths are permitted by the checker; the specification recommends keeping reference chains shallow.
+`scripts/check.ts` adds repository rules: one root entry file per bundle, at most 500 lines, manifest routes, source-specific provenance and license checks. Lychee checks local Markdown links. `mise.toml` defines Bun, Node.js, uv, and Lychee. These are separate from standards compliance. This does not verify external URLs, execute imported helper scripts, or evaluate the accuracy or safety of imported instructions. Deep reference paths are permitted by the checker; the specification recommends keeping reference chains shallow.
 
 Both `.github/workflows/validate.yml` and the sync workflow run all validation commands. `validate.yml` also runs `bun run check:reach`, which fails when no path from a bundle's `SKILL.md` reaches a reference. The sync workflow skips it, so a sync that adds an unreachable reference still opens its pull request, and `validate.yml` fails on that pull request. To update the reference validator, review its changes, update the pinned commit and dependency versions, and run the full suite. Do not change the pin automatically during source sync.

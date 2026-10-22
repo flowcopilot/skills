@@ -63,6 +63,6 @@ bun run check
 uv run --script scripts/validate.py
 ```
 
-The Python validation script declares its pinned dependencies. `uv` installs them when it runs the script. The script discovers every bundle under `skills/`, runs the [Agent Skills reference validator](https://agentskills.io/specification#validation), and checks frontmatter field types. `bun run check` covers workflow routes, source attribution, licenses, bundled script paths, and source separation. Lychee checks local Markdown links. `mise.toml` defines all three toolchains.
+The Python validation script declares its pinned dependencies. `uv` installs them when it runs the script. The script discovers every bundle under `skills/`, runs the [Agent Skills reference validator](https://agentskills.io/specification#validation), and checks frontmatter field types. `bun run check` covers workflow routes, source attribution, licenses, bundled script paths, and source separation. Lychee checks local Markdown links. `mise.toml` defines these toolchains and pins Node.js 26.12.1 for bundled Node scripts.
 
 Validation runs on pull requests, pushes to `main`, and after the weekly sync. Format validation does not test instruction accuracy or agent output quality. The 500-line limit and one entry file per bundle are repository rules; reference depth and token budgets remain authoring guidance.
