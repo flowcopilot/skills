@@ -21,3 +21,7 @@ Load this skill before you read or change code in a project whose package.json l
 - Add a sentence that starts with `Do not load it for` only when a near-miss task loads the skill by mistake.
 - Keep the description under 1024 characters.
 - Run the skill discovery benchmark in `benchmarks/skills/` when you change the format. `benchmarks/skills/README.md` has the measured results.
+
+## Pull requests
+
+Fill in `.github/pull_request_template.md` for every pull request body, and delete the sections that do not apply. `gh pr create --body` skips the GitHub template, so copy it yourself.
