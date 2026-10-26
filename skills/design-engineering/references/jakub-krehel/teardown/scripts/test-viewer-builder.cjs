@@ -51,10 +51,15 @@ try {
   const coloredData = JSON.parse(coloredHtml.match(/<script[^>]*id="drawing-data"[^>]*>([\s\S]*?)<\/script>/)[1]);
   assert.equal(coloredData[0].parts[0].id, '1');
   assert.deepEqual(coloredData[0].colors, {hues: {'1': 250}, fills: ['1']});
-  for (const hue of ['blue', null, true]) {
+  for (const hue of [0, 360]) {
     config.drawings[0].colors = {hues: {'1': hue}};
     fs.writeFileSync(configPath, JSON.stringify(config));
-    assert.throws(() => build(configPath, output), /Color hues must be finite numbers/);
+    assert.doesNotThrow(() => build(configPath, output));
+  }
+  for (const hue of ['blue', null, true, -1, 361, 1e308]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.throws(() => build(configPath, output), /Color hues must be finite numbers from 0 to 360/);
   }
   config.drawings[0].colors = {fills: ['missing']};
   fs.writeFileSync(configPath, JSON.stringify(config));

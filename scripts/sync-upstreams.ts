@@ -728,7 +728,7 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
     `      parts.add(p.id);
     }
     for (const hue of Object.values(d.colors?.hues ?? {})) {
-      if (!Number.isFinite(hue)) throw Error('Color hues must be finite numbers');
+      if (!Number.isFinite(hue) || hue < 0 || hue > 360) throw Error('Color hues must be finite numbers from 0 to 360');
     }
     if (d.colors?.fills !== undefined) {
       if (!Array.isArray(d.colors.fills)) throw Error('Color fills must be an array');
@@ -747,10 +747,15 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
   const coloredData = JSON.parse(coloredHtml.match(/<script[^>]*id="drawing-data"[^>]*>([\\s\\S]*?)<\\/script>/)[1]);
   assert.equal(coloredData[0].parts[0].id, '1');
   assert.deepEqual(coloredData[0].colors, {hues: {'1': 250}, fills: ['1']});
-  for (const hue of ['blue', null, true]) {
+  for (const hue of [0, 360]) {
     config.drawings[0].colors = {hues: {'1': hue}};
     fs.writeFileSync(configPath, JSON.stringify(config));
-    assert.throws(() => build(configPath, output), /Color hues must be finite numbers/);
+    assert.doesNotThrow(() => build(configPath, output));
+  }
+  for (const hue of ['blue', null, true, -1, 361, 1e308]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.throws(() => build(configPath, output), /Color hues must be finite numbers from 0 to 360/);
   }
   config.drawings[0].colors = {fills: ['missing']};
   fs.writeFileSync(configPath, JSON.stringify(config));

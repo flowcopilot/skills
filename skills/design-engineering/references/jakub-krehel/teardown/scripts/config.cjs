@@ -20,7 +20,7 @@ function validate(config) {
       parts.add(p.id);
     }
     for (const hue of Object.values(d.colors?.hues ?? {})) {
-      if (!Number.isFinite(hue)) throw Error('Color hues must be finite numbers');
+      if (!Number.isFinite(hue) || hue < 0 || hue > 360) throw Error('Color hues must be finite numbers from 0 to 360');
     }
     if (d.colors?.fills !== undefined) {
       if (!Array.isArray(d.colors.fills)) throw Error('Color fills must be an array');
