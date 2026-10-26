@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision 8482d43fe12a5f06a2b5ab3008615875747a3e4e. -->
+<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
 
 # Organization Invitations
 
@@ -109,10 +109,16 @@ const invitation = await clerk.organizations.getOrganizationInvitation({
 Zero-code path — `<OrganizationProfile />` includes a full members tab with invite / revoke / role change:
 
 ```tsx
+// app/org-settings/[[...rest]]/page.tsx
 import { OrganizationProfile } from '@clerk/nextjs'
+import { Suspense } from 'react'
 
 export default function OrgSettings() {
-  return <OrganizationProfile />
+  return (
+    <Suspense>
+      <OrganizationProfile />
+    </Suspense>
+  )
 }
 ```
 
