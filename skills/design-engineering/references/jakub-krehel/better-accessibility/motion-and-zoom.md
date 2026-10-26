@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # Motion and zoom
 
@@ -31,7 +31,7 @@ Reduced motion targets vestibular triggers, not feedback.
 
 | Disable entirely | Replace | Keep |
 | --- | --- | --- |
-| Parallax scrolling | Slide/scale/zoom transitions → opacity crossfade | Loading spinners and progress |
+| Parallax scrolling | Slide/scale/zoom transitions → opacity cross-fade | Loading spinners and progress |
 | Autoplaying video, GIFs, looping decoration | Smooth scrolling → instant jump | Instant state changes (hover color, focus ring) |
 | Spinning, large-scale movement across the screen | Auto-rotating carousels → start paused | Brief functional feedback (button press) |
 

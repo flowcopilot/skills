@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # UI polish
 
@@ -38,7 +38,7 @@ Drive interactive state changes with CSS transitions or a motion library's sprin
 
 A pressed button scales to `0.96` over `150ms` with `ease-out`, and a disabled one never scales. Give the button an opt-out where the motion would distract, through the component's existing variant API or a `static` prop. See [recipes for CSS, Tailwind and Motion](animations.md#scale-on-press).
 
-## High-frequency interactions get no animation
+## High-frequency interactions respond instantly
 
 Keystrokes, row hovers and tab switches get instant feedback, or a transition of `150ms` or less on `opacity` or `background-color`. Reserve expressive motion for infrequent moments such as a view's first load, a success state or an empty state.
 
@@ -64,7 +64,7 @@ Set `initial={false}` on an `AnimatePresence` that wraps a state swap, so the de
 
 Where an icon swaps on an infrequent state change, such as play to pause or copy to copied, cross-fade it. Scale runs `0.25` to `1`, opacity `0` to `1` and blur `4px` to `0px`. With a motion library, use `{ type: "spring", duration: 0.3, bounce: 0 }`, and bounce is always `0`. Without one, keep both icons in the DOM and cross-fade over `300ms` with `cubic-bezier(0.2, 0, 0, 1)`.
 
-A tab's icon swap and the actions a row reveals on hover fall under **High-frequency interactions get no animation**. Both recipes are in [icon-transitions.md](icon-transitions.md).
+A tab's icon swap and the actions a row reveals on hover fall under **High-frequency interactions respond instantly**. Both recipes are in [icon-transitions.md](icon-transitions.md).
 
 ## Suppress transitions on theme switch
 

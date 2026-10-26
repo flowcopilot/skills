@@ -5,7 +5,7 @@ license: MIT
 metadata:
   author: flowcopilot
   upstream: emilkowalski/skills@2d228630ba1446365f614a108cb8252f1feda202
-  upstream_jakub_krehel: "jakubkrehel/skills@4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63"
+  upstream_jakub_krehel: "jakubkrehel/skills@592aedc44d7d5b3e29740984252902f3e5402a1c"
 ---
 
 <!-- Modified by Flow Copilot from emilkowalski/skills revision 2d228630ba1446365f614a108cb8252f1feda202. -->
@@ -49,15 +49,15 @@ Only when the user explicitly asks for them by name or purpose:
 
 ## Jakub Krehel
 
-- [better-accessibility](references/jakub-krehel/better-accessibility/index.md): Reviews and fixes keyboard and focus behavior, ARIA, accessible names, forms, screen-reader announcements, motion and zoom in your project against WCAG 2.2.
-- [better-colors](references/jakub-krehel/better-colors/index.md): Helps you build and check a color system for your project.
-- [better-interface](references/jakub-krehel/better-interface/index.md): Combines all of the `better-*` skills into a single review across accessibility, layout, writing, typography, color and UI polish.
-- [better-layout](references/jakub-krehel/better-layout/index.md): Helps with grouping, alignment, reading order, responsive structure and room for translated text, so a layout holds up when it is resized, translated or mirrored.
-- [better-typography](references/jakub-krehel/better-typography/index.md): Sets and reviews how text renders in your product, from the type scale and spacing to font features, wrapping, truncation and punctuation.
-- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes the surfaces, icons and motion in your project with exact values for border radius, optical alignment, shadows, icon states and animation.
-- [better-writing](references/jakub-krehel/better-writing/index.md): Writes and reviews your interface copy, from labels and errors to empty states and confirmations, so it matches your product's voice and tells people what to do next.
-- [build-design](references/jakub-krehel/build-design/index.md): Builds UI from a Figma file or a design image so it matches the design, using your project's existing tokens and components.
-- [technical-drawing](references/jakub-krehel/technical-drawing/index.md): Creates precise static technical drawings of physical objects, with coherent views and fine linework.
+- [better-accessibility](references/jakub-krehel/better-accessibility/index.md): Reviews and fixes keyboard and focus behavior, ARIA, accessible names, forms, screen-reader announcements, motion and zoom against WCAG 2.2.
+- [better-colors](references/jakub-krehel/better-colors/index.md): Builds and checks color systems by generating palettes, naming semantic tokens, converting between formats and measuring contrast.
+- [better-interface](references/jakub-krehel/better-interface/index.md): Reviews a screen, flow or whole interface across accessibility, layout, writing, typography, color and UI polish, and returns one ranked report.
+- [better-layout](references/jakub-krehel/better-layout/index.md): Sets grouping, alignment, reading order, responsive structure and room for translated text, so a layout holds up when it is resized, translated or mirrored.
+- [better-typography](references/jakub-krehel/better-typography/index.md): Sets and reviews how text renders, from the type scale and spacing to font features, wrapping, truncation and punctuation.
+- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes surfaces, icons and motion with exact values for border radius, optical alignment, shadows, icon states and animation.
+- [better-writing](references/jakub-krehel/better-writing/index.md): Writes and reviews interface copy, from labels and errors to empty states and confirmations, so it matches the product's voice and tells people what to do next.
+- [build-design](references/jakub-krehel/build-design/index.md): Builds UI from a Figma file or a design image so it matches the design, using the project's existing tokens and components.
+- [teardown](references/jakub-krehel/teardown/index.md): Creates technical illustrations of physical objects and of how things work, such as display pixels or interface layers, with coherent views, fine linework and part fills.
 
 Only when the user explicitly asks for them by name or purpose:
 

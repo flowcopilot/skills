@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # State machine
 
@@ -65,7 +65,7 @@ After a visual change, flip through every state again, since a fix for one state
 
 ## Remove it in one step, on the user's word
 
-Delete the page folder and any seam the user approved. Then search the codebase for the route and fixture names, and check that the diff touches nothing else of the setup. Commit only when asked.
+Delete the page folder and any seam the user approved. Then search the codebase for the route and fixture names, and check that the diff touches nothing else of the setup.
 
 ## Before you finish
 

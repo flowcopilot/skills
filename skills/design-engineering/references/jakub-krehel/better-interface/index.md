@@ -1,10 +1,10 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
-# Cross-discipline review
+# Interface
 
 This skill runs a cross-discipline review. It routes the interface to each `better-*` skill, collects their evidence and consolidates one ranked verdict.
 
-Orchestration is all it owns. Accessibility rules belong to `better-accessibility`, structure to `better-layout`, copy to `better-writing`, type to `better-typography`, color to `better-colors`, visual polish and motion to `better-ui`. Never duplicate or override their rules here.
+Orchestration is all it owns. Accessibility rules belong to `better-accessibility`, structure to `better-layout`, copy to `better-writing`, type to `better-typography`, color to `better-colors`, visual polish and motion to `better-ui`.
 
 Change-scoped review of uncommitted work, branches and pull requests belongs to `interface-review`.
 
@@ -14,9 +14,7 @@ Press hard on the escalation triggers and leave deliberate project choices alone
 
 The bar for reporting is evidence. The bar for `Approve` is that you inspected what you claim to have inspected.
 
-## Core principles
-
-### 1. Resolve the scope first
+## 1. Resolve the scope first
 
 Infer the screen, flow, feature or repository scope from the request and current workspace. State the resolved scope in the output.
 
@@ -24,13 +22,13 @@ Cover all of it in every domain, including the empty, loading, error and narrow-
 
 When the scope is too large to inspect credibly, narrow it to one complete flow. Take the one the request centers on, or failing that the entry path every user must pass through. State the boundary and what it excluded. Never imply uninspected surfaces were reviewed.
 
-### 2. Send a change to `interface-review`
+## 2. Send a change to `interface-review`
 
 A request naming a branch, pull request, commit range or uncommitted changes is a change review. Say so and ask the user to run `interface-review`, which is user-invoked and cannot be started from here. Never resolve a change scope yourself, because a guessed diff gives the report a scope nobody can check.
 
 When `interface-review` hands a review back, apply everything below to it. The cap and the verdict cover `Introduced` and `Regression` findings only, so a change whose only findings are `Pre-existing` is an `Approve`.
 
-### 3. Recon before judgment
+## 3. Recon before judgment
 
 Identify the framework, styling system, component library, design tokens, supported viewports and any preview or test command. Write every fix in the project's own idiom, never as a request to adopt a different stack.
 
@@ -38,7 +36,7 @@ Then read what the project has written about its own interface: `CONTRIBUTING.md
 
 A documented convention settles matters of taste but never excuses a trigger or a domain rule violation. What it changes is **where** you report. When a guideline or shared token is the cause, report it once against that source, with the components as its locations.
 
-### 4. Use domain skills as the sources of truth
+## 4. Use domain skills as the sources of truth
 
 Load every owning skill below and complete each domain review before consolidation. Review in this order so foundational failures are not hidden by polish:
 
@@ -55,11 +53,15 @@ If an owning skill is unavailable, mark that domain `Not reviewed`, name it and 
 
 When two skills appear to cover one issue, assign it to the owner of the underlying rule and note secondary effects in the **Why** cell.
 
-### 5. Require evidence
+## 5. Verify what can be verified
+
+Run the safe, relevant checks the project offers. Inspect the rendered interface when runtime behavior or visual judgment matters, and report the exact command or interaction and its result. A check you cannot run is **Not verified**, never a finding.
+
+## Require evidence
 
 Every finding cites `path/to/file:line` and shows the current implementation. When runtime behavior determines the result, source alone cannot support a visual finding and a screenshot alone cannot support a code finding.
 
-### 6. Rank by user impact
+## Rank by user impact
 
 Use one shared severity scale:
 
@@ -89,7 +91,7 @@ Triggers rank above every other finding. When more fire than the cap allows, lis
 
 These set severity, not new rules. The owning skill decides whether the symptom is present; this list decides what it costs.
 
-### 7. Prefer the cheaper fix
+## Prefer the cheaper fix
 
 Severity says how bad a finding is; this says which fix to propose. When more than one would work, take the earliest that does:
 
@@ -101,15 +103,11 @@ Severity says how bad a finding is; this says which fix to propose. When more th
 
 When the code under review adds what **Delete** would fix, that is a finding, and its **After** is the deletion.
 
-### 8. Consolidate systemic findings
+## Consolidate systemic findings
 
 One root cause is one finding, with every confirmed location in the same row. Report at most 15 findings. Never pad toward the cap; a short review or no findings is a valid result.
 
-### 9. Verify what can be verified
-
-Run the safe, relevant checks the project offers. Inspect the rendered interface when runtime behavior or visual judgment matters, and report the exact command or interaction and its result. A check you cannot run is **Not verified**, never a finding.
-
-### 10. Review without mutating by default
+## Review without mutating by default
 
 Treat a review request as read-only. Do not edit source unless the user also asks you to implement the findings. When they do, keep the consolidated report as the change scope and re-run the relevant verification afterward.
 

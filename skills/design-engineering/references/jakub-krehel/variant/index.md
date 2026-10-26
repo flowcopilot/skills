@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # Variants
 
@@ -94,7 +94,7 @@ Never mark a favourite in the table. Asked directly, answer from how often the p
 
 ## 6. Promote one, delete the rest
 
-On a choice, build that variant properly where it belongs, following the project's own conventions. Then delete the other variants, the picker and the guarded import. Search for the variant names and the `__variant` param, and check the diff leaves nothing of the harness behind.
+On a choice, build that variant properly where it belongs, following the project's own conventions. Then delete the other variants, the picker and the hosting page's import of the variants. Search for the variant names and the `__variant` param, and check the diff leaves nothing of the harness behind.
 
 Asked for another round instead, keep the harness and run **Name the axis before writing code** again, taking new positions around the direction you leaned toward.
 

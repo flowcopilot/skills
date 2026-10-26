@@ -4,11 +4,11 @@ description: Load this skill before you write or rewrite prose for people or age
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: cursor/plugins@d457567332aa6989e753ea289f30ea2bfbc80bc0
-  upstream_matt_pocock: "mattpocock/skills@49dd158d1076134a641b33efb035946536778336"
+  upstream: cursor/plugins@99b609a72323b70204eab407c622f436e858e112
+  upstream_matt_pocock: "mattpocock/skills@5beb35b040e3de97e54fa9e386d7e42d15c295c2"
 ---
 
-<!-- Modified by Flow Copilot from cursor/plugins revision d457567332aa6989e753ea289f30ea2bfbc80bc0. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision 99b609a72323b70204eab407c622f436e858e112. -->
 
 # Clarity
 
