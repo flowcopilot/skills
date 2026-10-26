@@ -98,6 +98,15 @@ function normalized(text: string): string {
     .trim()}\n`;
 }
 
+function patchGeneratedFile(path: string, changes: [string, string][]) {
+  let text = readFileSync(path, "utf8");
+  for (const [from, to] of changes) {
+    if (!text.includes(from)) throw new Error(`${path}: upstream text changed: ${from}`);
+    text = text.replaceAll(from, to);
+  }
+  writeFileSync(path, text);
+}
+
 function notice(source: string, revision: string): string {
   return `<!-- Modified by Flow Copilot from ${source} revision ${revision}. -->`;
 }
@@ -513,6 +522,10 @@ function syncExpo(checkout: Checkout): string[] {
       body = body.replaceAll(entry.name, `${skill.name}/${entry.name}`);
     }
     writeMarkdown(resolve(target, "references", `${skill.name}.md`), body, sourceName, checkout.revision);
+    patchGeneratedFile(resolve(target, "references", `${skill.name}.md`), [[
+      `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" "<actionable feedback>"`,
+      `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" --message "<actionable feedback>"`,
+    ]]);
     copyTree(resolve(skill.root, "references"), resolve(target, "references", skill.name), sourceName, checkout.revision, transform);
     copyTree(resolve(skill.root, "scripts"), resolve(target, "scripts", skill.name), sourceName, checkout.revision);
     for (const entry of supportingFiles) {
@@ -525,6 +538,12 @@ function syncExpo(checkout: Checkout): string[] {
       }
     }
   }
+  patchGeneratedFile(resolve(target, "references/eas-observe/library-integrations.md"), [
+    ["Their reports are user-defined events and errors", "Their reports are SDK and integration events and errors"],
+  ]);
+  patchGeneratedFile(resolve(target, "references/eas-observe/queries.md"), [[
+    "https://docs.expo.dev/eas/observe/mcp/", "https://docs.expo.dev/eas/ai/mcp/",
+  ]]);
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "expo",
     "Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.",
@@ -700,6 +719,53 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
     copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", licenseFile));
     notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. The upstream MIT license and copyright notice are retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
   }
+  const teardown = resolve(target, "references/jakub-krehel/teardown");
+  patchGeneratedFile(resolve(teardown, "geometry-library.md"), [[
+    "```js\nconst disc = (cx, r) =>", "```js\nconst lever = G.part('lever', 'Lever');\nconst disc = (cx, r) =>",
+  ]]);
+  patchGeneratedFile(resolve(teardown, "scripts/config.cjs"), [[
+    "      parts.add(p.id);\n    }\n    const keys = new Set();",
+    `      parts.add(p.id);
+    }
+    for (const hue of Object.values(d.colors?.hues ?? {})) {
+      if (!Number.isFinite(hue) || hue < 0 || hue > 360) throw Error('Color hues must be finite numbers from 0 to 360');
+    }
+    if (d.colors?.fills !== undefined) {
+      if (!Array.isArray(d.colors.fills)) throw Error('Color fills must be an array');
+      d.colors.fills = d.colors.fills.map(String);
+      if (!d.colors.fills.every(id => parts.has(id))) throw Error('Color fills must reference existing part IDs');
+    }
+    const keys = new Set();`,
+  ]]);
+  patchGeneratedFile(resolve(teardown, "scripts/test-viewer-builder.cjs"), [[
+    "  config.drawings[0].initialView = 'assembled';",
+    `  config.drawings[0].parts = [{id: 1, name: 'One'}];
+  config.drawings[0].colors = {hues: {'1': 250}, fills: [1]};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  build(configPath, output);
+  const coloredHtml = fs.readFileSync(output, 'utf8');
+  const coloredData = JSON.parse(coloredHtml.match(/<script[^>]*id="drawing-data"[^>]*>([\\s\\S]*?)<\\/script>/)[1]);
+  assert.equal(coloredData[0].parts[0].id, '1');
+  assert.deepEqual(coloredData[0].colors, {hues: {'1': 250}, fills: ['1']});
+  for (const hue of [0, 360]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.doesNotThrow(() => build(configPath, output));
+  }
+  for (const hue of ['blue', null, true, -1, 361, 1e308]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.throws(() => build(configPath, output), /Color hues must be finite numbers from 0 to 360/);
+  }
+  config.drawings[0].colors = {fills: ['missing']};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  assert.throws(() => build(configPath, output), /Color fills must reference existing part IDs/);
+  config.drawings[0].colors = {fills: '1'};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  assert.throws(() => build(configPath, output), /Color fills must be an array/);
+  delete config.drawings[0].colors;
+  config.drawings[0].initialView = 'assembled';`,
+  ]]);
   const first = checkouts["emil-kowalski"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
     "Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.",
@@ -723,7 +789,7 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 
 ${sections.join("\n\n")}
 `, "emilkowalski/skills", first.revision);
-  return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
+  return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also initializes the teardown extrusion example and validates teardown color settings, with regression coverage in the viewer builder test.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clarity imports selected skills. `userOnly` records the upstream invocation
@@ -1067,6 +1133,35 @@ function syncClerk(checkout: Checkout): string[] {
     }
   }
 
+  for (const file of [
+    "clerk-billing/billing-components.md",
+    "clerk-custom-ui/core-3/show-component.md",
+    "clerk-orgs/nextjs-patterns.md",
+  ]) {
+    patchGeneratedFile(resolve(references, file), [[
+      "Cache Components (`cacheComponents: true`, the `create-next-app` default)",
+      "Cache Components enabled (`cacheComponents: true`)",
+    ]]);
+  }
+  for (const file of ["clerk-setup.md", "clerk-billing/b2b-patterns.md", "clerk-billing/b2c-patterns.md"]) {
+    patchGeneratedFile(resolve(references, file), [[
+      "`cacheComponents: true` (the `create-next-app` default)", "`cacheComponents: true`",
+    ]]);
+  }
+  for (const file of ["clerk-orgs.md", "clerk-billing/billing-components.md"]) {
+    patchGeneratedFile(resolve(references, file), [[
+      "Cache Components (the `create-next-app` default)", "Cache Components enabled (`cacheComponents: true`)",
+    ]]);
+  }
+  patchGeneratedFile(resolve(references, "clerk-billing.md"), [
+    ["Cache Components rules (`cacheComponents: true`, the `create-next-app` default)",
+      "Cache Components rules when enabled (`cacheComponents: true`)"],
+    [
+      "Let users manage their subscription from inside the app by rendering `<PricingTable />` on a billing page. It renders differently for subscribed users: it shows the current plan and allows upgrades or cancellations, all through Clerk's in-app checkout drawer.",
+      "Let users choose or change plans by rendering `<PricingTable />` on a billing page. For cancellations and full subscription management, use `<UserProfile />` or `<OrganizationProfile />`.",
+    ],
+  ]);
+
   mkdirSync(resolve(target, "licenses"), { recursive: true });
   copyFileSync(resolve(checkout.root, "plugin.json"), resolve(target, "licenses", "clerk-plugin.json"));
 
@@ -1166,13 +1261,13 @@ The imported revision is dated ${checkout.date}. Flow Copilot combines the separ
 
 The files under \`skills/expo/\` derive from [expo/skills](https://github.com/expo/skills) revision \`${checkout.revision}\`, licensed under the MIT License, retained in \`skills/expo/LICENSE\`. The animation reference also retains its upstream copyright notice in \`skills/expo/references/expo-animation/LICENSE\`.
 
-The imported revision is dated ${checkout.date}. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. Plugin metadata and hooks are not imported.
+The imported revision is dated ${checkout.date}. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. It also updates feedback commands to use --message and corrects Observe event terminology and the MCP documentation link. Plugin metadata and hooks are not imported.
 `,
     clerk: `## Clerk skill
 
 The files under \`skills/clerk/\` derive from [clerk/skills](https://github.com/clerk/skills) revision \`${checkout.revision}\`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in \`skills/clerk/licenses/clerk-plugin.json\`.
 
-The imported revision is dated ${checkout.date}. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. Evaluation fixtures, starter templates, and plugin metadata are not imported.
+The imported revision is dated ${checkout.date}. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. It also removes Cache Components default claims and directs subscription cancellation to the profile components. Evaluation fixtures, starter templates, and plugin metadata are not imported.
 `,
   };
   return notices[name];

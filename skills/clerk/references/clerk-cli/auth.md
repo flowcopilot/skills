@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision 8482d43fe12a5f06a2b5ab3008615875747a3e4e. -->
+<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
 
 # Clerk CLI - Authentication & targeting reference
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cursor/plugins revision d457567332aa6989e753ea289f30ea2bfbc80bc0. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision c5149ef275fa7be41e3ffe5e79c8fc16efcaeedc. -->
 
 # Explorer Prompt Template
 

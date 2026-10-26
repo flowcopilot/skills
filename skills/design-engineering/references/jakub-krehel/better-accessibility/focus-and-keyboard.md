@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # Focus and keyboard
 
@@ -38,15 +38,7 @@ Group focus styles with `:focus-within` when a wrapper should light up while an 
 
 ## Focus not obscured
 
-Sticky chrome hides whatever scrolls under it, including the element that just received focus. Pad the scroll container by the sticky element's height:
-
-```css
-html {
-  scroll-padding-top: 64px; /* the sticky header's height */
-}
-```
-
-A sticky footer or cookie banner needs `scroll-padding-bottom` the same way.
+Sticky chrome hides whatever scrolls under it, including the element that just received focus. Pad the scroll container by the sticky element's height with `scroll-padding-block-start`, and by a sticky footer or cookie banner's height with `scroll-padding-block-end`. The recipe is `better-layout`'s.
 
 ## Skip link
 
@@ -71,7 +63,7 @@ Target `<main id="main">` and visually hide the link until focused:
 </body>
 ```
 
-Give in-page anchor targets `scroll-margin-top`, such as `80px` under a sticky header, so the target isn't hidden when jumped to.
+Give in-page anchor targets `scroll-margin-block-start`, such as `80px` under a sticky header, so the target isn't hidden when jumped to.
 
 ## tabindex rules
 

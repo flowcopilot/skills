@@ -4,10 +4,10 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: expo/skills@7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1
+  upstream: expo/skills@8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db
 ---
 
-<!-- Modified by Flow Copilot from expo/skills revision 7ddc1f5796996e5c7efe2fc3fa9168eb24e8dac1. -->
+<!-- Modified by Flow Copilot from expo/skills revision 8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db. -->
 
 # Expo
 
@@ -46,7 +46,6 @@ Free, open-source Expo SDK and React Native skills.
 | [expo-examples](references/expo-examples.md) | The `expo/examples` repo of `with-*` integrations to adapt or scaffold from. |
 | [expo-app-clip](references/expo-app-clip.md) | iOS App Clip targets, AASA files, associated domains, and Smart App Banners. |
 | [expo-upgrade](references/expo-upgrade.md) | Expo SDK upgrades, dependency conflicts, deprecated packages, and cache cleanup. |
-| [expo-skill-feedback](references/expo-skill-feedback.md) | Sharing what worked or fell short across Expo, its skills, docs, CLIs, or MCP, and controlling opt-in usage telemetry. |
 
 ## Services & paid distribution
 

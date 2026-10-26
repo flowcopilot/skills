@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from ax-llm/ax revision 818d15b02d57de8f215f6d2cb23bd3d3921a6e5e. -->
+<!-- Modified by Flow Copilot from ax-llm/ax revision 7948e19213325e41f39ba0715ad8fd2a89714210. -->
 
 # AI Provider Codegen Rules (@ax-llm/ax)
 
@@ -41,6 +41,17 @@ Profile-only branded classes were removed in the major-version migration. Use
 `ai({ name: ... })` for Azure OpenAI, Cohere, DeepSeek, DeepSeek Responses,
 Mistral, Reka, and Grok. Retained low-level classes represent genuine
 transports/runtimes only; legacy model enum and catalog exports remain usable.
+
+For Amazon Bedrock's OpenAI Chat Completions deployment profile, verified GPT-6
+Sol/Luna, GPT-6 Astra, GPT-6.1 Sol, and GPT-5.6 Sol IDs (including geographic
+prefixes) support native JSON Schema and mapped thinking budgets. These models
+accept the Standard service tier; unsupported Flex/Priority requests fail locally.
+Astra and GPT-6.1 Sol require reasoning and reject function tools on this profile.
+Sol/Luna and GPT-5.6 Sol require explicit `thinkingTokenBudget: 'none'` (or
+`config.reasoningEffort: 'none'`) for function tools. Use `name: 'openai-responses'`
+with the same Bedrock base URL when reasoning and tools are both required.
+For complex signatures, AxGen uses native schema output by default, so output alone does not
+need to disable reasoning. GPT-OSS and unknown-model defaults are unchanged.
 
 ## Typesafe / Jev (TypeScript)
 
@@ -277,6 +288,11 @@ In TypeScript, `capabilities.requiresAudioOutput` or
 `media.audio.output.supported`. Audio input and output are separate requirements.
 Balancer output formats come only from children that support output; compatibility
 reports count requested input and output independently.
+Generated provider routers expose the same independent counts through
+`get_compatibility_report` (Python, C++, Rust), `GetCompatibilityReport` (Go),
+and `getCompatibilityReport` (Java). Reports include ranked provider names,
+scores, missing/supported capabilities, and a summary for request-compatible
+providers.
 
 Adaptive balancing is operational routing, not semantic prompt-to-model routing. Every provider model behind an alias must be an acceptable substitute for that application. Keep quality evaluation and content-aware model selection outside the balancer.
 

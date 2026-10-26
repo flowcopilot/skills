@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # Variable fonts and OpenType
 

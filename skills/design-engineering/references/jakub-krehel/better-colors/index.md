@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from jakubkrehel/skills revision 4c66b1fa86e9ab70187b43d7da9b6fdb29f2ef63. -->
+<!-- Modified by Flow Copilot from jakubkrehel/skills revision 592aedc44d7d5b3e29740984252902f3e5402a1c. -->
 
 # Colors
 
@@ -62,7 +62,7 @@ The space is a look, not a correctness setting. Default to `in oklab`, and reach
 | A semantic name containing a hue or a component, as in `--color-blue-button` or `--color-sidebar-gray` | Rename it for its role: `--color-accent-solid`, `--color-bg-surface` |
 | `--color-primary` and `--color-text-primary` both defined | Rename the brand token `accent` |
 | A `border` or `separator` token inside `color:`, or a `text` token inside `background:` | Add a token for the missing role |
-| `hsl(` ramp values that differ only in lightness | Rebuild in OKLCH with a constant hue |
+| `hsl(` ramp values that differ only in lightness | Rebuild with a constant perceived hue, in the project's notation |
 | `50`–`200` stepping as far apart in OKLCH `L` as mid-ramp steps do | Tighten the light end to about `0.04`–`0.05` per step |
 | One chroma or saturation number copied across every hue's ramp | Use the same proportion of each hue's own maximum |
 | A status hue within `15°` of the accent hue | Move it at least `15°` away, or give the destructive action a distinct treatment |
