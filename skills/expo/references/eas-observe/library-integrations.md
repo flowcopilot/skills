@@ -7,7 +7,7 @@ This reference is for **app developers** who want EAS Observe to report problems
 - **Expo Image** (`'expo-image'`): logs an `expo-image.oversized` event when an image is decoded at a much larger size than the screen can display.
 - **Reanimated** (`'react-native-reanimated'`): reports Reanimated errors as `reanimated.error` errors, and optionally Reanimated warnings as `reanimated.warning` events.
 
-These integrations do not record metrics. Their reports are user-defined events and errors, so query them with `eas observe:events` and `eas observe:errors` (see [`./queries.md`](./queries.md)). For the per-route navigation metrics from the Expo Router and React Navigation integrations, see [`./setup.md`](./setup.md). To build an integration inside a library, see [`./third-party.md`](./third-party.md).
+These integrations do not record metrics. Their reports are SDK and integration events and errors, so query them with `eas observe:events` and `eas observe:errors` (see [`./queries.md`](./queries.md)). For the per-route navigation metrics from the Expo Router and React Navigation integrations, see [`./setup.md`](./setup.md). To build an integration inside a library, see [`./third-party.md`](./third-party.md).
 
 Both integrations need `expo-observe` set up first (see [`./setup.md`](./setup.md)). Enable them in the same `Observe.configure()` call as any other integration, at module scope, before the app mounts:
 

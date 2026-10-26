@@ -40,7 +40,7 @@ For most cases, use `<PricingTable />` with no props (or just `for="organization
 
 ## Upgrade / Downgrade Page
 
-A billing page that changes its copy by plan reads `auth()` in an async child inside `<Suspense>`, so `next build` passes with Cache Components (`cacheComponents: true`, the `create-next-app` default):
+A billing page that changes its copy by plan reads `auth()` in an async child inside `<Suspense>`, so `next build` passes with Cache Components enabled (`cacheComponents: true`):
 
 ```tsx
 import { PricingTable } from '@clerk/nextjs'
@@ -161,7 +161,7 @@ import { Suspense } from 'react'
 </Suspense>
 ```
 
-`<Show>` accepts `plan` and `feature` props in addition to `role` and `permission`. Renders children only if the condition is met. In a Next.js Server Component, `<Show>` reads the session from the request, so wrap it in `<Suspense>`: with Cache Components (the `create-next-app` default), `next build` fails on request data read outside a `<Suspense>` boundary. In a Client Component, it needs no boundary.
+`<Show>` accepts `plan` and `feature` props in addition to `role` and `permission`. Renders children only if the condition is met. In a Next.js Server Component, `<Show>` reads the session from the request, so wrap it in `<Suspense>`: with Cache Components enabled (`cacheComponents: true`), `next build` fails on request data read outside a `<Suspense>` boundary. In a Client Component, it needs no boundary.
 
 ## Import Reference
 

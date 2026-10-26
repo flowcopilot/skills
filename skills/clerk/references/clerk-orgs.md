@@ -211,7 +211,7 @@ export default async function OrgPage({ params }: { params: Promise<{ slug: stri
 }
 ```
 
-In Next.js, add a `loading.tsx` next to a page like this one that gates its render with `redirect()`: with Cache Components (the `create-next-app` default), `next build` fails on request data read outside a `<Suspense>` boundary.
+In Next.js, add a `loading.tsx` next to a page like this one that gates its render with `redirect()`: with Cache Components enabled (`cacheComponents: true`), `next build` fails on request data read outside a `<Suspense>` boundary.
 
 ### 3. Role-Based Access Control
 

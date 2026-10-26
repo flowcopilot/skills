@@ -39,7 +39,7 @@ Default time range is the last 60 days when none of `--days`, `--start`, `--end`
 
 ## Expo MCP Server tools
 
-> Source: https://docs.expo.dev/eas/observe/mcp/
+> Source: https://docs.expo.dev/eas/ai/mcp/
 
 The Expo MCP Server has read-only tools that return the same data as the CLI. When the `observe_*` tools are available, use them instead of the CLI: they use the Expo account that the MCP client signed in with, so they need no EAS CLI install and no access token. The queries, metric names, and workflows in this file apply to both.
 
