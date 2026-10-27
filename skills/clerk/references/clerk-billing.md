@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 > **Requirements:** Requires NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY, and CLERK_WEBHOOK_SIGNING_SECRET. Billing must be enabled in Clerk Dashboard → Billing. Development instances can use the shared Clerk development gateway; production instances require a Stripe account for payment processing.
 
