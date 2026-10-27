@@ -65,6 +65,7 @@ Cap triangulation preserves concave notches. Curved profiles need sampled points
 Pass `holes` for pivot holes, mounting holes and windows. Each hole is its own ordered polygon inside the profile; the extrusion walls it and keeps it open through the part.
 
 ```js
+const lever = G.part('lever', 'Lever');
 const disc = (cx, r) => Array.from({length: 48}, (_, i) => [cx + r * Math.cos(i * Math.PI / 24), r * Math.sin(i * Math.PI / 24)]);
 G.extrude(lever, G.roundedRectangle(80, 16, 8), {depth: 3, holes: [disc(-30, 4), disc(30, 3)]});
 ```

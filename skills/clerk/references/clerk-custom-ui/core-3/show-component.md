@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 # `<Show>` Component
 
@@ -107,7 +107,7 @@ The `treatPendingAsSignedOut` prop controls how pending sessions (sessions with 
 
 ## Next.js Server Components
 
-In a Next.js Server Component, `<Show>` reads the session from the request. With Cache Components (`cacheComponents: true`, the `create-next-app` default), `next build` fails on request data read outside a `<Suspense>` boundary, so wrap it in `<Suspense>` ([Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense)):
+In a Next.js Server Component, `<Show>` reads the session from the request. With Cache Components enabled (`cacheComponents: true`), `next build` fails on request data read outside a `<Suspense>` boundary, so wrap it in `<Suspense>` ([Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense)):
 
 ```tsx
 import { Show } from '@clerk/nextjs'

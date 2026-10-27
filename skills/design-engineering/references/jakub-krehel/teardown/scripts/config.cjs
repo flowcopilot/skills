@@ -19,6 +19,14 @@ function validate(config) {
       if (!/^[a-zA-Z0-9_-]+$/.test(p.id) || parts.has(p.id) || !p.name) throw Error('Part IDs must be unique safe identifiers');
       parts.add(p.id);
     }
+    for (const hue of Object.values(d.colors?.hues ?? {})) {
+      if (!Number.isFinite(hue) || hue < 0 || hue > 360) throw Error('Color hues must be finite numbers from 0 to 360');
+    }
+    if (d.colors?.fills !== undefined) {
+      if (!Array.isArray(d.colors.fills)) throw Error('Color fills must be an array');
+      d.colors.fills = d.colors.fills.map(String);
+      if (!d.colors.fills.every(id => parts.has(id))) throw Error('Color fills must reference existing part IDs');
+    }
     const keys = new Set();
     for (const p of d.parameters) {
       if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(p.key) || keys.has(p.key) || !p.label) throw Error('Parameter keys must be unique safe identifiers');

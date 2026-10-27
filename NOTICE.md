@@ -8,9 +8,9 @@ The imported revision is dated 2026-10-26. Flow Copilot combines the TypeScript 
 
 ## Convex skill
 
-The files under `skills/convex/` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision `191a5c33a7e7a22ec9d5ff13930f84748bbcf8f8`, licensed under Apache License 2.0.
+The files under `skills/convex/` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision `bd403cb048c8bb6c1e99d898e15ed61f9ddd430b`, licensed under Apache License 2.0.
 
-The imported revision is dated 2026-10-13. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves capability instructions into references, and adjusts links for their new locations.
+The imported revision is dated 2026-10-27. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves capability instructions into references, and adjusts links for their new locations.
 
 ## Cloudflare skill
 
@@ -20,9 +20,9 @@ The imported revision is dated 2026-10-15. Flow Copilot combines the separate sk
 
 ## Expo skill
 
-The files under `skills/expo/` derive from [expo/skills](https://github.com/expo/skills) revision `d5caf7fdf8b4854351f05841a7e315ac87ad7d24`, licensed under the MIT License, retained in `skills/expo/LICENSE`. The animation reference also retains its upstream copyright notice in `skills/expo/references/expo-animation/LICENSE`.
+The files under `skills/expo/` derive from [expo/skills](https://github.com/expo/skills) revision `8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db`, licensed under the MIT License, retained in `skills/expo/LICENSE`. The animation reference also retains its upstream copyright notice in `skills/expo/references/expo-animation/LICENSE`.
 
-The imported revision is dated 2026-10-24. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. Plugin metadata and hooks are not imported.
+The imported revision is dated 2026-10-26. Flow Copilot combines all skills from plugins/expo/skills into one Agent Skills package, uses the directory README index as the router, moves workflow instructions and supporting files into references, adjusts paths, and preserves helper scripts. It also updates feedback commands to use --message and corrects Observe event terminology and the MCP documentation link. Plugin metadata and hooks are not imported.
 
 ## React Native skill
 
@@ -38,13 +38,13 @@ Imported from [callstackincubator/agent-skills](https://github.com/callstackincu
 
 ## Clerk skill
 
-The files under `skills/clerk/` derive from [clerk/skills](https://github.com/clerk/skills) revision `d694f2709372feb38b87aa905ee2219a485095ab`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in `skills/clerk/licenses/clerk-plugin.json`.
+The files under `skills/clerk/` derive from [clerk/skills](https://github.com/clerk/skills) revision `55206a48259bb327090ec5dbd22cfb5d4fa9de25`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in `skills/clerk/licenses/clerk-plugin.json`.
 
-The imported revision is dated 2026-10-23. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. Evaluation fixtures, starter templates, and plugin metadata are not imported.
+The imported revision is dated 2026-10-26. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. It also removes Cache Components default claims and directs subscription cancellation to the profile components. Evaluation fixtures, starter templates, and plugin metadata are not imported.
 
 ## Design Engineering skill
 
-Flow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.
+Flow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also initializes the teardown extrusion example and validates teardown color settings, with regression coverage in the viewer builder test.
 
 ### Emil Kowalski
 
@@ -60,8 +60,8 @@ Flow Copilot combines selected skills from both sources into one skill. It repla
 
 ### pstack
 
-Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `99b609a72323b70204eab407c622f436e858e112`, dated 2026-10-24. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
+Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `519d36aa98955bf680db01bcde5fdfba686dc901`, dated 2026-10-26. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
 
 ### Matt Pocock
 
-Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `5beb35b040e3de97e54fa9e386d7e42d15c295c2`, dated 2026-10-19. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
+Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `59db609eb1e18aaf59b63284d0e52255aff0c63c`, dated 2026-10-27. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.

@@ -43,6 +43,31 @@ try {
   context.onmessage({data: {request: 1, id: 'fixture', parameters: {}, explosion: 0, isolated: null}});
   assert.equal(context.result.request, 1);
   assert.ok(context.result.result.markup.includes('data-item="one"'));
+  config.drawings[0].parts = [{id: 1, name: 'One'}];
+  config.drawings[0].colors = {hues: {'1': 250}, fills: [1]};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  build(configPath, output);
+  const coloredHtml = fs.readFileSync(output, 'utf8');
+  const coloredData = JSON.parse(coloredHtml.match(/<script[^>]*id="drawing-data"[^>]*>([\s\S]*?)<\/script>/)[1]);
+  assert.equal(coloredData[0].parts[0].id, '1');
+  assert.deepEqual(coloredData[0].colors, {hues: {'1': 250}, fills: ['1']});
+  for (const hue of [0, 360]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.doesNotThrow(() => build(configPath, output));
+  }
+  for (const hue of ['blue', null, true, -1, 361, 1e308]) {
+    config.drawings[0].colors = {hues: {'1': hue}};
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    assert.throws(() => build(configPath, output), /Color hues must be finite numbers from 0 to 360/);
+  }
+  config.drawings[0].colors = {fills: ['missing']};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  assert.throws(() => build(configPath, output), /Color fills must reference existing part IDs/);
+  config.drawings[0].colors = {fills: '1'};
+  fs.writeFileSync(configPath, JSON.stringify(config));
+  assert.throws(() => build(configPath, output), /Color fills must be an array/);
+  delete config.drawings[0].colors;
   config.drawings[0].initialView = 'assembled';
   fs.writeFileSync(configPath, JSON.stringify(config));
   build(configPath, output);

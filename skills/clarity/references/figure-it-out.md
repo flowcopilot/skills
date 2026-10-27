@@ -1,4 +1,4 @@
-<!-- Flow Copilot text based on ideas from cursor/plugins pstack/skills/figure-it-out revision 99b609a72323b70204eab407c622f436e858e112. -->
+<!-- Flow Copilot text based on ideas from cursor/plugins pstack/skills/figure-it-out revision 519d36aa98955bf680db01bcde5fdfba686dc901. -->
 
 # Figure it out
 

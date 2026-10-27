@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 # B2C Billing Patterns
 
@@ -10,7 +10,7 @@ B2C billing in Clerk attaches subscriptions to **individual users**. Each user g
 
 Plans for B2C must be created as **User Plans** (Dashboard → Billing → Plans → User Plans tab, or `clerk config patch` with `billing.plans`). A `pro` plan registered as an Organization Plan is a separate entity and won't appear in `<PricingTable />`. Plan type isn't changeable, recreate if misplaced.
 
-> **Cache Components:** With `cacheComponents: true` (the `create-next-app` default), `next build` fails on request data read outside `<Suspense>`. The Next.js pages below follow the matching shapes: a page that gates its render with `redirect()` gets a `loading.tsx` next to it, a page that uses `auth()` to render data reads it in an async child inside `<Suspense>`, and catch-all `<UserProfile />` and `<OrganizationProfile />` pages render inside `<Suspense>`. See [Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense) and [Prebuilt components on catch-all routes](https://clerk.com/docs/guides/development/rendering-modes#prebuilt-components-on-catch-all-routes).
+> **Cache Components:** With `cacheComponents: true`, `next build` fails on request data read outside `<Suspense>`. The Next.js pages below follow the matching shapes: a page that gates its render with `redirect()` gets a `loading.tsx` next to it, a page that uses `auth()` to render data reads it in an async child inside `<Suspense>`, and catch-all `<UserProfile />` and `<OrganizationProfile />` pages render inside `<Suspense>`. See [Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense) and [Prebuilt components on catch-all routes](https://clerk.com/docs/guides/development/rendering-modes#prebuilt-components-on-catch-all-routes).
 
 ## Core Pattern: User Plan Check
 

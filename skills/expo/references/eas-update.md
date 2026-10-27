@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision d5caf7fdf8b4854351f05841a7e315ac87ad7d24. -->
+<!-- Modified by Flow Copilot from expo/skills revision 8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db. -->
 
 # EAS Update
 
@@ -134,7 +134,7 @@ Never bypass a compatibility or anti-bricking safeguard merely to make an update
 ## Submitting Feedback
 If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
 ```bash
-npx --yes @expo/agent-cli@latest feedback --category skills --subject "eas-update" "<actionable feedback>"
+npx --yes @expo/agent-cli@latest feedback --category skills --subject "eas-update" --message "<actionable feedback>"
 ```
 Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
 If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.

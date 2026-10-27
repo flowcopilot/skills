@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 > **Requirements:** Requires NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY. Organizations must be enabled in Clerk Dashboard → Organizations. Membership mode (required vs optional) must match the B2B vs B2C + B2B coexistence story of your app.
 
@@ -211,7 +211,7 @@ export default async function OrgPage({ params }: { params: Promise<{ slug: stri
 }
 ```
 
-In Next.js, add a `loading.tsx` next to a page like this one that gates its render with `redirect()`: with Cache Components (the `create-next-app` default), `next build` fails on request data read outside a `<Suspense>` boundary.
+In Next.js, add a `loading.tsx` next to a page like this one that gates its render with `redirect()`: with Cache Components enabled (`cacheComponents: true`), `next build` fails on request data read outside a `<Suspense>` boundary.
 
 ### 3. Role-Based Access Control
 

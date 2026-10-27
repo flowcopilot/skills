@@ -4,10 +4,10 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: clerk/skills@d694f2709372feb38b87aa905ee2219a485095ab
+  upstream: clerk/skills@55206a48259bb327090ec5dbd22cfb5d4fa9de25
 ---
 
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 # Clerk
 

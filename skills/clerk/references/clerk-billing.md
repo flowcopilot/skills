@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision d694f2709372feb38b87aa905ee2219a485095ab. -->
+<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
 
 > **Requirements:** Requires NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY, and CLERK_WEBHOOK_SIGNING_SECRET. Billing must be enabled in Clerk Dashboard → Billing. Development instances can use the shared Clerk development gateway; production instances require a Stripe account for payment processing.
 
@@ -120,7 +120,7 @@ When a user says "gate the export feature" or "gate analytics", always use `has(
 
 ## Key Patterns
 
-Next.js server examples follow the Cache Components rules (`cacheComponents: true`, the `create-next-app` default), because `next build` fails on request data read outside a `<Suspense>` boundary. A page that uses `auth()` to render data reads it in an async child inside `<Suspense>`. A page that gates its render with `redirect()` keeps the check at the top and gets a `loading.tsx` next to it. See the `clerk-nextjs-patterns` skill and [Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense).
+Next.js server examples follow the Cache Components rules when enabled (`cacheComponents: true`), because `next build` fails on request data read outside a `<Suspense>` boundary. A page that uses `auth()` to render data reads it in an async child inside `<Suspense>`. A page that gates its render with `redirect()` keeps the check at the top and gets a `loading.tsx` next to it. See the `clerk-nextjs-patterns` skill and [Read auth data inside Suspense](https://clerk.com/docs/guides/development/rendering-modes#read-auth-data-inside-suspense).
 
 ### 1. Render the Pricing Table
 
@@ -398,7 +398,7 @@ For the full template covering all 15 events, the TS type declarations from `@cl
 
 ### 10. Upgrade / Downgrade Flow
 
-Let users manage their subscription from inside the app by rendering `<PricingTable />` on a billing page. It renders differently for subscribed users: it shows the current plan and allows upgrades or cancellations, all through Clerk's in-app checkout drawer. For a full billing page that changes its copy by plan, see `clerk-billing/billing-components.md`.
+Let users choose or change plans by rendering `<PricingTable />` on a billing page. For cancellations and full subscription management, use `<UserProfile />` or `<OrganizationProfile />`. For a full billing page that changes its copy by plan, see `clerk-billing/billing-components.md`.
 
 ## Plan and Feature Naming
 
