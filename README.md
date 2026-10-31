@@ -5,7 +5,7 @@ Agent skills maintained by Flow Copilot.
 ## Available skills
 
 - [`ax`](skills/ax/SKILL.md): Build and operate TypeScript LLM applications with `@ax-llm/ax` through one progressively disclosed skill.
-- [`clarity`](skills/clarity/SKILL.md): Write clear text for people and agents, and answer how and why questions about code, with pstack and Matt Pocock writing skills.
+- [`clarity`](skills/clarity/SKILL.md): Write clear text for people and agents, with pstack and Matt Pocock writing skills.
 - [`clerk`](skills/clerk/SKILL.md): Add, configure, and operate Clerk authentication, organizations, billing, and webhooks through one progressively disclosed skill.
 - [`cloudflare`](skills/cloudflare/SKILL.md): Choose, build, review, and operate Cloudflare products through one progressively disclosed skill.
 - [`convex`](skills/convex/SKILL.md): Build, review, test, secure, migrate, and operate Convex backends through one progressively disclosed skill.
@@ -33,7 +33,7 @@ The `react-native` skill combines all skills from `software-mansion-labs/skills`
 
 The `design-engineering` skill combines all skills from `emilkowalski/skills` and `jakubkrehel/skills`. Each source keeps its own reference directory and revision. The router separates the skills that were user-invoked upstream, so the agent loads them only on an explicit request.
 
-The `clarity` skill imports selected skills from pstack in `cursor/plugins` (`unslop`, `technical-writing`, `how`, and `why`) and from `mattpocock/skills` (`writing-for-agents` and `wait-what`). The router sets which rules apply to text for people and to text for agents. It also holds one model role table for Claude Code, Codex, and T3, which replaces the pstack per-user model rule. The upstream `wait-what` is listed as `bro`. `figure-it-out` is Flow Copilot text based on the pstack skill of that name.
+The `clarity` skill imports selected skills from pstack in `cursor/plugins` (`unslop` and `technical-writing`) and from `mattpocock/skills` (`writing-for-agents`). The router sets which rules apply to text for people and to text for agents. It also holds one model role table for Claude Code, Codex, and T3. `figure-it-out` is Flow Copilot text based on the pstack skill of that name.
 
 To apply `clarity` to every session, install it globally and add a pointer to your global agent instructions (`~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`):
 

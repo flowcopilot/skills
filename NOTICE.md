@@ -56,12 +56,12 @@ Imported from [jakubkrehel/skills](https://github.com/jakubkrehel/skills) revisi
 
 ## Clarity skill
 
-Flow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router defines local reply rules for concise chat and keeps the comment rules from pstack `poteto-mode`. Narrow how and why questions use a direct answer. Detailed workflows run when the request needs them. The `wait-what` skill is listed as `bro`. `references/figure-it-out.md` is Flow Copilot text based on the ideas of the pstack `figure-it-out` skill.
+Flow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, keeps the comment rules from pstack `poteto-mode`, and holds one model role table for Claude Code, Codex, and T3. `references/figure-it-out.md` is Flow Copilot text based on the ideas of the pstack `figure-it-out` skill.
 
 ### pstack
 
-Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `519d36aa98955bf680db01bcde5fdfba686dc901`, dated 2026-10-26. It imports the `unslop`, `technical-writing`, `how`, and `why` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
+Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `4dd1d05818d19792e7cd6e818f1667f95f7e1dbe`, dated 2026-10-29. It imports the `unslop` and `technical-writing` skills from `pstack/skills/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/pstack-LICENSE`.
 
 ### Matt Pocock
 
-Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `59db609eb1e18aaf59b63284d0e52255aff0c63c`, dated 2026-10-27. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
+Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`, dated 2026-10-31. It imports the `writing-for-agents` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
