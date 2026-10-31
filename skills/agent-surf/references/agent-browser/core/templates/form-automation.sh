@@ -13,6 +13,9 @@
 
 set -euo pipefail
 
+# Use a named session, so this script does not drive or close another agent's browser.
+export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:-$(agent-browser session id --scope worktree --prefix form)}"
+
 FORM_URL="${1:?Usage: $0 <form-url>}"
 
 echo "Form automation: $FORM_URL"

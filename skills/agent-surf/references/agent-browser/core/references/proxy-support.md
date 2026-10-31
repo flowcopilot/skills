@@ -97,7 +97,7 @@ for proxy in "${PROXIES[@]}"; do
     export HTTP_PROXY="$proxy"
     export HTTPS_PROXY="$proxy"
 
-    region=$(echo "$proxy" | grep -oP '^\w+-\w+')
+    region=$(echo "$proxy" | sed -E 's#^[a-z]+://##; s#-proxy.*##')
     echo "Testing from: $region"
 
     agent-browser --session "$region" open https://example.com

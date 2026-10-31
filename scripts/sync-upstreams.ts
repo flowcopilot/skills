@@ -1250,6 +1250,39 @@ function syncAgentSurf(checkouts: Record<typeof agentSurfSources[number], Checko
     copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", licenseFile));
     notices.push(`### ${name}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}, from its \`${agentSurfRoots[name]}/\` directory. The upstream ${name === "agent-device" ? "MIT license and copyright notice are" : "Apache License 2.0 is"} retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
   }
+  // Upstream examples that contradict the upstream reference. Each guard stops the sync when the text changes.
+  const browser = resolve(target, "references/agent-browser");
+  patchGeneratedFile(resolve(browser, "electron/index.md"), [
+    ["# Switch to a specific tab by index\nagent-browser tab 2", "# Switch to a specific tab by id (positional numbers are rejected)\nagent-browser tab t2"],
+    ["#   0: [page]    Slack - Main Window     https://app.slack.com/\n#   1: [webview] Embedded Content        https://example.com/widget",
+      "#   t1: [page]    Slack - Main Window     https://app.slack.com/\n#   t2: [webview] Embedded Content        https://example.com/widget"],
+    ["# Switch to a webview\nagent-browser tab 1", "# Switch to a webview\nagent-browser tab t2"],
+  ]);
+  patchGeneratedFile(resolve(browser, "core/references/snapshot-refs.md"), [[
+    "agent-browser snapshot -i          # Get new refs\nagent-browser click @e1            # Use new refs",
+    "agent-browser snapshot -i          # Get new refs\nagent-browser click @e12           # Use a ref from the new snapshot",
+  ]]);
+  patchGeneratedFile(resolve(browser, "core/references/proxy-support.md"), [[
+    "region=$(echo \"$proxy\" | grep -oP '^\\w+-\\w+')",
+    "region=$(echo \"$proxy\" | sed -E 's#^[a-z]+://##; s#-proxy.*##')",
+  ]]);
+  patchGeneratedFile(resolve(browser, "core/references/authentication.md"), [
+    ["export AGENT_BROWSER_ENCRYPTION_KEY=$(openssl rand -hex 32)",
+      "# Create the key once with `openssl rand -hex 32`, store it, and reuse it. A new key cannot decrypt saved state.\nexport AGENT_BROWSER_ENCRYPTION_KEY=\"$(cat ~/.config/agent-browser/encryption-key)\""],
+    ["echo \"*.auth-state.json\" >> .gitignore", "echo \"*auth-state.json\" >> .gitignore"],
+  ]);
+  patchGeneratedFile(resolve(browser, "core/references/session-management.md"), [[
+    "echo \"*.auth-state.json\" >> .gitignore", "echo \"*auth-state.json\" >> .gitignore",
+  ]]);
+  for (const [file, prefix] of [["authenticated-session.sh", "auth"], ["capture-workflow.sh", "capture"], ["form-automation.sh", "form"]]) {
+    patchGeneratedFile(resolve(browser, "core/templates", file), [[
+      "set -euo pipefail\n",
+      `set -euo pipefail\n\n# Use a named session, so this script does not drive or close another agent's browser.\nexport AGENT_BROWSER_SESSION="\${AGENT_BROWSER_SESSION:-$(agent-browser session id --scope worktree --prefix ${prefix})}"\n`,
+    ]]);
+  }
+  patchGeneratedFile(resolve(target, "references/agent-desktop/jev-desktop/index.md"), [[
+    "Which of the 16 interaction verbs it asks for.", "Which of the 12 interaction verbs it asks for.",
+  ]]);
   for (const path of ["references/agent-browser/slack/references/slack-tasks.md", "references/agent-browser/slack/templates/slack-report-template.md"]) {
     if (!existsSync(resolve(target, path))) throw new Error(`agent-surf: router links missing slack file ${path}`);
   }
@@ -1302,7 +1335,7 @@ This bundle imports \`skill-data/\` from agent-browser and \`skills/\` from agen
 
 ${sections.join("\n\n")}
 `, "vercel-labs/agent-browser", first.revision);
-  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
+  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, and named sessions in the browser templates.\n\n${notices.join("\n\n")}\n`;
 }
 
 function assertApacheLicense(checkout: Checkout, name: string) {

@@ -121,7 +121,7 @@ agent-browser click @e1            # Ref doesn't exist yet!
 ```bash
 agent-browser click @e5            # Navigates to new page
 agent-browser snapshot -i          # Get new refs
-agent-browser click @e1            # Use new refs
+agent-browser click @e12           # Use a ref from the new snapshot
 ```
 
 ### 3. Re-Snapshot After Dynamic Changes

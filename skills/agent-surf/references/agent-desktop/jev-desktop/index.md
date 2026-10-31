@@ -203,7 +203,7 @@ the speculative ones cost tokens and no latency.
 | Question | Type | Asks |
 | --- | --- | --- |
 | `target` | choice | Which element the intent refers to, plus `none`. |
-| `command` | choice | Which of the 16 interaction verbs it asks for. |
+| `command` | choice | Which of the 12 interaction verbs it asks for. |
 | `present` | noul | Is the thing on this screen at all? |
 | `destructive` | noul | Would this be hard to undo? |
 | `needs_text` | noul | Does this need text from the caller? |

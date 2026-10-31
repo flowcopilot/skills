@@ -121,7 +121,8 @@ agent-browser --session "$SESSION" --restore open https://twitter.com
 Encrypt state at rest:
 
 ```bash
-export AGENT_BROWSER_ENCRYPTION_KEY=$(openssl rand -hex 32)
+# Create the key once with `openssl rand -hex 32`, store it, and reuse it. A new key cannot decrypt saved state.
+export AGENT_BROWSER_ENCRYPTION_KEY="$(cat ~/.config/agent-browser/encryption-key)"
 agent-browser --session secure --restore open https://app.example.com
 ```
 
@@ -391,7 +392,7 @@ fi
 
 1. **Never commit state files** - They contain session tokens
    ```bash
-   echo "*.auth-state.json" >> .gitignore
+   echo "*auth-state.json" >> .gitignore
    ```
 
 2. **Use environment variables for credentials**

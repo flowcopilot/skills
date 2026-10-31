@@ -91,8 +91,8 @@ Electron apps often have multiple windows or webviews. Use tab commands to list 
 # List all available targets (windows, webviews, etc.)
 agent-browser tab
 
-# Switch to a specific tab by index
-agent-browser tab 2
+# Switch to a specific tab by id (positional numbers are rejected)
+agent-browser tab t2
 
 # Switch by URL pattern
 agent-browser tab --url "*settings*"
@@ -109,11 +109,11 @@ agent-browser connect 9222
 # List targets -- webviews appear alongside pages
 agent-browser tab
 # Example output:
-#   0: [page]    Slack - Main Window     https://app.slack.com/
-#   1: [webview] Embedded Content        https://example.com/widget
+#   t1: [page]    Slack - Main Window     https://app.slack.com/
+#   t2: [webview] Embedded Content        https://example.com/widget
 
 # Switch to a webview
-agent-browser tab 1
+agent-browser tab t2
 
 # Interact with the webview normally
 agent-browser snapshot -i

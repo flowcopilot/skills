@@ -194,7 +194,7 @@ agent-browser --session scrape close
 
 ```bash
 # Don't commit state files (contain auth tokens!)
-echo "*.auth-state.json" >> .gitignore
+echo "*auth-state.json" >> .gitignore
 
 # Delete after use
 rm /tmp/auth-state.json
