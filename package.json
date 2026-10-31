@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "bench:test": "bun test benchmarks/skills",
+    "bench:trigger": "bun benchmarks/skills/trigger.ts",
     "check": "bun scripts/check.ts",
     "check:reach": "bun scripts/check.ts --reach",
     "sync": "bun scripts/sync-upstreams.ts"

@@ -28,7 +28,11 @@ export function parseClaudeTranscript(transcript: Transcript, options: ParseOpti
       const bundle = input.skill.trim().replace(/^\//, "").split(/\s+/)[0].split(":").pop()!;
       if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(bundle)) reads.push({ bundle, path: "SKILL.md", tool: "Skill", complete: true });
     } else if (block.name === "Read" && typeof input.file_path === "string") {
-      const read = installedRead(input.file_path, "Read", input.limit === undefined && input.offset === undefined, { ...options, cwd });
+      const complete = input.limit === undefined && input.offset === undefined;
+      const start = typeof input.offset === "number" && input.offset > 0 ? input.offset : 1;
+      const lines: [number, number | null] | undefined = complete ? undefined
+        : [start, typeof input.limit === "number" ? start + input.limit - 1 : null];
+      const read = installedRead(input.file_path, "Read", complete, { ...options, cwd }, lines);
       if (read) reads.push(read);
     } else if (block.name === "Bash" && typeof input.command === "string") {
       reads.push(...commandReads(input.command, "Bash", { ...options, cwd }));
