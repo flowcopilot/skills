@@ -16,6 +16,9 @@ describe("read-only command classification", () => {
       "command -v agent-browser",
       "ls -la; which agent-device; ls /tmp; printenv PATH",
       "npx -y agent-desktop status 2>&1 | head -30",
+      "rg --files | sort | uniq",
+      "git branch --show-current",
+      "date -u",
     ]) expect(isReadOnlyCommand(command)).toBe(true);
   });
 
@@ -30,6 +33,12 @@ describe("read-only command classification", () => {
       "find . -delete",
       "git commit -m x",
       "sleep 5 &",
+      "ls | xargs rm",
+      "awk 'BEGIN { system(\"rm -rf x\") }'",
+      "awk '{ print > \"out.txt\" }' file",
+      "sort -o sorted.txt input.txt",
+      "date -s 2026-01-01",
+      "git branch -D main",
     ]) expect(isReadOnlyCommand(command)).toBe(false);
   });
 

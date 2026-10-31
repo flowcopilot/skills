@@ -66,8 +66,7 @@ function baseEnv(home: string): Record<string, string> {
   };
 }
 
-function prepare(task: Task, cli: "claude" | "codex") {
-  const root = mkdtempSync(join(tmpdir(), `trigger-${task.id}-`));
+function prepare(task: Task, cli: "claude" | "codex", root: string) {
   const workspace = resolve(root, "workspace");
   cpSync(resolve(benchRoot, task.fixture), workspace, { recursive: true });
   Bun.spawnSync(["git", "init", "-q"], { cwd: workspace });
@@ -128,78 +127,92 @@ function analyze(task: Task, cli: "claude" | "codex", events: RecordValue[]) {
 
 async function runOnce(task: Task, model: string, repeat: number): Promise<Run> {
   const cli = models[model];
-  const { root, workspace } = prepare(task, cli);
-  const { argv, env } = command(task, model, cli, root, workspace);
-  const started = Date.now();
-  const child = Bun.spawn(argv, { cwd: workspace, env, stdout: "pipe", stderr: "pipe", stdin: "ignore" });
-  const events: RecordValue[] = [];
-  const pending = new Set<string>();
-  let toolCalls = 0;
-  let stop = "";
-  let firstAction: string | undefined;
-  let deadline = started + timeoutMs;
+  const root = mkdtempSync(join(tmpdir(), `trigger-${task.id}-`));
+  let child: ReturnType<typeof Bun.spawn> | undefined;
+  let timer: ReturnType<typeof setInterval> | undefined;
+  // The finally block stops the child, clears the timer, and removes the workspace on every path.
+  try {
+    const { workspace } = prepare(task, cli, root);
+    const { argv, env } = command(task, model, cli, root, workspace);
+    const started = Date.now();
+    const agent = Bun.spawn(argv, { cwd: workspace, env, stdout: "pipe", stderr: "pipe", stdin: "ignore" });
+    child = agent;
+    const events: RecordValue[] = [];
+    const pending = new Set<string>();
+    let toolCalls = 0;
+    let stop = "";
+    let firstAction: string | undefined;
+    let deadline = started + timeoutMs;
 
-  const halt = (reason: string, graceMs: number) => {
-    if (stop) return;
-    stop = reason;
-    // Let reads that started before the stop return, so their results count.
-    deadline = Math.min(deadline, Date.now() + graceMs);
-  };
-  const timer = setInterval(() => {
-    if (Date.now() >= deadline || (stop && pending.size === 0)) {
-      if (!stop) stop = "timeout";
-      child.kill("SIGTERM");
-      setTimeout(() => child.kill("SIGKILL"), 3000);
-    }
-  }, 250);
-
-  const observe = (started: ToolCall[], results: ToolResult[]) => {
-    for (const result of results) pending.delete(result.id);
-    for (const call of started) {
-      toolCalls++;
-      if (call.action) {
-        firstAction ??= call.label;
-        halt("first-action", 8000);
-      } else if (!stop) {
-        pending.add(call.id);
+    const halt = (reason: string, graceMs: number) => {
+      if (stop) return;
+      stop = reason;
+      // Let reads that started before the stop return, so their results count.
+      deadline = Math.min(deadline, Date.now() + graceMs);
+    };
+    timer = setInterval(() => {
+      if (Date.now() >= deadline || (stop && pending.size === 0)) {
+        if (!stop) stop = "timeout";
+        agent.kill("SIGTERM");
+        setTimeout(() => agent.kill("SIGKILL"), 3000);
       }
-      if (toolCalls >= maxTools) halt("max-tools", 10000);
-    }
-  };
+    }, 250);
 
-  const decoder = new TextDecoder();
-  let buffer = "";
-  for await (const chunk of child.stdout) {
-    buffer += decoder.decode(chunk, { stream: true });
-    let newline: number;
-    while ((newline = buffer.indexOf("\n")) >= 0) {
-      const line = buffer.slice(0, newline).trim();
-      buffer = buffer.slice(newline + 1);
-      if (!line.startsWith("{")) continue;
-      const event = record(JSON.parse(line));
-      events.push(event);
-      if (cli === "claude") observe(claudeToolCalls(event), claudeResults(event));
-      else {
-        const call = codexToolCall(event);
-        const result = codexResult(event);
-        observe(call ? [call] : [], result ? [result] : []);
+    const observe = (started: ToolCall[], results: ToolResult[]) => {
+      for (const result of results) pending.delete(result.id);
+      for (const call of started) {
+        toolCalls++;
+        if (call.action) {
+          firstAction ??= call.label;
+          halt("first-action", 8000);
+        } else if (!stop) {
+          pending.add(call.id);
+        }
+        if (toolCalls >= maxTools) halt("max-tools", 10000);
+      }
+    };
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+    for await (const chunk of agent.stdout) {
+      buffer += decoder.decode(chunk, { stream: true });
+      let newline: number;
+      while ((newline = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, newline).trim();
+        buffer = buffer.slice(newline + 1);
+        if (!line.startsWith("{")) continue;
+        let event: RecordValue;
+        try {
+          event = record(JSON.parse(line));
+        } catch {
+          continue;
+        }
+        events.push(event);
+        if (cli === "claude") observe(claudeToolCalls(event), claudeResults(event));
+        else {
+          const call = codexToolCall(event);
+          const result = codexResult(event);
+          observe(call ? [call] : [], result ? [result] : []);
+        }
       }
     }
+    await agent.exited;
+    if (!stop) stop = agent.exitCode === 0 ? "finished" : `exit-${agent.exitCode}`;
+    const stderr = await new Response(agent.stderr).text();
+    const run: Run = {
+      task: task.id, model, repeat, stop, firstAction, toolCalls, seconds: Math.round((Date.now() - started) / 1000),
+      ...analyze(task, cli, events),
+    };
+    const transcriptDir = resolve(outDir, "transcripts", task.id);
+    mkdirSync(transcriptDir, { recursive: true });
+    writeFileSync(resolve(transcriptDir, `${model}-${repeat}.jsonl`), events.map((event) => JSON.stringify(event)).join("\n") + "\n");
+    if (stderr.trim()) writeFileSync(resolve(transcriptDir, `${model}-${repeat}.stderr.txt`), stderr);
+    return run;
+  } finally {
+    if (timer) clearInterval(timer);
+    if (child && child.exitCode === null) child.kill("SIGKILL");
+    rmSync(root, { recursive: true, force: true });
   }
-  await child.exited;
-  clearInterval(timer);
-  if (!stop) stop = child.exitCode === 0 ? "finished" : `exit-${child.exitCode}`;
-  const stderr = await new Response(child.stderr).text();
-  const run: Run = {
-    task: task.id, model, repeat, stop, firstAction, toolCalls, seconds: Math.round((Date.now() - started) / 1000),
-    ...analyze(task, cli, events),
-  };
-  const transcriptDir = resolve(outDir, "transcripts", task.id);
-  mkdirSync(transcriptDir, { recursive: true });
-  writeFileSync(resolve(transcriptDir, `${model}-${repeat}.jsonl`), events.map((event) => JSON.stringify(event)).join("\n") + "\n");
-  if (stderr.trim()) writeFileSync(resolve(transcriptDir, `${model}-${repeat}.stderr.txt`), stderr);
-  rmSync(root, { recursive: true, force: true });
-  return run;
 }
 
 function summary(runs: Run[]): string {

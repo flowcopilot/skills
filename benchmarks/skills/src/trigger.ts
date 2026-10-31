@@ -16,12 +16,12 @@ export type ToolResult = { id: string; error: boolean };
 
 const readOnlyPrograms = new Set([
   "cat", "head", "tail", "ls", "rg", "grep", "find", "wc", "pwd", "tree", "nl", "stat", "file",
-  "echo", "printf", "true", "which", "test", "[", "jq", "cd", "realpath", "basename", "dirname", "sort", "uniq", "awk",
-  "printenv", "uname", "sw_vers", "whoami", "date", "id", "hostname", "xargs",
+  "echo", "printf", "true", "which", "test", "[", "jq", "cd", "realpath", "basename", "dirname", "uniq",
+  "printenv", "uname", "sw_vers", "whoami", "id", "hostname",
 ]);
 // Probes that only report the state of a CLI.
 const cliProbes = new Set(["--version", "-v", "version", "status", "doctor"]);
-const readOnlyGit = new Set(["status", "log", "diff", "show", "ls-files", "rev-parse", "branch"]);
+const readOnlyGit = new Set(["status", "log", "diff", "show", "ls-files", "rev-parse"]);
 
 // Unwraps `zsh -lc '<script>'` and `bash -c "<script>"`, which Codex uses for every command.
 function unwrapShell(command: string): string {
@@ -91,7 +91,13 @@ export function isReadOnlyCommand(command: string): boolean {
     if (program === "command" || program === "type") return words[1] === "-v" || program === "type";
     if (program === "sed") return words.includes("-n") && !words.some((word) => /^-[a-z]*i/.test(word) || word === "--in-place");
     if (program === "find") return !words.some((word) => ["-exec", "-execdir", "-delete", "-ok", "-fprint"].includes(word));
-    if (program === "git") return readOnlyGit.has(words[1] ?? "");
+    if (program === "git") {
+      if (words[1] === "branch") return words.slice(2).every((word) => ["-a", "-r", "-v", "-vv", "--list", "--show-current"].includes(word));
+      return readOnlyGit.has(words[1] ?? "");
+    }
+    // sort -o writes a file, and date -s sets the clock.
+    if (program === "sort") return !words.some((word) => /^-[a-zA-Z]*o/.test(word) || word.startsWith("--output"));
+    if (program === "date") return !words.some((word) => word === "-s" || word.startsWith("--set"));
     return readOnlyPrograms.has(program);
   });
 }
