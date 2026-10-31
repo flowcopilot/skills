@@ -1,14 +1,14 @@
 ---
 name: clarity
-description: Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.
+description: Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and explanations of how code works. Do not load it for code-only changes.
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: cursor/plugins@519d36aa98955bf680db01bcde5fdfba686dc901
-  upstream_matt_pocock: "mattpocock/skills@59db609eb1e18aaf59b63284d0e52255aff0c63c"
+  upstream: cursor/plugins@4dd1d05818d19792e7cd6e818f1667f95f7e1dbe
+  upstream_matt_pocock: "mattpocock/skills@4ae2317ddb22b046e26455e4f9c9b3aaaf62212d"
 ---
 
-<!-- Modified by Flow Copilot from cursor/plugins revision 519d36aa98955bf680db01bcde5fdfba686dc901. -->
+<!-- Modified by Flow Copilot from cursor/plugins revision 4dd1d05818d19792e7cd6e818f1667f95f7e1dbe. -->
 
 # Clarity
 
@@ -22,18 +22,10 @@ Write every text so that its reader understands it on the first read. Answer how
 
 ## Workflows
 
-- Answer a narrow how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
-- [how](references/pstack/how/index.md): use for a requested architecture walkthrough or an explanation that needs several independent exploration tasks.
-- [why](references/pstack/why/index.md): use for an explicit `clarity why` invocation or a historical investigation that needs several independent evidence sources. For a narrow rationale question, use [the epistemics guide](references/pstack/why/references/epistemics.md) and answer directly.
+- Answer a how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
+- [figure-it-out](references/figure-it-out.md): use only when the user says "figure it out yourself", or hands off a large task to finish alone.
 
-Only when the user asks for them:
-
-- [bro](references/matt-pocock/wait-what/index.md): the user says "I didn't get that", "repeat", "make it shorter", "wait, what", or "bro". Re-pitch the last message. Its upstream name is `wait-what`.
-- [figure-it-out](references/figure-it-out.md): the user says "figure it out yourself", or hands off a large task to finish alone.
-
-The user selects a workflow by name: `/clarity bro` in Claude Code, `$clarity bro` in Codex.
-
-Imported text names upstream skills. `unslop`, `technical-writing`, `how`, and `why` mean the references above. Other pstack skills, such as `poteto-mode`, `show-me-your-work`, `teach`, `architect`, and `arena`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
+Imported text names upstream skills. `unslop` and `technical-writing` mean the references above. Other pstack skills, such as `how`, `why`, `poteto-mode`, `show-me-your-work`, `teach`, `architect`, and `arena`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
 
 ## Writing the reply
 
@@ -51,27 +43,18 @@ Comments follow the same rule as the reply. Write them clean as you go. Keep a c
 
 ## Model roles
 
-This table replaces the pstack `pstack-models.mdc` rule. An imported role line or default model means the role in this table.
+This table sets the models for the figure-it-out workflow.
 
-| Role | Upstream roles | Claude Code | Codex | T3 |
+| Role | Used by | Claude Code | Codex | T3 |
 | --- | --- | --- | --- | --- |
-| reasoning | how explainer, why synthesizer | `claude-opus-5-5` | `gpt-6-astra` high | `claudeAgent/claude-opus-5-5` high |
-| exploration | how explorer, why investigators | `claude-sonnet-5-5` | `gpt-6.1-sol` high | `codex/gpt-6.1-sol` high |
 | investigation | figure-it-out units | `claude-opus-5-5` | `gpt-6.1-sol` xhigh | `codex/gpt-6.1-sol` xhigh |
 | adversarial | figure-it-out review, debates | `gpt-6-astra` high, through the Codex CLI | `claude-opus-5-5` high, through the Claude CLI | the other family: `codex/gpt-6-astra` high reviews Claude work, `claudeAgent/claude-opus-5-5` high reviews Codex work |
 
 Find the harness from your tools. `delegate_task` means T3. `spawn_agent` means Codex. The `Agent` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column, and `delegate_task` otherwise. The Claude Code `Agent` tool sets the model only, so its subagents use the effort of the session.
 
-- Exploration reads and does not edit. Claude Code: the `Explore` agent with model `sonnet`. Codex: `spawn_agent` with agent type `explorer`. T3: `interactionMode: plan`.
 - Investigation edits only in its own worktree, and never commits or pushes. Claude Code: `isolation: worktree`. Codex: `spawn_agent` with agent type `worker`. T3: `runtimeMode: auto-accept-edits`. The parent session checks the result.
 - Adversarial review uses the first option that works. First, T3 `delegate_task`. Second, the CLI of the other harness, read-only: `codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only "<prompt>"` or `claude -p --model claude-opus-5-5 --effort high --permission-mode plan "<prompt>"`. Third, a new subagent of the same family that gets only the artifact and the goal. The reply names the reviewer model and the option used.
 - If the harness rejects a model, use the parent model and say so in the reply.
-
-## Cursor terms in how and why
-
-- The `Task` tool and `subagent_type: generalPurpose` mean the spawn tool for the role.
-- `readonly: true` means the exploration permissions. `readonly: false` for MCP access means a subagent that has the MCP tools and writes nothing.
-- The Cursor environment and its `mcps/` directory mean the MCP tools of the current harness. In Claude Code, these are the `mcp__<server>__<tool>` tools, including deferred tools that ToolSearch lists.
 
 ## Sources
 

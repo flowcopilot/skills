@@ -806,13 +806,13 @@ const clarityImports = {
     label: "pstack",
     holder: "Lauren Tan",
     root: "pstack/skills",
-    skills: { unslop: { userOnly: true }, "technical-writing": { userOnly: true }, how: { userOnly: true }, why: { userOnly: true } },
+    skills: { unslop: { userOnly: true }, "technical-writing": { userOnly: true } },
   },
   "matt-pocock": {
     label: "Matt Pocock",
     holder: "Matt Pocock",
     root: "skills/productivity",
-    skills: { "writing-for-agents": { userOnly: false }, "wait-what": { userOnly: true } },
+    skills: { "writing-for-agents": { userOnly: false } },
   },
 } satisfies Record<typeof claritySources[number], {
   label: string;
@@ -820,16 +820,6 @@ const clarityImports = {
   root: string;
   skills: Record<string, { userOnly: boolean }>;
 }>;
-
-// pstack names a model role line and a default for each subagent in how and why.
-// The router maps each line to a Flow Copilot role, so a new or removed line stops the sync.
-// The router replaces the upstream defaults, so a new default model does not stop it.
-const clarityModelRoles: Record<string, { role: "reasoning" | "exploration" }> = {
-  "how explorer": { role: "exploration" },
-  "how explainer": { role: "reasoning" },
-  "why investigators": { role: "exploration" },
-  "why synthesizer": { role: "reasoning" },
-};
 
 function upstreamUserOnly(skillRoot: string): boolean {
   const flag = /^disable-model-invocation: true$/m.test(readFileSync(resolve(skillRoot, "SKILL.md"), "utf8"));
@@ -841,17 +831,6 @@ function upstreamUserOnly(skillRoot: string): boolean {
     }
   }
   return flag;
-}
-
-function assertClarityModelRoles(skillRoot: string) {
-  const roles = [...["how", "why"].flatMap((skill) =>
-    [...readFileSync(resolve(skillRoot, skill, "SKILL.md"), "utf8")
-      .matchAll(/the `([^`]+)` line(?:, | \(| in the `pstack-models\.mdc` rule \()default `[^`]+`/g)]),
-  ].map(([, line]) => line);
-  const expected = Object.keys(clarityModelRoles);
-  if ([...new Set(roles)].sort().join("\n") !== expected.sort().join("\n")) {
-    throw new Error(`pstack: model roles changed in how or why: ${[...new Set(roles)].join(", ")}`);
-  }
 }
 
 // Reply rules are local so upstream sync cannot restore the longer chat format.
@@ -887,7 +866,6 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
     return tree;
   });
   const pstack = checkouts.pstack;
-  assertClarityModelRoles(resolve(pstack.root, "pstack/skills"));
   if (!existsSync(resolve(pstack.root, "pstack/skills/figure-it-out/SKILL.md"))) {
     throw new Error("pstack: figure-it-out skill removed");
   }
@@ -905,12 +883,10 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
     notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. It imports the ${new Intl.ListFormat("en", { type: "conjunction" }).format(Object.keys(clarityImports[name].skills).map((skill) => `\`${skill}\``))} skills from \`${root}/\`. The upstream MIT license and copyright notice are retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
   }
 
-  const rolesFor = (role: string) => Object.entries(clarityModelRoles)
-    .filter(([, value]) => value.role === role).map(([line]) => line).join(", ");
   mkdirSync(resolve(target, "agents"), { recursive: true });
   writeFileSync(resolve(target, "agents", "openai.yaml"), `interface:
   display_name: "Clarity"
-  short_description: "Write clearly for people and agents, and explain how and why"
+  short_description: "Write clearly for people and agents"
 policy:
   allow_implicit_invocation: true
 `);
@@ -932,7 +908,7 @@ Units with defined steps go to the investigation role. The parent session keeps 
 `));
 
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user did not understand a message (bro, wait what, repeat, make it shorter) or says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and how and why explanations of code. Do not load it for code-only changes.",
+    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and explanations of how code works. Do not load it for code-only changes.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity
@@ -947,18 +923,10 @@ Write every text so that its reader understands it on the first read. Answer how
 
 ## Workflows
 
-- Answer a narrow how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
-- [how](references/pstack/how/index.md): use for a requested architecture walkthrough or an explanation that needs several independent exploration tasks.
-- [why](references/pstack/why/index.md): use for an explicit \`clarity why\` invocation or a historical investigation that needs several independent evidence sources. For a narrow rationale question, use [the epistemics guide](references/pstack/why/references/epistemics.md) and answer directly.
+- Answer a how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
+- [figure-it-out](references/figure-it-out.md): use only when the user says "figure it out yourself", or hands off a large task to finish alone.
 
-Only when the user asks for them:
-
-- [bro](references/matt-pocock/wait-what/index.md): the user says "I didn't get that", "repeat", "make it shorter", "wait, what", or "bro". Re-pitch the last message. Its upstream name is \`wait-what\`.
-- [figure-it-out](references/figure-it-out.md): the user says "figure it out yourself", or hands off a large task to finish alone.
-
-The user selects a workflow by name: \`/clarity bro\` in Claude Code, \`$clarity bro\` in Codex.
-
-Imported text names upstream skills. \`unslop\`, \`technical-writing\`, \`how\`, and \`why\` mean the references above. Other pstack skills, such as \`poteto-mode\`, \`show-me-your-work\`, \`teach\`, \`architect\`, and \`arena\`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
+Imported text names upstream skills. \`unslop\` and \`technical-writing\` mean the references above. Other pstack skills, such as \`how\`, \`why\`, \`poteto-mode\`, \`show-me-your-work\`, \`teach\`, \`architect\`, and \`arena\`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
 
 ## Writing the reply
 
@@ -974,33 +942,24 @@ ${commentRules}
 
 ## Model roles
 
-This table replaces the pstack \`pstack-models.mdc\` rule. An imported role line or default model means the role in this table.
+This table sets the models for the figure-it-out workflow.
 
-| Role | Upstream roles | Claude Code | Codex | T3 |
+| Role | Used by | Claude Code | Codex | T3 |
 | --- | --- | --- | --- | --- |
-| reasoning | ${rolesFor("reasoning")} | \`claude-opus-5-5\` | \`gpt-6-astra\` high | \`claudeAgent/claude-opus-5-5\` high |
-| exploration | ${rolesFor("exploration")} | \`claude-sonnet-5-5\` | \`gpt-6.1-sol\` high | \`codex/gpt-6.1-sol\` high |
 | investigation | figure-it-out units | \`claude-opus-5-5\` | \`gpt-6.1-sol\` xhigh | \`codex/gpt-6.1-sol\` xhigh |
 | adversarial | figure-it-out review, debates | \`gpt-6-astra\` high, through the Codex CLI | \`claude-opus-5-5\` high, through the Claude CLI | the other family: \`codex/gpt-6-astra\` high reviews Claude work, \`claudeAgent/claude-opus-5-5\` high reviews Codex work |
 
 Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` means Codex. The \`Agent\` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column, and \`delegate_task\` otherwise. The Claude Code \`Agent\` tool sets the model only, so its subagents use the effort of the session.
 
-- Exploration reads and does not edit. Claude Code: the \`Explore\` agent with model \`sonnet\`. Codex: \`spawn_agent\` with agent type \`explorer\`. T3: \`interactionMode: plan\`.
 - Investigation edits only in its own worktree, and never commits or pushes. Claude Code: \`isolation: worktree\`. Codex: \`spawn_agent\` with agent type \`worker\`. T3: \`runtimeMode: auto-accept-edits\`. The parent session checks the result.
 - Adversarial review uses the first option that works. First, T3 \`delegate_task\`. Second, the CLI of the other harness, read-only: \`codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only "<prompt>"\` or \`claude -p --model claude-opus-5-5 --effort high --permission-mode plan "<prompt>"\`. Third, a new subagent of the same family that gets only the artifact and the goal. The reply names the reviewer model and the option used.
 - If the harness rejects a model, use the parent model and say so in the reply.
-
-## Cursor terms in how and why
-
-- The \`Task\` tool and \`subagent_type: generalPurpose\` mean the spawn tool for the role.
-- \`readonly: true\` means the exploration permissions. \`readonly: false\` for MCP access means a subagent that has the MCP tools and writes nothing.
-- The Cursor environment and its \`mcps/\` directory mean the MCP tools of the current harness. In Claude Code, these are the \`mcp__<server>__<tool>\` tools, including deferred tools that ToolSearch lists.
 
 ## Sources
 
 This bundle imports selected skills from cursor/plugins (pstack) and mattpocock/skills. Each reference keeps its upstream text. Only this file and \`references/figure-it-out.md\` hold Flow Copilot text. Upstream metadata, plugin files, and agent UI files are not included.
 `, "cursor/plugins", pstack.revision);
-  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag and model role. The router replaces the pstack per-user model rule with one role table and maps Cursor subagent terms to Claude Code, Codex, and T3. The router defines local reply rules for concise chat and keeps the comment rules from pstack \`poteto-mode\`. Narrow how and why questions use a direct answer. Detailed workflows run when the request needs them. The \`wait-what\` skill is listed as \`bro\`. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
+  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, keeps the comment rules from pstack \`poteto-mode\`, and holds one model role table for Claude Code, Codex, and T3. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk publishes a flat skills/ directory. Each bundled skill is listed under its router
