@@ -5,6 +5,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  lstatSync,
   readdirSync,
   rmSync,
   statSync,
@@ -140,10 +141,13 @@ function writeSkill(
   );
 }
 
+// Upstream trees must not contain symlinks: reading or copying one would import a file from outside the checkout.
 function filesUnder(directory: string): string[] {
   if (!existsSync(directory)) return [];
+  if (lstatSync(directory).isSymbolicLink()) throw new Error(`refused to follow symlink: ${directory}`);
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
+    if (entry.isSymbolicLink()) throw new Error(`refused to follow symlink: ${path}`);
     return entry.isDirectory() ? filesUnder(path) : [path];
   });
 }
