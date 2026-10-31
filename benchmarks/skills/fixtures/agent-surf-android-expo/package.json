@@ -1,0 +1,11 @@
+{
+  "name": "home-fixture",
+  "private": true,
+  "main": "expo-router/entry",
+  "dependencies": {
+    "expo": "58.0.22",
+    "expo-router": "58.0.29",
+    "react": "19.3.1",
+    "react-native": "0.88.1"
+  }
+}

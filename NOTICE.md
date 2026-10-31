@@ -65,3 +65,19 @@ Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `4dd1
 ### Matt Pocock
 
 Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`, dated 2026-10-31. It imports the `writing-for-agents` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
+
+## Agent Surf skill
+
+Flow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.
+
+### agent-browser
+
+Imported from [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser) revision `5868f7c05020e047c00e68e4abf9253cce864f41`, dated 2026-10-30, from its `skill-data/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-browser-LICENSE`.
+
+### agent-device
+
+Imported from [callstack/agent-device](https://github.com/callstack/agent-device) revision `ff8c2285c808135b592e77f53ae3ce28d31786b8`, dated 2026-10-31, from its `skills/` directory. The upstream MIT license and copyright notice are retained in `skills/agent-surf/licenses/agent-device-LICENSE`.
+
+### agent-desktop
+
+Imported from [vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop) revision `5261b5287b5208e7c4bf3713df6f66faaaf2c4cc`, dated 2026-10-31, from its `skills/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-desktop-LICENSE`.

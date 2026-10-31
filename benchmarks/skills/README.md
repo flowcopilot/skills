@@ -1,6 +1,6 @@
 # Skill benchmark inputs
 
-This directory has 18 tasks, project fixtures, model conditions, transcript parsers, and tests. Task prompts do not name a skill to load. The runner, task check runner, and aggregate report are still missing. No code comes from `expo/eval-experiments`.
+This directory has 25 tasks, project fixtures, model conditions, transcript parsers, a trigger runner, and tests. Task prompts do not name a skill to load. The full task runner, the task check runner, and the aggregate report are still missing. No code comes from `expo/eval-experiments`.
 
 ## Run the checks
 
@@ -13,6 +13,42 @@ bun run bench:test
 ```
 
 `check:reach` follows local references from each bundle's `SKILL.md`. Inline and reference links resolve relative to the source file. Path mentions such as `expo-router/route-structure.md`, in code or plain text, also count, because upstream skills name references that way. A mention resolves relative to the source file, the bundle's `references/` directory, or the bundle root. In a code block tree, a bare file name under a `folder/` line counts as `folder/name.md`, because the Expo routers list their references that way. Images and comments do not count. `notForAgents` in `scripts/check.ts` lists upstream files that give agents no instructions, such as collection READMEs. The check skips them, and it fails when a listed file is gone or a file starts to point to it. Each unreachable reference causes a nonzero exit code. The existing `check` stays separate. The `validate.yml` workflow runs `check:reach` on every pull request.
+
+## Trigger runs
+
+`bun run bench:trigger` measures whether an agent loads a skill and which references and sections it reads. It does not run the task to the end. Each run copies the task fixture into a temporary folder, installs the bundles of the `all-bundles` condition into `.claude/skills` or `.agents/skills`, and starts the CLI without a session UI:
+
+- Claude Code: `claude -p --output-format stream-json --setting-sources project`, with a clean environment. User skills, `CLAUDE.md`, and the `env` block of the user settings do not load. The claude.ai login still applies.
+- Codex: `codex exec --json -s read-only`, with a temporary `HOME` and `CODEX_HOME` that holds only `auth.json`. User config, `AGENTS.md`, and user skills do not load.
+
+The runner reads the event stream and stops the agent at the first action: an edit, a write, a web or MCP tool, or a shell command other than a read, a search, an environment probe, or a CLI guide command such as `agent-desktop skills get desktop`. It also stops after `--max-tools` tool calls (12) or `--timeout` seconds (150). Reads that started before the stop can finish within 8 seconds.
+
+The transcript parsers then list the reads. A read also counts when its command failed but its output contains the Flow Copilot marker that starts every bundled file, because the agent saw the content. A separate count, required references attempted, also includes reads in calls that failed or that a permission check denied. Claude Code in `-p` mode denies a whole shell call when one of its commands needs approval, such as `cat <reference>; curl <url>`. A partial read reports its line range and the headings in that range. Each run records the bundles it loaded, the required references it read or missed, references outside the allowed list, other bundles, CLI guide commands, and failed reads of skill paths.
+
+```sh
+bun run bench:trigger --tasks 'agent-surf-*,typescript-unique-values' --repeats 3 --concurrency 5
+```
+
+Options: `--models` (comma-separated: `claude-haiku-5-5`, `claude-sonnet-5-5`, `gpt-6-luna`, `gpt-6.1-terra`, `gpt-6.1-sol`), `--tasks` (IDs, a trailing `*` matches a prefix), `--repeats`, `--concurrency`, `--effort` (default `low`), `--bundles`, `--max-tools`, `--timeout`, and `--out`. Results go to `results/`, which Git ignores: `runs.jsonl`, `summary.md`, and one transcript for each run.
+
+## agent-surf trigger results
+
+The trigger runner ran the 6 agent-surf tasks and the 2 negative controls (`agent-surf-near-playwright` and `typescript-unique-values`) 3 times per model on October 31, 2026, with low effort and all nine bundles installed. Each cell shows loads of agent-surf out of 18 runs, required references read and attempted out of 21, and false loads of agent-surf on the negative controls out of 6.
+
+| Model | v1 | v2 | v3 (current) |
+| --- | --- | --- | --- |
+| Claude Code `claude-haiku-5-5` | 11, 8, 8, 0 | 13, 7, 7, 0 | 11, 6, 6, 0 |
+| Claude Code `claude-sonnet-5-5` | 17, 12, 12, 0 | 18, 21, 21, 0 | 18, 21, 21, 0 |
+| Codex `gpt-6-luna` | 14, 14, 16, 0 | 16, 16, 16, 0 | 17, 20, 20, 0 |
+| Codex `gpt-6.1-terra` | 17, 15, 15, 0 | 17, 20, 21, 2 | 18, 21, 21, 0 |
+| Codex `gpt-6.1-sol` | 16, 13, 14, 0 | 16, 10, 20, 3 | 18, 15, 21, 0 |
+| All five | 75, 62, 65, 0 | 80, 74, 85, 5 | 82, 83, 89, 0 |
+
+- v1 told the agent to run `agent-browser skills get core` before the first command. In 44 runs the agent ran a `skills get` command. The CLI was not installed, and most of those agents did not read the bundled reference. One Luna run resolved a router link against `.agents/skills/` and dropped `agent-surf/`.
+- v2 tells the agent to read the bundled reference first and to run `skills get` only when a command fails. It states that router paths are relative to the folder of `SKILL.md`. Its description adds "drive or script" and the `package.json` signal. Terra and Sol then loaded agent-surf for the Playwright test task.
+- v3 changes "script" to "write a shell script that drives one" and adds "Do not load it for Playwright, Cypress, Detox, or XCUITest test files."
+
+Haiku loaded agent-surf in 11 of 18 runs in v3. In the misses, it ran `xcrun simctl` or `curl`, or wrote the script, before it loaded a skill. When it loads the skill, it often joins a reference read and a command that needs approval in one shell call, which the runner cannot count when the call also contains `{` or `*`. With 3 repeats, a difference of 2 or 3 runs for one model is noise.
 
 ## Task and check schema
 
@@ -61,9 +97,16 @@ Each new code fixture has a `package.json` with real dependency names and only t
 | `design-form-accessibility` | design-engineering | Fix form controls using Jakub Krehel's source. |
 | `react-native-gesture-callback` | react-native | Fix the gesture callback using Software Mansion's source. |
 | `react-native-list-windowing` | react-native | Virtualize a large list using Callstack's source. |
+| `agent-surf-web-signup` | agent-surf | Script a signup check in a headless browser. |
+| `agent-surf-ios-note` | agent-surf | Script a smoke test on an iOS Simulator. |
+| `agent-surf-desktop-export` | agent-surf | Script a PDF export from a macOS desktop app. |
+| `agent-surf-web-price` | agent-surf | Read a price that JavaScript renders, with no CLI in `package.json`. |
+| `agent-surf-android-expo` | agent-surf | Check an Expo app on an Android Emulator, with no CLI in `package.json`. |
+| `agent-surf-desktop-calculator` | agent-surf | Use the macOS Calculator app, with no CLI in `package.json`. |
+| `agent-surf-near-playwright` | none | Write a Playwright test. agent-surf must not load. |
 | `typescript-unique-values` | none | Remove exact duplicates without sorting or mutating the input. |
 
-All eight bundles have at least two tasks. The two React Native tasks and the two design engineering tasks each cover one task per upstream source. New tasks use the existing `exists`, `unchanged`, and `rubric` checks. No check type was added. Rubric checks require a later reviewer or grader; the dataset tests do not grade agent solutions.
+All nine bundles have at least two tasks. The two React Native tasks and the two design engineering tasks each cover one task per upstream source. The six agent-surf tasks cover each upstream source twice: `agent-surf-web-signup` and `agent-surf-web-price` for agent-browser, `agent-surf-ios-note` and `agent-surf-android-expo` for agent-device, and `agent-surf-desktop-export` and `agent-surf-desktop-calculator` for agent-desktop. Three agent-surf fixtures list only their CLI in `package.json`, so they test the package signal in the description. Three give only the intent. `agent-surf-near-playwright` is a second negative control for browser work that belongs to a test framework. New tasks use the existing `exists`, `unchanged`, and `rubric` checks. No check type was added. Rubric checks require a later reviewer or grader; the dataset tests do not grade agent solutions.
 
 ## Conditions and run count
 
@@ -71,14 +114,14 @@ All eight bundles have at least two tasks. The two React Native tasks and the tw
 
 | Condition | Applicable tasks | Installed skills |
 | --- | --- | --- |
-| `no-skills` | All 18 | None. |
-| `all-bundles` | All 18 | All eight Flow Copilot bundles. |
-| `upstream-layout` | All 18 | Each published upstream skill from all 11 pinned sources. |
-| `expo-overview-entry` | The three Expo tasks | All eight bundles, with the Expo entry variant. |
+| `no-skills` | All 25 | None. |
+| `all-bundles` | All 25 | All nine Flow Copilot bundles. |
+| `upstream-layout` | All 25 | Each published upstream skill from all 14 pinned sources. |
+| `expo-overview-entry` | The three Expo tasks | All nine bundles, with the Expo entry variant. |
 
 The Expo entry variant replaces the Expo entry body with `references/expo-overview.md` and preserves `name` and `description`. Transform only the installed test copy. The future runner must isolate global skills and agent instructions in every condition.
 
-The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(18 × 3 + 3 × 1) × 4 × 3 = 684` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
+The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(25 × 3 + 3 × 1) × 4 × 3 = 936` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
 
 ## Upstream layout
 
@@ -99,6 +142,7 @@ These sources need special handling:
 - React Native has nested Software Mansion skills, including Gesture Handler guidance and Fishjam SDK guidance. Discover every nested `SKILL.md`, even inside another skill's `references/`. Keep Callstack separate. Both design engineering sources currently use flat skill directories. See [tree discovery](../../scripts/sync-upstreams.ts#L539-L556), [React Native import](../../scripts/sync-upstreams.ts#L594-L645), and [design engineering import](../../scripts/sync-upstreams.ts#L657-L684).
 - Clerk groups skills under `core`, `features`, `frameworks`, and `mobile`. Include the root `clerk` router and all published skills. This restores the eight skills excluded from our bundle: `clerk-astro-patterns`, `clerk-nuxt-patterns`, `clerk-nextjs-patterns`, `clerk-react-router-patterns`, `clerk-vue-patterns`, `clerk-chrome-extension-patterns`, `clerk-swift`, and `clerk-android`. Preserve upstream support directories, including templates and evaluations. See [selection](../../scripts/sync-upstreams.ts#L912-L970) and [support-file exclusions](../../scripts/sync-upstreams.ts#L996-L1014).
 - Clarity imports only two pstack skills from `pstack/skills` and one Matt Pocock skill from `skills/productivity`. The baseline installs the full published `pstack/skills` and Matt Pocock `skills` trees, including their routers. It excludes other Cursor plugins. Do not add Flow Copilot's `figure-it-out`, model role table, or implicit-invocation policy. See [selected subset](../../scripts/sync-upstreams.ts#L715-L736), [invocation checks](../../scripts/sync-upstreams.ts#L748-L757), and [local additions](../../scripts/sync-upstreams.ts#L825-L908).
+- agent-browser publishes one discovery stub in `skills/agent-browser/SKILL.md`. It tells the agent to load guides with `agent-browser skills get`. The baseline installs only that stub, because the `skill-data/` guides are not published as skills. The bundle imports `skill-data/` instead. agent-device and agent-desktop publish flat skill directories under `skills/`.
 
 The published baseline has more skills than our selected Clerk and clarity bundles. This comparison measures that scope difference as well as layout and invocation policy. It is not a layout-only ablation. Report those differences with the results.
 

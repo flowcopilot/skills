@@ -48,12 +48,20 @@ function tokenize(command: string): Token[] | undefined {
   return tokens;
 }
 
-function operands(words: string[]): { files: string[]; complete: boolean } | undefined {
+type Lines = [number, number | null];
+
+function sedRange(script: string): Lines {
+  const [start, end] = script.slice(0, -1).split(",");
+  return [Number(start), end === undefined ? Number(start) : end === "$" ? null : Number(end)];
+}
+
+function operands(words: string[]): { files: string[]; complete: boolean; lines?: Lines } | undefined {
   const tool = posix.basename(words[0] ?? "");
   const args = words.slice(1);
   const files: string[] = [];
   let options = true;
   let script = false;
+  let lines: Lines | undefined = tool === "head" ? [1, 10] : undefined;
   if (!["cat", "head", "sed"].includes(tool)) return;
   if (tool === "sed" && !args.some((arg) => arg === "-n" || arg === "--quiet" || arg === "--silent")) return;
   for (let index = 0; index < args.length; index++) {
@@ -62,28 +70,35 @@ function operands(words: string[]): { files: string[]; complete: boolean } | und
       options = false;
     } else if (options && arg.startsWith("-") && arg !== "-") {
       if (tool === "head" && ["-n", "-c", "--lines", "--bytes"].includes(arg)) {
-        if (!args[++index]) return;
+        const count = args[++index];
+        if (!count) return;
+        lines = ["-n", "--lines"].includes(arg) && /^\d+$/.test(count) ? [1, Number(count)] : undefined;
       } else if (tool === "head" && /^(?:-[qv]+|-[0-9]+|-n[0-9]+|-c[0-9]+|--(?:lines|bytes)=\d+|--quiet|--silent|--verbose)$/.test(arg)) {
-        continue;
+        const count = arg.match(/^(?:-n?|--lines=)(\d+)$/)?.[1];
+        if (count) lines = [1, Number(count)];
+        else if (/^(?:-c|--bytes=)/.test(arg)) lines = undefined;
       } else if (tool === "cat" && /^(?:-[AbEnsTuvet]+|--(?:show-all|number-nonblank|show-ends|number|squeeze-blank|show-tabs|show-nonprinting))$/.test(arg)) {
         continue;
       } else if (tool === "sed" && ["-n", "--quiet", "--silent"].includes(arg)) {
         continue;
       } else if (tool === "sed" && arg === "-e" && !script) {
-        if (!/^\d+(?:,(?:\d+|\$))?p$/.test(args[++index] ?? "")) return;
+        const value = args[++index] ?? "";
+        if (!/^\d+(?:,(?:\d+|\$))?p$/.test(value)) return;
+        lines = sedRange(value);
         script = true;
       } else {
         return;
       }
     } else if (tool === "sed" && !script) {
       if (!/^\d+(?:,(?:\d+|\$))?p$/.test(arg)) return;
+      lines = sedRange(arg);
       script = true;
     } else if (arg !== "-") {
       files.push(arg);
     }
   }
   if (tool === "sed" && !script) return;
-  return { files, complete: tool === "cat" };
+  return { files, complete: tool === "cat", lines: tool === "cat" ? undefined : lines };
 }
 
 export function commandReads(
@@ -126,8 +141,11 @@ export function commandReads(
       const filter = operands(words);
       return !["head", "sed"].includes(posix.basename(words[0] ?? "")) || !filter || filter.files.length > 0;
     })) continue;
+    // A content filter after cat limits the read to the filter's range.
+    const filtered = pipelines.length > 1 ? operands(pipelines[pipelines.length - 1])?.lines : undefined;
+    const complete = read.complete && pipelines.length === 1;
     for (const file of read.files) {
-      const result = installedRead(file, tool, read.complete && pipelines.length === 1, { ...options, cwd });
+      const result = installedRead(file, tool, complete, { ...options, cwd }, complete ? undefined : filtered ?? read.lines);
       if (result) reads.push(result);
     }
   }

@@ -5,6 +5,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  lstatSync,
   readdirSync,
   rmSync,
   statSync,
@@ -19,7 +20,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock" | "agent-browser" | "agent-device" | "agent-desktop", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -140,10 +141,13 @@ function writeSkill(
   );
 }
 
+// Upstream trees must not contain symlinks: reading or copying one would import a file from outside the checkout.
 function filesUnder(directory: string): string[] {
   if (!existsSync(directory)) return [];
+  if (lstatSync(directory).isSymbolicLink()) throw new Error(`refused to follow symlink: ${directory}`);
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(directory, entry.name);
+    if (entry.isSymbolicLink()) throw new Error(`refused to follow symlink: ${path}`);
     return entry.isDirectory() ? filesUnder(path) : [path];
   });
 }
@@ -564,10 +568,12 @@ ${routes}
 const reactNativeSources = ["software-mansion", "callstack"] as const;
 const designEngineeringSources = ["emil-kowalski", "jakub-krehel"] as const;
 const claritySources = ["pstack", "matt-pocock"] as const;
+const agentSurfSources = ["agent-browser", "agent-device", "agent-desktop"] as const;
 type TreeSource =
   | typeof reactNativeSources[number]
   | typeof designEngineeringSources[number]
-  | typeof claritySources[number];
+  | typeof claritySources[number]
+  | typeof agentSurfSources[number];
 
 // Multi-source bundles keep each source's skills/ tree and rename entry files to index.md.
 // `include` limits the import to the named top-level skill directories.
@@ -1156,6 +1162,150 @@ ${sections}
   return selected.map((skill) => skill.name);
 }
 
+// agent-browser keeps its guides in skill-data/. Its skills/agent-browser/SKILL.md is a stub
+// that tells agents to load the same guides from the installed CLI, so the router keeps that rule.
+const agentSurfRoots: Record<typeof agentSurfSources[number], string> = {
+  "agent-browser": "skill-data",
+  "agent-device": "skills",
+  "agent-desktop": "skills",
+};
+const agentSurfEntries: Record<typeof agentSurfSources[number], string> = {
+  "agent-browser": "core/index.md",
+  "agent-device": "agent-device/index.md",
+  "agent-desktop": "agent-desktop/index.md",
+};
+
+function syncAgentSurf(checkouts: Record<typeof agentSurfSources[number], Checkout>): string {
+  const bundle = "agent-surf";
+  const target = resolve(repositoryRoot, "skills", bundle);
+  const stub = readFileSync(resolve(checkouts["agent-browser"].root, "skills/agent-browser/SKILL.md"), "utf8");
+  if (!stub.includes("agent-browser skills get core")) {
+    throw new Error("agent-browser: discovery stub no longer points to `agent-browser skills get core`");
+  }
+  const imports = agentSurfSources.map((name) => {
+    const tree = readSkillTree(name, checkouts[name], agentSurfRoots[name]);
+    if (name === "agent-device") {
+      const license = readFileSync(resolve(tree.checkout.root, "LICENSE"), "utf8");
+      if (!license.includes("MIT License") || !license.includes("Permission is hereby granted") ||
+          !license.includes("Copyright (c) 2026 Callstack")) {
+        throw new Error(`${name}: upstream license changed`);
+      }
+    } else {
+      assertApacheLicense(tree.checkout, name);
+    }
+    if (!tree.skills.some((skill) => skill.path === agentSurfEntries[name])) {
+      throw new Error(`${name}: missing entry skill ${agentSurfEntries[name]}`);
+    }
+    // The router lists one flat directory per skill; nested skills need router changes.
+    const nested = tree.skills.find((skill) => skill.path.split("/").length !== 2);
+    if (nested) throw new Error(`${name}: unexpected nested skill ${nested.path}`);
+    return tree;
+  });
+  resetDirectory(target, bundle);
+  const sections: string[] = [];
+  const notices: string[] = [];
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  for (const tree of imports) {
+    const { name, checkout, skills } = tree;
+    const sourceName = writeSkillTree(tree, bundle);
+    sections.push(`## ${name}\n\n${skillRoutes(name, skills)}`);
+    const licenseFile = `${name}-LICENSE`;
+    copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", licenseFile));
+    notices.push(`### ${name}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}, from its \`${agentSurfRoots[name]}/\` directory. The upstream ${name === "agent-device" ? "MIT license and copyright notice are" : "Apache License 2.0 is"} retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
+  }
+  // Upstream examples that contradict the upstream reference. Each guard stops the sync when the text changes.
+  const browser = resolve(target, "references/agent-browser");
+  patchGeneratedFile(resolve(browser, "electron/index.md"), [
+    ["# Switch to a specific tab by index\nagent-browser tab 2", "# Switch to a specific tab by id (positional numbers are rejected)\nagent-browser tab t2"],
+    ["#   0: [page]    Slack - Main Window     https://app.slack.com/\n#   1: [webview] Embedded Content        https://example.com/widget",
+      "#   t1: [page]    Slack - Main Window     https://app.slack.com/\n#   t2: [webview] Embedded Content        https://example.com/widget"],
+    ["# Switch to a webview\nagent-browser tab 1", "# Switch to a webview\nagent-browser tab t2"],
+  ]);
+  patchGeneratedFile(resolve(browser, "core/references/snapshot-refs.md"), [[
+    "agent-browser snapshot -i          # Get new refs\nagent-browser click @e1            # Use new refs",
+    "agent-browser snapshot -i          # Get new refs\nagent-browser click @e12           # Use a ref from the new snapshot",
+  ]]);
+  patchGeneratedFile(resolve(browser, "core/references/proxy-support.md"), [[
+    "region=$(echo \"$proxy\" | grep -oP '^\\w+-\\w+')",
+    "region=$(echo \"$proxy\" | sed -E 's#^[a-z]+://##; s#-proxy.*##')",
+  ]]);
+  patchGeneratedFile(resolve(browser, "core/references/authentication.md"), [
+    ["export AGENT_BROWSER_ENCRYPTION_KEY=$(openssl rand -hex 32)",
+      "# Create the key once with `openssl rand -hex 32`, store it, and reuse it. A new key cannot decrypt saved state.\nexport AGENT_BROWSER_ENCRYPTION_KEY=\"$(cat ~/.config/agent-browser/encryption-key)\""],
+    ["echo \"*.auth-state.json\" >> .gitignore", "echo \"*auth-state.json\" >> .gitignore"],
+  ]);
+  patchGeneratedFile(resolve(browser, "core/references/session-management.md"), [[
+    "echo \"*.auth-state.json\" >> .gitignore", "echo \"*auth-state.json\" >> .gitignore",
+  ]]);
+  for (const [file, prefix] of [["authenticated-session.sh", "auth"], ["capture-workflow.sh", "capture"], ["form-automation.sh", "form"]]) {
+    patchGeneratedFile(resolve(browser, "core/templates", file), [[
+      "set -euo pipefail\n",
+      `set -euo pipefail\n\n# Use a named session, so this script does not drive or close another agent's browser.\nexport AGENT_BROWSER_SESSION="\${AGENT_BROWSER_SESSION:-$(agent-browser session id --scope worktree --prefix ${prefix})}"\n`,
+    ]]);
+  }
+  // Discovery mode exits before the login flow saves new state, so deleting the old file loses it.
+  patchGeneratedFile(resolve(browser, "core/templates/authenticated-session.sh"), [[
+    "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    rm -f \"$STATE_FILE\"\nfi\n",
+    "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    # Keep the old state. The login flow overwrites it when it runs state save.\nfi\n",
+  ]]);
+  patchGeneratedFile(resolve(target, "references/agent-desktop/jev-desktop/index.md"), [[
+    "Which of the 16 interaction verbs it asks for.", "Which of the 12 interaction verbs it asks for.",
+  ]]);
+  for (const path of ["references/agent-browser/slack/references/slack-tasks.md", "references/agent-browser/slack/templates/slack-report-template.md"]) {
+    if (!existsSync(resolve(target, path))) throw new Error(`agent-surf: router links missing slack file ${path}`);
+  }
+  const desktopDirectory = resolve(target, "references/agent-desktop/agent-desktop/references");
+  const desktopNames = readdirSync(desktopDirectory).filter((file) => file.endsWith(".md")).sort();
+  if (desktopNames.length === 0) throw new Error("agent-surf: agent-desktop has no named references");
+  const desktopReferences = desktopNames
+    .map((file) => `[${file.replace(/\.md$/, "")}](references/agent-desktop/agent-desktop/references/${file})`)
+    .join(", ");
+  const first = checkouts["agent-browser"];
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
+    "Load this skill before you drive a browser, an iOS or Android device, a simulator or emulator, or a desktop app, or write a shell script that drives one, or when package.json or the task names agent-browser, agent-device, or agent-desktop. Covers web automation, screenshots and scraping, Electron apps and Slack, mobile and TV apps, exploratory QA, and native desktop apps on macOS, Windows, and Linux. Do not load it for Playwright, Cypress, Detox, or XCUITest test files.",
+    "vercel-labs/agent-browser", first.revision,
+    {
+      upstream_agent_device: `callstack/agent-device@${checkouts["agent-device"].revision}`,
+      upstream_agent_desktop: `vercel-labs/agent-desktop@${checkouts["agent-desktop"].revision}`,
+    }, "Apache-2.0 AND MIT"),
+    `# Agent Surf
+
+Three CLIs let an agent act on a live interface. Each one reads the interface as an accessibility tree with short element refs, then clicks, types, and scrolls by ref. Choose the CLI by the surface that the task acts on. Read only the matching reference and its supporting files.
+
+All paths in this file are relative to the folder that contains this SKILL.md. For example, \`references/agent-browser/core/index.md\` is \`<skills folder>/agent-surf/references/agent-browser/core/index.md\`.
+
+## Choose a CLI
+
+- Web pages, web apps, and cloud browsers: agent-browser. Start with [core](references/agent-browser/core/index.md).
+- iPhone, iPad, and Android devices, iOS Simulator, Android Emulator, and TV apps: agent-device. Start with [agent-device](references/agent-device/agent-device/index.md).
+- Native desktop apps and system surfaces such as menus, the menu bar, the tray, and notifications on macOS, Windows, or Linux: agent-desktop. Start with [agent-desktop](references/agent-desktop/agent-desktop/index.md), then read the guide for the operating system.
+- Electron apps such as VS Code, Slack, Discord, or Notion: use the agent-browser [electron](references/agent-browser/electron/index.md) workflow, which connects over the Chrome DevTools Protocol. Use agent-desktop when the task also touches native windows or system surfaces.
+- Exploratory QA or a bug hunt: use the agent-browser [dogfood](references/agent-browser/dogfood/index.md) workflow for a web app, and the agent-device [dogfood](references/agent-device/dogfood/index.md) workflow for a mobile app.
+
+## Installed versions
+
+Read the bundled reference before the first command. It works when the CLI is not installed. The references are a snapshot of each upstream revision, and the installed CLI can be newer. When a command or flag from a reference fails, run the matching \`skills get\` command. It prints the guide for the installed version. An upstream guide that says to run \`skills get\` means the bundled file below:
+
+- \`agent-browser skills get <name>\`: \`references/agent-browser/<name>/index.md\`. For example, \`agent-browser skills get core\` is [core](references/agent-browser/core/index.md).
+- \`agent-desktop skills get desktop\`: [agent-desktop](references/agent-desktop/agent-desktop/index.md). Its named references are ${desktopReferences}.
+- \`agent-desktop skills get platform\`: the guide for the current operating system, \`references/agent-desktop/agent-desktop-<os>/index.md\`, where \`<os>\` is \`macos\`, \`windows\`, or \`linux\`.
+- \`agent-desktop skills get <skill> <path>\`: \`references/agent-desktop/<skill>/<path>\`.
+
+For agent-device, run \`agent-device help <topic>\` when a command shape is unclear.
+
+The slack workflow does not link its supporting files. Use [slack-tasks](references/agent-browser/slack/references/slack-tasks.md) for task recipes and the [report template](references/agent-browser/slack/templates/slack-report-template.md) for a written summary.
+
+Use [jev-desktop](references/agent-desktop/jev-desktop/index.md) only when the user has a clone of the agent-desktop repository and a \`TYPESAFE_API_KEY\`.
+
+An upstream skill name, such as \`core\` or \`ios-simulator\`, means its index.md reference in the same source directory. Both agent-browser and agent-device have a \`dogfood\` skill. Use the one for the surface under test. Relative paths stay relative to the imported file.
+
+This bundle imports \`skill-data/\` from agent-browser and \`skills/\` from agent-device and agent-desktop. The agent-browser discovery stub, plugin metadata, and agent UI metadata are not included.
+
+${sections.join("\n\n")}
+`, "vercel-labs/agent-browser", first.revision);
+  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
+}
+
 function assertApacheLicense(checkout: Checkout, name: string) {
   const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
   if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
@@ -1163,7 +1313,7 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -1191,13 +1341,23 @@ function syncBundle(name: BundleName): string {
     for (const source of claritySources) console.log(`${source}: ${checkouts[source].revision}`);
     return notice;
   }
+  if (name === "agent-surf") {
+    const checkouts = {
+      "agent-browser": clone("agent-browser"),
+      "agent-device": clone("agent-device"),
+      "agent-desktop": clone("agent-desktop"),
+    };
+    const notice = syncAgentSurf(checkouts);
+    for (const source of agentSurfSources) console.log(`${source}: ${checkouts[source].revision}`);
+    return notice;
+  }
   const checkout = clone(name);
   if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
   const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
-  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity">, string> = {
+  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity" | "agent-surf">, string> = {
     ax: `## Ax skill
 
 The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.

@@ -4,6 +4,7 @@ Agent skills maintained by Flow Copilot.
 
 ## Available skills
 
+- [`agent-surf`](skills/agent-surf/SKILL.md): Drive browsers, phones, simulators, emulators, and desktop apps with the agent-browser, agent-device, and agent-desktop CLIs.
 - [`ax`](skills/ax/SKILL.md): Build and operate TypeScript LLM applications with `@ax-llm/ax` through one progressively disclosed skill.
 - [`clarity`](skills/clarity/SKILL.md): Write clear text for people and agents, with pstack and Matt Pocock writing skills.
 - [`clerk`](skills/clerk/SKILL.md): Add, configure, and operate Clerk authentication, organizations, billing, and webhooks through one progressively disclosed skill.
@@ -18,6 +19,8 @@ Agent skills maintained by Flow Copilot.
 Each directory under `skills/` follows the [Agent Skills specification](https://agentskills.io/specification). Install the whole skill directory, not an individual file from `references/`.
 
 ## Sources
+
+The `agent-surf` skill combines the skills of `vercel-labs/agent-browser`, `callstack/agent-device`, and `vercel-labs/agent-desktop`. Each CLI acts on one surface: web pages, mobile and TV devices, or desktop apps. The router selects the CLI by surface. It also maps each `skills get` command of agent-browser and agent-desktop to its bundled reference. The agent reads the bundled reference first and runs `skills get` only when a command fails on a newer installed version.
 
 The `ax` skill combines the TypeScript skill set from `ax-llm/ax`. Its router selects focused references for providers, generation, agents, memory, MCP, workflows, optimization, and other Ax subsystems.
 
@@ -50,7 +53,7 @@ See [`DEVELOPMENT.md`](DEVELOPMENT.md) to add another upstream skill source.
 
 ## Updates
 
-Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, `bun run sync --only react-native` to update both React Native sources together, `bun run sync --only design-engineering` to update both design engineering sources, or `bun run sync --only clarity` to update both clarity sources. Then run the validation commands below.
+Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, `bun run sync --only react-native` to update both React Native sources together, `bun run sync --only design-engineering` to update both design engineering sources, `bun run sync --only clarity` to update both clarity sources, or `bun run sync --only agent-surf` to update the three agent-surf sources. Then run the validation commands below.
 
 The weekly GitHub Action runs the same commands. When upstream content changes, it updates `automation/sync-upstream-skills`. It opens a pull request when the repository has a `SKILLS_SYNC_TOKEN` secret with Contents and Pull requests write access. The Flow Copilot organization currently blocks pull requests from the default `GITHUB_TOKEN`, so the Action otherwise provides a manual pull-request link in its run summary. The Action does not merge the pull request.
 

@@ -5,6 +5,8 @@ export type SuccessfulRead = {
   path: string;
   tool: string;
   complete: boolean;
+  // Requested 1-based line range of a partial read. `null` means to the end of the file.
+  lines?: [number, number | null];
 };
 
 export type ParseOptions = {
@@ -36,6 +38,7 @@ export function installedRead(
   tool: string,
   complete: boolean,
   options: ParseOptions,
+  lines?: [number, number | null],
 ): SuccessfulRead | undefined {
   const path = posix.normalize(options.cwd ? posix.join(options.cwd, file) : file);
   const absolute = file.startsWith("/") ? posix.normalize(file) : path;
@@ -50,5 +53,5 @@ export function installedRead(
   }
   if (!match || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(match[1])) return;
   if (match[2] !== "SKILL.md" && !/^references\/.+\.md$/.test(match[2])) return;
-  return { bundle: match[1], path: match[2], tool, complete };
+  return lines ? { bundle: match[1], path: match[2], tool, complete, lines } : { bundle: match[1], path: match[2], tool, complete };
 }
