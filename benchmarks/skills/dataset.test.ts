@@ -66,9 +66,10 @@ test("covers every bundle at least twice and includes a negative control", () =>
   for (const [bundle, sources] of [
     ["react-native", ["software-mansion", "callstack"]],
     ["design-engineering", ["emil-kowalski", "jakub-krehel"]],
+    ["agent-surf", ["agent-browser", "agent-device", "agent-desktop"]],
   ] as const) {
     for (const source of sources) {
-      expect(tasks.filter((task) => task.requiredReferences[bundle]?.some((path) => path.startsWith(`references/${source}/`))).length).toBe(1);
+      expect(tasks.filter((task) => task.requiredReferences[bundle]?.some((path) => path.startsWith(`references/${source}/`))).length).toBeGreaterThanOrEqual(1);
     }
   }
 });
@@ -114,8 +115,8 @@ test("defines the published upstream layout from every pinned source", () => {
   }
 });
 
-test("defines 684 scheduled runs across the applicable conditions", () => {
+test("defines 936 scheduled runs across the applicable conditions", () => {
   const taskConditions = config.conditions.reduce((total: number, condition: { taskIds?: string[] }) =>
     total + (condition.taskIds?.length ?? tasks.length), 0);
-  expect(taskConditions * config.models.length * config.repeats).toBe(684);
+  expect(taskConditions * config.models.length * config.repeats).toBe(936);
 });

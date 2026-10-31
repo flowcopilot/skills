@@ -182,6 +182,14 @@ The router defines its own `Writing the reply` section in `scripts/sync-upstream
 
 Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync --only clarity` to update both sources together.
 
+## Agent Surf sources
+
+The `agent-browser`, `agent-device`, and `agent-desktop` manifest entries set `"bundle": "agent-surf"`. The adapter uses `readSkillTree` and `writeSkillTree`. Each source tree moves under `references/<source>/`, and entry files become `index.md`. The sync stops if a source adds a nested skill or loses its entry skill: `core`, `agent-device`, or `agent-desktop`.
+
+agent-browser publishes only a discovery stub in `skills/agent-browser/SKILL.md`. Its guides are in `skill-data/`, so the adapter imports that directory. The stub tells agents to load guides with `agent-browser skills get core`. The sync stops when the stub no longer contains that command, because the router maps it to the bundled file. agent-desktop also loads its guides with `agent-desktop skills get`. The router tells agents to read the bundled file first and to run `skills get` only when a command fails on the installed version. Trigger runs showed that agents that ran `skills get` first often stopped when the CLI was not installed. The router maps each command to its bundled file and lists the named agent-desktop references from the generated directory. The upstream slack workflow does not link its supporting files, so the router links them. The sync stops when one of them is gone.
+
+agent-browser and agent-desktop use Apache License 2.0. agent-device uses MIT. The sync checks each license and copies it under `licenses/`. The bundle license is `Apache-2.0 AND MIT`. The dogfood report template has placeholder screenshot paths, so `.lycheeignore` excludes them. Run `bun run sync --only agent-surf` to update the three sources together.
+
 ## Repository validation
 
 Run `bun run check` and `uv run --script scripts/validate.py` to run every validation layer without fetching or regenerating skill sources. The Python script declares its pinned dependencies. `uv` installs them when it runs the script.

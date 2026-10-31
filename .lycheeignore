@@ -1,2 +1,4 @@
 # pstack why/references/synthesizer-prompt.md uses [PR #123](url) as a template placeholder.
 ^file://.*/skills/clarity/references/pstack/why/references/url$
+# agent-browser dogfood/templates/dogfood-report-template.md shows where a report puts its screenshots.
+^file://.*/skills/agent-surf/references/agent-browser/dogfood/templates/screenshots/

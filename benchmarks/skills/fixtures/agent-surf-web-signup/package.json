@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "agent-browser": "0.41.0",
+    "vite": "8.3.5"
+  }
+}

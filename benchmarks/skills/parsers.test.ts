@@ -36,8 +36,13 @@ describe("Claude stream-json", () => {
   });
 
   test("marks reads with either limit or offset as partial", () => {
-    for (const partial of [{ limit: 10 }, { offset: 1 }, { offset: 0, limit: 2000 }]) {
-      expect(parseClaudeTranscript([claudeCall("Read", { file_path: file, ...partial }), claudeResult()])).toEqual([{ ...read, complete: false }]);
+    for (const [partial, lines] of [
+      [{ limit: 10 }, [1, 10]],
+      [{ offset: 1 }, [1, null]],
+      [{ offset: 0, limit: 2000 }, [1, 2000]],
+      [{ offset: 40, limit: 20 }, [40, 59]],
+    ] as const) {
+      expect(parseClaudeTranscript([claudeCall("Read", { file_path: file, ...partial }), claudeResult()])).toEqual([{ ...read, complete: false, lines: [...lines] }]);
     }
   });
 
@@ -101,8 +106,15 @@ describe("Codex exec JSON", () => {
   });
 
   test("marks head and sed reads as partial", () => {
-    for (const command of [`head -n 20 ${file}`, `sed -n '1,20p' ${file}`]) {
-      expect(parseCodexTranscript([codexCommand(command)])).toEqual([{ ...read, tool: "command_execution", complete: false }]);
+    for (const [command, lines] of [
+      [`head -n 20 ${file}`, [1, 20]],
+      [`head -5 ${file}`, [1, 5]],
+      [`head ${file}`, [1, 10]],
+      [`sed -n '1,20p' ${file}`, [1, 20]],
+      [`sed -n '40,$p' ${file}`, [40, null]],
+      [`sed -n '7p' ${file}`, [7, 7]],
+    ] as const) {
+      expect(parseCodexTranscript([codexCommand(command)])).toEqual([{ ...read, tool: "command_execution", complete: false, lines: [...lines] }]);
     }
   });
 });
@@ -148,7 +160,7 @@ describe("shell read commands", () => {
   });
 
   test("marks a content filter pipeline as partial", () => {
-    expect(commandReads(`cat ${file} | head -n 20`, "Bash")).toEqual([{ ...read, tool: "Bash", complete: false }]);
+    expect(commandReads(`cat ${file} | head -n 20`, "Bash")).toEqual([{ ...read, tool: "Bash", complete: false, lines: [1, 20] }]);
   });
 });
 

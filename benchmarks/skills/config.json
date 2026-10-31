@@ -9,7 +9,7 @@
     { "id": "no-skills", "bundles": [] },
     {
       "id": "all-bundles",
-      "bundles": ["ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"]
+      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"]
     },
     {
       "id": "upstream-layout",
@@ -26,12 +26,15 @@
         { "id": "emil-kowalski", "root": "skills", "entries": "**/SKILL.md" },
         { "id": "jakub-krehel", "root": "skills", "entries": "**/SKILL.md" },
         { "id": "pstack", "root": "pstack/skills", "entries": "**/SKILL.md" },
-        { "id": "matt-pocock", "root": "skills", "entries": "**/SKILL.md" }
+        { "id": "matt-pocock", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "agent-browser", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "agent-device", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "agent-desktop", "root": "skills", "entries": "**/SKILL.md" }
       ]
     },
     {
       "id": "expo-overview-entry",
-      "bundles": ["ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"],
+      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"],
       "taskIds": ["expo-navigation", "expo-networking", "expo-upgrade"],
       "entryOverride": {
         "bundle": "expo",
