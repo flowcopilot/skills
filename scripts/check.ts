@@ -231,6 +231,38 @@ for (const [name, holder] of [["pstack", "Lauren Tan"], ["matt-pocock", "Matt Po
   }
 }
 
+const agentSurf = resolve(skillsRoot, "agent-surf");
+const agentSurfSkill = readSkill(resolve(agentSurf, "SKILL.md"));
+if (agentSurfSkill.metadata.license !== "Apache-2.0 AND MIT") {
+  errors.push("agent-surf: expected Apache-2.0 AND MIT license metadata");
+}
+if (!agentSurfSkill.text.includes("agent-browser skills get core")) {
+  errors.push("agent-surf: router must map `agent-browser skills get core` to its bundled reference");
+}
+for (const [name, licenseText] of [
+  ["agent-browser", "Apache License"],
+  ["agent-device", "Copyright (c) 2026 Callstack"],
+  ["agent-desktop", "Apache License"],
+]) {
+  const source = manifest[name];
+  if (source.bundle !== "agent-surf") errors.push(`${name}: expected agent-surf bundle`);
+  const directory = resolve(agentSurf, "references", name);
+  const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
+  for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
+    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+      errors.push(`${name}: missing or incorrect source attribution in ${file}`);
+    }
+  }
+  for (const workflow of source.workflows) {
+    if (!workflow.startsWith(`${name}/`)) errors.push(`${name}: workflow escapes its source directory`);
+  }
+  const indexes = filesUnder(directory).filter((path) => path.endsWith("/index.md"));
+  if (indexes.length !== source.workflows.length) errors.push(`${name}: workflow inventory mismatch`);
+  if (!readFileSync(resolve(agentSurf, `licenses/${name}-LICENSE`), "utf8").includes(licenseText)) {
+    errors.push(`${name}: missing upstream license notice`);
+  }
+}
+
 const clerk = resolve(skillsRoot, "clerk");
 if (readSkill(resolve(clerk, "SKILL.md")).metadata.license !== "MIT") {
   errors.push("clerk: expected MIT license metadata");

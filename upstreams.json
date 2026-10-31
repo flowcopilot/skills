@@ -242,5 +242,45 @@
       "matt-pocock/writing-for-agents/index"
     ],
     "bundle": "clarity"
+  },
+  "agent-browser": {
+    "repository": "https://github.com/vercel-labs/agent-browser.git",
+    "bundle": "agent-surf",
+    "revision": "5868f7c05020e047c00e68e4abf9253cce864f41",
+    "workflows": [
+      "agent-browser/agentcore/index",
+      "agent-browser/core/index",
+      "agent-browser/derive-client/index",
+      "agent-browser/dogfood/index",
+      "agent-browser/electron/index",
+      "agent-browser/protected-vercel-deployments/index",
+      "agent-browser/slack/index",
+      "agent-browser/vercel-sandbox/index",
+      "agent-browser/webmcp-gen/index"
+    ]
+  },
+  "agent-device": {
+    "repository": "https://github.com/callstack/agent-device.git",
+    "bundle": "agent-surf",
+    "revision": "ff8c2285c808135b592e77f53ae3ce28d31786b8",
+    "workflows": [
+      "agent-device/agent-device/index",
+      "agent-device/android-emulator/index",
+      "agent-device/dogfood/index",
+      "agent-device/ios-simulator/index"
+    ]
+  },
+  "agent-desktop": {
+    "repository": "https://github.com/vercel-labs/agent-desktop.git",
+    "bundle": "agent-surf",
+    "revision": "5261b5287b5208e7c4bf3713df6f66faaaf2c4cc",
+    "workflows": [
+      "agent-desktop/agent-desktop-ffi/index",
+      "agent-desktop/agent-desktop-linux/index",
+      "agent-desktop/agent-desktop-macos/index",
+      "agent-desktop/agent-desktop-windows/index",
+      "agent-desktop/agent-desktop/index",
+      "agent-desktop/jev-desktop/index"
+    ]
   }
 }

@@ -65,3 +65,19 @@ Imported from [cursor/plugins](https://github.com/cursor/plugins) revision `519d
 ### Matt Pocock
 
 Imported from [mattpocock/skills](https://github.com/mattpocock/skills) revision `59db609eb1e18aaf59b63284d0e52255aff0c63c`, dated 2026-10-27. It imports the `writing-for-agents` and `wait-what` skills from `skills/productivity/`. The upstream MIT license and copyright notice are retained in `skills/clarity/licenses/matt-pocock-LICENSE`.
+
+## Agent Surf skill
+
+Flow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links.
+
+### agent-browser
+
+Imported from [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser) revision `5868f7c05020e047c00e68e4abf9253cce864f41`, dated 2026-10-30, from its `skill-data/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-browser-LICENSE`.
+
+### agent-device
+
+Imported from [callstack/agent-device](https://github.com/callstack/agent-device) revision `ff8c2285c808135b592e77f53ae3ce28d31786b8`, dated 2026-10-31, from its `skills/` directory. The upstream MIT license and copyright notice are retained in `skills/agent-surf/licenses/agent-device-LICENSE`.
+
+### agent-desktop
+
+Imported from [vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop) revision `5261b5287b5208e7c4bf3713df6f66faaaf2c4cc`, dated 2026-10-31, from its `skills/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-desktop-LICENSE`.
