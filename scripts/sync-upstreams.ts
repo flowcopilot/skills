@@ -1243,6 +1243,11 @@ function syncAgentSurf(checkouts: Record<typeof agentSurfSources[number], Checko
       `set -euo pipefail\n\n# Use a named session, so this script does not drive or close another agent's browser.\nexport AGENT_BROWSER_SESSION="\${AGENT_BROWSER_SESSION:-$(agent-browser session id --scope worktree --prefix ${prefix})}"\n`,
     ]]);
   }
+  // Discovery mode exits before the login flow saves new state, so deleting the old file loses it.
+  patchGeneratedFile(resolve(browser, "core/templates/authenticated-session.sh"), [[
+    "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    rm -f \"$STATE_FILE\"\nfi\n",
+    "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    # Keep the old state. The login flow overwrites it when it runs state save.\nfi\n",
+  ]]);
   patchGeneratedFile(resolve(target, "references/agent-desktop/jev-desktop/index.md"), [[
     "Which of the 16 interaction verbs it asks for.", "Which of the 12 interaction verbs it asks for.",
   ]]);
@@ -1298,7 +1303,7 @@ This bundle imports \`skill-data/\` from agent-browser and \`skills/\` from agen
 
 ${sections.join("\n\n")}
 `, "vercel-labs/agent-browser", first.revision);
-  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, and named sessions in the browser templates.\n\n${notices.join("\n\n")}\n`;
+  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
 }
 
 function assertApacheLicense(checkout: Checkout, name: string) {

@@ -51,7 +51,7 @@ if [[ -f "$STATE_FILE" ]]; then
     else
         echo "Failed to load state, re-authenticating..."
     fi
-    rm -f "$STATE_FILE"
+    # Keep the old state. The login flow overwrites it when it runs state save.
 fi
 
 # ================================================================
