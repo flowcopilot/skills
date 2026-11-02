@@ -9,7 +9,7 @@
     { "id": "no-skills", "bundles": [] },
     {
       "id": "all-bundles",
-      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"]
+      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "pr", "react-native"]
     },
     {
       "id": "upstream-layout",
@@ -29,12 +29,13 @@
         { "id": "matt-pocock", "root": "skills", "entries": "**/SKILL.md" },
         { "id": "agent-browser", "root": "skills", "entries": "**/SKILL.md" },
         { "id": "agent-device", "root": "skills", "entries": "**/SKILL.md" },
-        { "id": "agent-desktop", "root": "skills", "entries": "**/SKILL.md" }
+        { "id": "agent-desktop", "root": "skills", "entries": "**/SKILL.md" },
+        { "id": "pr", "root": "skills", "entries": "**/SKILL.md" }
       ]
     },
     {
       "id": "expo-overview-entry",
-      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "react-native"],
+      "bundles": ["agent-surf", "ax", "clarity", "clerk", "cloudflare", "convex", "design-engineering", "expo", "pr", "react-native"],
       "taskIds": ["expo-navigation", "expo-networking", "expo-upgrade"],
       "entryOverride": {
         "bundle": "expo",

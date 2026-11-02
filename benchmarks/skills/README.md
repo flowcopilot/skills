@@ -1,6 +1,6 @@
 # Skill benchmark inputs
 
-This directory has 25 tasks, project fixtures, model conditions, transcript parsers, a trigger runner, and tests. Task prompts do not name a skill to load. The full task runner, the task check runner, and the aggregate report are still missing. No code comes from `expo/eval-experiments`.
+This directory has 27 tasks, project fixtures, model conditions, transcript parsers, a trigger runner, and tests. Task prompts do not name a skill to load. The full task runner, the task check runner, and the aggregate report are still missing. No code comes from `expo/eval-experiments`.
 
 ## Run the checks
 
@@ -121,7 +121,7 @@ All nine bundles have at least two tasks. The two React Native tasks and the two
 
 The Expo entry variant replaces the Expo entry body with `references/expo-overview.md` and preserves `name` and `description`. Transform only the installed test copy. The future runner must isolate global skills and agent instructions in every condition.
 
-The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(25 × 3 + 3 × 1) × 4 × 3 = 936` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
+The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(27 × 3 + 3 × 1) × 4 × 3 = 1008` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
 
 ## Upstream layout
 

@@ -1,0 +1,21 @@
+diff --git a/migrations/0007_move_notes.sql b/migrations/0007_move_notes.sql
+new file mode 100644
+--- /dev/null
++++ b/migrations/0007_move_notes.sql
+@@ -0,0 +1,6 @@
++CREATE TABLE notes (id INTEGER PRIMARY KEY, task_id INTEGER NOT NULL, body TEXT NOT NULL);
++INSERT INTO notes (task_id, body)
++  SELECT id, legacy_notes FROM tasks WHERE legacy_notes IS NOT NULL AND legacy_notes != '';
++ALTER TABLE tasks DROP COLUMN legacy_notes;
+diff --git a/src/tasks/save.ts b/src/tasks/save.ts
+--- a/src/tasks/save.ts
++++ b/src/tasks/save.ts
+@@ -1,8 +1,10 @@
+ export async function saveTask(db: Db, task: Task) {
+   validate(task);
+-  await db.run("UPDATE tasks SET title = ?, legacy_notes = ? WHERE id = ?", [task.title, task.notes, task.id]);
++  await db.run("UPDATE tasks SET title = ? WHERE id = ?", [task.title, task.id]);
++  await db.run("DELETE FROM notes WHERE task_id = ?", [task.id]);
++  for (const note of task.notes) await db.run("INSERT INTO notes (task_id, body) VALUES (?, ?)", [task.id, note]);
+   await publishTaskChanged(task.id);
+ }

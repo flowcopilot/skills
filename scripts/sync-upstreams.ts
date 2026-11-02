@@ -1330,13 +1330,24 @@ function syncPr(checkout: Checkout): string {
   const skill = parseSkill(resolve(source, "SKILL.md"));
   if (skill.name !== bundle) throw new Error("pr: upstream skill name changed");
 
+  // The router keeps the template and the section rules. The menu of visuals moves to a reference,
+  // so it loads only when the agent draws the What changes view.
+  const menuStart = "If no, pick one of the views below.\n";
+  const menuEnd = "### Before and after\n";
+  const start = skill.body.indexOf(menuStart);
+  const end = skill.body.indexOf(menuEnd);
+  if (start < 0 || end < start) throw new Error("pr: upstream menu of visuals changed");
+  const menu = skill.body.slice(start + menuStart.length, end).trim().replace(/^#### Guidance$/m, "## Guidance");
+  const body = `${skill.body.slice(0, start)}If no, pick a view from [references/visuals.md](references/visuals.md): pseudocode, a call tree, a component tree, a file tree, a Mermaid flowchart or sequence diagram, or a diff.\n\n${skill.body.slice(end)}`;
+
   resetDirectory(target, bundle);
+  writeMarkdown(resolve(target, "references", "visuals.md"), `# Views for What changes\n\n${menu}\n`, "mattpocock/skills", checkout.revision);
   writeMarkdown(resolve(target, "CREDITS.md"), readFileSync(resolve(source, "CREDITS.md"), "utf8"), "mattpocock/skills", checkout.revision);
   mkdirSync(resolve(target, "licenses"), { recursive: true });
   copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", "mattpocock-LICENSE"));
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
     "Load this skill before you write or edit a pull request body, for example before gh pr create or gh pr edit, or when the task names a PR description. Covers the why, one before-and-after diagram, UI screenshots and recordings of user flows, the risk of a change that a revert can't undo, and steps after merge.",
-    "mattpocock/skills", checkout.revision, {}, "MIT"), skill.body, "mattpocock/skills", checkout.revision);
+    "mattpocock/skills", checkout.revision, {}, "MIT"), body, "mattpocock/skills", checkout.revision);
 
   manifest.pr.revision = checkout.revision;
   manifest.pr.workflows = [];
@@ -1344,7 +1355,7 @@ function syncPr(checkout: Checkout): string {
 
 The files under \`skills/${bundle}/\` derive from \`${prRoot}\` in [mattpocock/skills](https://github.com/mattpocock/skills) revision \`${checkout.revision}\`, dated ${checkout.date}, licensed under the MIT License. The upstream license and copyright notice are retained in \`skills/${bundle}/licenses/mattpocock-LICENSE\`.
 
-Flow Copilot applies \`patches/pr-template.patch\`: the PR body template has the sections Why, What changes, Before and after, Risk, and After merge, in place of Summary, Evidence, and Merge Danger. What changes adds a state diagram for systems that wait for outside input. Risk replaces the door and blast-radius terms with plain questions and appears only for changes that a revert can't undo. The sync also replaces the skill metadata, adds a revision notice to each Markdown file, and leaves out the agent UI file.
+Flow Copilot applies \`patches/pr-template.patch\`: the PR body template has the sections Why, What changes, Before and after, Risk, and After merge, in place of Summary, Evidence, and Merge Danger. What changes adds a state diagram for systems that wait for outside input. Risk replaces the door and blast-radius terms with plain questions and appears only for changes that a revert can't undo. The sync also moves the menu of visuals to \`references/visuals.md\`, replaces the skill metadata, adds a revision notice to each Markdown file, and leaves out the agent UI file.
 `;
 }
 

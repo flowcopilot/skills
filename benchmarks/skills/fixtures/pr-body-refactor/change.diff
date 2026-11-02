@@ -1,0 +1,51 @@
+diff --git a/src/transport.ts b/src/transport.ts
+deleted file mode 100644
+--- a/src/transport.ts
++++ /dev/null
+@@ -1,24 +0,0 @@
+-export async function send(path: string, body: unknown) {
+-  const response = await fetch(`${BASE_URL}${path}`, { method: "POST", body: JSON.stringify(body) });
+-  if (!response.ok) throw new Error(`send failed: ${response.status}`);
+-  return response.json();
+-}
+-
+-export async function* stream(path: string) {
+-  const response = await fetch(`${BASE_URL}${path}`);
+-  const reader = response.body!.getReader();
+-  while (true) {
+-    const { done, value } = await reader.read();
+-    if (done) return;
+-    yield new TextDecoder().decode(value);
+-  }
+-}
+diff --git a/src/transport/client.ts b/src/transport/client.ts
+new file mode 100644
+--- /dev/null
++++ b/src/transport/client.ts
+@@ -0,0 +1,5 @@
++export async function send(path: string, body: unknown) {
++  const response = await fetch(`${BASE_URL}${path}`, { method: "POST", body: JSON.stringify(body) });
++  if (!response.ok) throw new Error(`send failed: ${response.status}`);
++  return response.json();
++}
+diff --git a/src/transport/stream.ts b/src/transport/stream.ts
+new file mode 100644
+--- /dev/null
++++ b/src/transport/stream.ts
+@@ -0,0 +1,9 @@
++export async function* stream(path: string) {
++  const response = await fetch(`${BASE_URL}${path}`);
++  const reader = response.body!.getReader();
++  while (true) {
++    const { done, value } = await reader.read();
++    if (done) return;
++    yield new TextDecoder().decode(value);
++  }
++}
+diff --git a/src/sessions/session.ts b/src/sessions/session.ts
+--- a/src/sessions/session.ts
++++ b/src/sessions/session.ts
+@@ -1,2 +1,3 @@
+-import { send, stream } from "../transport";
++import { send } from "../transport/client";
++import { stream } from "../transport/stream";

@@ -285,7 +285,7 @@ if (prSkill.metadata.license !== "MIT") errors.push("pr: expected MIT license me
 if (!readFileSync(resolve(pr, "licenses/mattpocock-LICENSE"), "utf8").includes("Copyright (c) 2026 Matt Pocock")) {
   errors.push("pr: missing upstream copyright notice");
 }
-for (const file of [resolve(pr, "SKILL.md"), resolve(pr, "CREDITS.md")]) {
+for (const file of [resolve(pr, "SKILL.md"), resolve(pr, "CREDITS.md"), resolve(pr, "references/visuals.md")]) {
   if (!readFileSync(file, "utf8").includes(`mattpocock/skills revision ${manifest.pr.revision}`)) {
     errors.push(`pr: missing source revision in ${file}`);
   }
