@@ -279,5 +279,10 @@
       "agent-desktop/agent-desktop/index",
       "agent-desktop/jev-desktop/index"
     ]
+  },
+  "pr": {
+    "repository": "https://github.com/mattpocock/skills.git",
+    "revision": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+    "workflows": []
   }
 }

@@ -126,6 +126,15 @@ After an adapter exists, `bun run sync` handles routine upstream changes. It dis
 
 Manual work is required when an upstream repository changes its directory layout, link form, license, or router text used by a guarded transformation. Fix the adapter and its checks. Do not weaken a guard only to make the update pass.
 
+## Update a fork patch
+
+The `pr` fork keeps its change to upstream files in `patches/pr-template.patch`. When the sync stops because the patch no longer applies:
+
+1. Clone the upstream repository at its latest commit.
+2. Apply the patch with `git apply --3way --directory=skills/engineering/pr patches/pr-template.patch`, then resolve the conflicts.
+3. Write the patch again with `git diff --relative=skills/engineering/pr > patches/pr-template.patch`.
+4. Run `bun run sync --only pr` and the checks in "Generate and check".
+
 ## Commit and release
 
 Use a scoped Conventional Commit. Examples:

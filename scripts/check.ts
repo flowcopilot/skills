@@ -279,6 +279,25 @@ for (const file of filesUnder(clerk).filter((path) => path.endsWith(".md"))) {
   }
 }
 
+const pr = resolve(skillsRoot, "pr");
+const prSkill = readSkill(resolve(pr, "SKILL.md"));
+if (prSkill.metadata.license !== "MIT") errors.push("pr: expected MIT license metadata");
+if (!readFileSync(resolve(pr, "licenses/mattpocock-LICENSE"), "utf8").includes("Copyright (c) 2026 Matt Pocock")) {
+  errors.push("pr: missing upstream copyright notice");
+}
+for (const file of [resolve(pr, "SKILL.md"), resolve(pr, "CREDITS.md")]) {
+  if (!readFileSync(file, "utf8").includes(`mattpocock/skills revision ${manifest.pr.revision}`)) {
+    errors.push(`pr: missing source revision in ${file}`);
+  }
+}
+// The template patch must survive each sync: the new sections, and none of the old ones.
+for (const heading of ["## Why", "## What changes", "## Before and after", "## Risk", "## After merge"]) {
+  if (!prSkill.text.includes(heading)) errors.push(`pr: template lost "${heading}"`);
+}
+if (/## Summary|## Merge Danger|\bBlast Radius\b|\bDoor:/.test(prSkill.text)) {
+  errors.push("pr: template still has the upstream Summary or Merge Danger sections");
+}
+
 if (errors.length > 0) {
   for (const error of errors) console.error(error);
   process.exit(1);

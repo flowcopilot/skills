@@ -20,7 +20,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock" | "agent-browser" | "agent-device" | "agent-desktop", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock" | "agent-browser" | "agent-device" | "agent-desktop" | "pr", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -1306,6 +1306,48 @@ ${sections.join("\n\n")}
   return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
 }
 
+// pr is a fork of the mattpocock/skills pr skill. patches/pr-template.patch is the only change
+// to upstream files: it replaces the PR body template and the rules for each section.
+// The patch is applied to the upstream checkout, so a changed upstream hunk stops the sync.
+const prRoot = "skills/engineering/pr";
+const prPatch = resolve(repositoryRoot, "patches", "pr-template.patch");
+
+function syncPr(checkout: Checkout): string {
+  const bundle = "pr";
+  const target = resolve(repositoryRoot, "skills", bundle);
+  const source = resolve(checkout.root, prRoot);
+  if (!existsSync(resolve(source, "SKILL.md"))) throw new Error("pr: upstream skill moved");
+  const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
+  if (!license.includes("MIT License") || !license.includes("Permission is hereby granted") ||
+      !license.includes("Copyright (c) 2026 Matt Pocock")) {
+    throw new Error("pr: upstream license changed");
+  }
+  try {
+    run(["git", "apply", `--directory=${prRoot}`, prPatch], checkout.root);
+  } catch (error) {
+    throw new Error(`pr: patches/pr-template.patch no longer applies. See DEVELOPMENT.md.\n${error}`);
+  }
+  const skill = parseSkill(resolve(source, "SKILL.md"));
+  if (skill.name !== bundle) throw new Error("pr: upstream skill name changed");
+
+  resetDirectory(target, bundle);
+  writeMarkdown(resolve(target, "CREDITS.md"), readFileSync(resolve(source, "CREDITS.md"), "utf8"), "mattpocock/skills", checkout.revision);
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", "mattpocock-LICENSE"));
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
+    "Load this skill before you write or edit a pull request body, for example before gh pr create or gh pr edit, or when the task names a PR description. Covers the why, one before-and-after diagram, UI screenshots and recordings of user flows, the risk of a change that a revert can't undo, and steps after merge.",
+    "mattpocock/skills", checkout.revision, {}, "MIT"), skill.body, "mattpocock/skills", checkout.revision);
+
+  manifest.pr.revision = checkout.revision;
+  manifest.pr.workflows = [];
+  return `## PR skill
+
+The files under \`skills/${bundle}/\` derive from \`${prRoot}\` in [mattpocock/skills](https://github.com/mattpocock/skills) revision \`${checkout.revision}\`, dated ${checkout.date}, licensed under the MIT License. The upstream license and copyright notice are retained in \`skills/${bundle}/licenses/mattpocock-LICENSE\`.
+
+Flow Copilot applies \`patches/pr-template.patch\`: the PR body template has the sections Why, What changes, Before and after, Risk, and After merge, in place of Summary, Evidence, and Merge Danger. What changes adds a state diagram for systems that wait for outside input. Risk replaces the door and blast-radius terms with plain questions and appears only for changes that a revert can't undo. The sync also replaces the skill metadata, adds a revision notice to each Markdown file, and leaves out the agent UI file.
+`;
+}
+
 function assertApacheLicense(checkout: Checkout, name: string) {
   const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
   if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
@@ -1313,7 +1355,7 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf", "pr"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -1351,13 +1393,19 @@ function syncBundle(name: BundleName): string {
     for (const source of agentSurfSources) console.log(`${source}: ${checkouts[source].revision}`);
     return notice;
   }
+  if (name === "pr") {
+    const checkout = clone("pr");
+    const notice = syncPr(checkout);
+    console.log(`pr: ${checkout.revision}`);
+    return notice;
+  }
   const checkout = clone(name);
   if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
   const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
-  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity" | "agent-surf">, string> = {
+  const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity" | "agent-surf" | "pr">, string> = {
     ax: `## Ax skill
 
 The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.

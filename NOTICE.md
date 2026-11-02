@@ -81,3 +81,9 @@ Imported from [callstack/agent-device](https://github.com/callstack/agent-device
 ### agent-desktop
 
 Imported from [vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop) revision `5261b5287b5208e7c4bf3713df6f66faaaf2c4cc`, dated 2026-10-31, from its `skills/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-desktop-LICENSE`.
+
+## PR skill
+
+The files under `skills/pr/` derive from `skills/engineering/pr` in [mattpocock/skills](https://github.com/mattpocock/skills) revision `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`, dated 2026-10-31, licensed under the MIT License. The upstream license and copyright notice are retained in `skills/pr/licenses/mattpocock-LICENSE`.
+
+Flow Copilot applies `patches/pr-template.patch`: the PR body template has the sections Why, What changes, Before and after, Risk, and After merge, in place of Summary, Evidence, and Merge Danger. What changes adds a state diagram for systems that wait for outside input. Risk replaces the door and blast-radius terms with plain questions and appears only for changes that a revert can't undo. The sync also replaces the skill metadata, adds a revision notice to each Markdown file, and leaves out the agent UI file.
