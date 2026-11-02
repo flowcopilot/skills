@@ -38,7 +38,7 @@ Add an entry to `upstreams.json`:
 }
 ```
 
-The sync command replaces `revision` with the imported commit SHA. It also replaces `workflows` with the generated workflow list. Do not maintain those two values by hand after the first sync.
+`revision` is a real pin. `bun run sync` fetches that commit and regenerates the skills from it, so the output is the same on every machine. CI runs a pinned sync and fails when `skills/` differs, which catches hand edits under `skills/`. Only `bun run sync -- --update` fetches the latest upstream commit and writes its SHA to `revision`. The sync also replaces `workflows` with the generated workflow list. Do not maintain those two values by hand after the first sync. A new source with an empty `revision` starts from the latest commit.
 
 Add the new key to the `Manifest` type in `scripts/sync-upstreams.ts`:
 
@@ -122,7 +122,7 @@ Check these results before commit:
 
 ## Routine updates
 
-After an adapter exists, `bun run sync` handles routine upstream changes. It discovers added and removed skill directories, regenerates the workflow list, copies references and scripts, and updates revision data.
+After an adapter exists, `bun run sync -- --update` handles routine upstream changes. It discovers added and removed skill directories, regenerates the workflow list, copies references and scripts, and updates revision data.
 
 Manual work is required when an upstream repository changes its directory layout, link form, license, or router text used by a guarded transformation. Fix the adapter and its checks. Do not weaken a guard only to make the update pass.
 
@@ -140,11 +140,11 @@ Push changes through a pull request. The scheduled workflow updates `automation/
 
 ## Expo source
 
-Expo imports `plugins/expo/skills`. The adapter uses the skill directory README tables as the router and requires the index to match the discovered skills. It preserves helper scripts, standalone supporting files, and MIT license notices. Plugin metadata, hooks, and other plugin directories are excluded. Run `bun run sync --only expo` to update this source without updating the other collections.
+Expo imports `plugins/expo/skills`. The adapter uses the skill directory README tables as the router and requires the index to match the discovered skills. It preserves helper scripts, standalone supporting files, and MIT license notices. Plugin metadata, hooks, and other plugin directories are excluded. Run `bun run sync -- --update --only expo` to update this source without updating the other collections.
 
 ## Clerk source
 
-Clerk imports a subset of `skills/` from `clerk/skills`. Upstream keeps all skills in one flat directory. The `clerkSections` constant in `scripts/sync-upstreams.ts` lists each bundled skill under its router section, and `clerkExcluded` lists each skill that is not bundled. The sync stops when Clerk adds a skill that neither constant lists, or removes a listed skill. To bundle another Clerk skill, move it from `clerkExcluded` to a section and run `bun run sync --only clerk`.
+Clerk imports a subset of `skills/` from `clerk/skills`. Upstream keeps all skills in one flat directory. The `clerkSections` constant in `scripts/sync-upstreams.ts` lists each bundled skill under its router section, and `clerkExcluded` lists each skill that is not bundled. The sync stops when Clerk adds a skill that neither constant lists, or removes a listed skill. To bundle another Clerk skill, move it from `clerkExcluded` to a section and run `bun run sync -- --update --only clerk`.
 
 The upstream `clerk` router is not imported as a workflow. The generated router keeps its version table and lists the skills this bundle excludes. Evaluation fixtures and starter templates are not imported because no imported instruction reads them. Backend API scripts move to `scripts/clerk-backend-api/` and keep their executable mode.
 
@@ -160,7 +160,7 @@ Both sources declare MIT. Callstack's license and copyright notice are copied. S
 
 To add another community, register a separate manifest entry with `bundle: react-native`, add it to the adapter's source list, and implement its license validation and attribution. Keep paths qualified by source. Update the router's source selection guidance and the checker. Do not merge files based only on an upstream skill name.
 
-Run `bun run sync --only react-native` to update both sources together. The default sync and weekly workflow include this bundle. The `--only` option also accepts the other bundle names.
+Run `bun run sync -- --update --only react-native` to update both sources together. The default sync and weekly workflow include this bundle. The `--only` option also accepts the other bundle names.
 
 ## Design engineering sources
 
@@ -168,7 +168,7 @@ The `emil-kowalski` and `jakub-krehel` manifest entries both set `"bundle": "des
 
 Skills whose upstream frontmatter sets `disable-model-invocation: true` are listed under an explicit-only heading in the router. The router also states that a former skill name, such as `better-colors`, refers to its `index.md` in the same source directory; Jakub Krehel's `better-interface` and `interface-review` depend on that to find their domain skills.
 
-Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. Run `bun run sync --only design-engineering` to update both sources together.
+Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. Run `bun run sync -- --update --only design-engineering` to update both sources together.
 
 ## Clarity sources
 
@@ -180,7 +180,7 @@ The pstack `how` and `why` skills name a model role line and a default model for
 
 The router defines its own `Writing the reply` section in `scripts/sync-upstreams.ts`. Routine chat defaults to a short direct answer. Requested detail, evidence distinctions, risks, and verification limits remain required. Narrow how and why questions do not trigger a full investigation. The router imports only the `Comments` section from pstack `poteto-mode/SKILL.md`. The sync stops if that section or its opening rule cannot be found. `references/figure-it-out.md` is Flow Copilot text, not upstream content. The generator writes it and the Codex metadata in `agents/openai.yaml`.
 
-Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync --only clarity` to update both sources together.
+Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync -- --update --only clarity` to update both sources together.
 
 ## Agent Surf sources
 
@@ -188,7 +188,7 @@ The `agent-browser`, `agent-device`, and `agent-desktop` manifest entries set `"
 
 agent-browser publishes only a discovery stub in `skills/agent-browser/SKILL.md`. Its guides are in `skill-data/`, so the adapter imports that directory. The stub tells agents to load guides with `agent-browser skills get core`. The sync stops when the stub no longer contains that command, because the router maps it to the bundled file. agent-desktop also loads its guides with `agent-desktop skills get`. The router tells agents to read the bundled file first and to run `skills get` only when a command fails on the installed version. Trigger runs showed that agents that ran `skills get` first often stopped when the CLI was not installed. The router maps each command to its bundled file and lists the named agent-desktop references from the generated directory. The upstream slack workflow does not link its supporting files, so the router links them. The sync stops when one of them is gone.
 
-agent-browser and agent-desktop use Apache License 2.0. agent-device uses MIT. The sync checks each license and copies it under `licenses/`. The bundle license is `Apache-2.0 AND MIT`. The dogfood report template has placeholder screenshot paths, so `.lycheeignore` excludes them. Run `bun run sync --only agent-surf` to update the three sources together.
+agent-browser and agent-desktop use Apache License 2.0. agent-device uses MIT. The sync checks each license and copies it under `licenses/`. The bundle license is `Apache-2.0 AND MIT`. The dogfood report template has placeholder screenshot paths, so `.lycheeignore` excludes them. Run `bun run sync -- --update --only agent-surf` to update the three sources together.
 
 ## Repository validation
 

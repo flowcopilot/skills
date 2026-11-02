@@ -44,12 +44,29 @@ function run(command: string[], cwd = repositoryRoot): string {
   return result.stdout.toString().trim();
 }
 
+const args = process.argv.slice(2).filter((arg) => arg !== "--");
+const update = args.includes("--update");
+
+// Without --update, fetch the pinned SHA so that a sync reproduces the committed output.
 function clone(name: keyof Manifest): Checkout {
   const root = resolve(workspace, name);
-  run(["git", "clone", "--depth", "1", manifest[name].repository, root]);
+  const { repository, revision: pinned } = manifest[name];
+  if (update || !pinned) {
+    run(["git", "clone", "--depth", "1", repository, root]);
+  } else {
+    mkdirSync(root, { recursive: true });
+    run(["git", "-c", "init.defaultBranch=main", "init", "-q"], root);
+    run(["git", "remote", "add", "origin", repository], root);
+    run(["git", "fetch", "-q", "--depth", "1", "origin", pinned], root);
+    run(["git", "checkout", "-q", "FETCH_HEAD"], root);
+  }
+  const revision = run(["git", "rev-parse", "HEAD"], root);
+  if (!update && pinned && revision !== pinned) {
+    throw new Error(`${name}: fetched ${revision}, expected pinned ${pinned}`);
+  }
   return {
     root,
-    revision: run(["git", "rev-parse", "HEAD"], root),
+    revision,
     date: run(["git", "show", "-s", "--format=%cs", "HEAD"], root),
   };
 }
@@ -1313,6 +1330,17 @@ function assertApacheLicense(checkout: Checkout, name: string) {
   }
 }
 
+// Apache-2.0 section 4 requires a copy of the license and any NOTICE file with redistributed work.
+function copyApacheLicense(checkout: Checkout, name: "ax" | "convex" | "cloudflare"): string {
+  const licenses = resolve(repositoryRoot, "skills", name, "licenses");
+  mkdirSync(licenses, { recursive: true });
+  copyFileSync(resolve(checkout.root, "LICENSE"), resolve(licenses, `${name}-LICENSE`));
+  const notice = ["NOTICE", "NOTICE.md", "NOTICE.txt"].find((file) => existsSync(resolve(checkout.root, file)));
+  if (!notice) return `retained in \`skills/${name}/licenses/${name}-LICENSE\``;
+  copyFileSync(resolve(checkout.root, notice), resolve(licenses, `${name}-NOTICE`));
+  return `retained in \`skills/${name}/licenses/${name}-LICENSE\`, with the upstream notice in \`skills/${name}/licenses/${name}-NOTICE\``;
+}
+
 const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf"] as const;
 type BundleName = typeof bundleNames[number];
 
@@ -1355,24 +1383,25 @@ function syncBundle(name: BundleName): string {
   if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
   const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
   manifest[name].workflows = adapters[name](checkout);
+  const apacheLicense = name === "ax" || name === "convex" || name === "cloudflare" ? copyApacheLicense(checkout, name) : "";
   manifest[name].revision = checkout.revision;
   console.log(`${name}: ${checkout.revision}`);
   const notices: Record<Exclude<BundleName, "react-native" | "design-engineering" | "clarity" | "agent-surf">, string> = {
     ax: `## Ax skill
 
-The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0.
+The files under \`skills/ax/\` derive from [ax-llm/ax](https://github.com/ax-llm/ax) revision \`${checkout.revision}\`, licensed under Apache License 2.0, ${apacheLicense}.
 
 The imported revision is dated ${checkout.date}. Flow Copilot combines the TypeScript skills into one Agent Skills package, replaces their top-level metadata with one router, moves each skill's instructions into a reference, moves shared reference files to \`references/shared/\` with adjusted links, and records the source package version.
 `,
     convex: `## Convex skill
 
-The files under \`skills/convex/\` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision \`${checkout.revision}\`, licensed under Apache License 2.0.
+The files under \`skills/convex/\` derive from [get-convex/agent-skills](https://github.com/get-convex/agent-skills) revision \`${checkout.revision}\`, licensed under Apache License 2.0, ${apacheLicense}.
 
 The imported revision is dated ${checkout.date}. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves capability instructions into references, and adjusts links for their new locations.
 `,
     cloudflare: `## Cloudflare skill
 
-The files under \`skills/cloudflare/\` derive from [cloudflare/skills](https://github.com/cloudflare/skills) revision \`${checkout.revision}\`, licensed under Apache License 2.0.
+The files under \`skills/cloudflare/\` derive from [cloudflare/skills](https://github.com/cloudflare/skills) revision \`${checkout.revision}\`, licensed under Apache License 2.0, ${apacheLicense}.
 
 The imported revision is dated ${checkout.date}. Flow Copilot combines the separate skills into one Agent Skills package, replaces top-level skill metadata with one router, moves specialized skill instructions into references, adjusts links for their new locations, and places bundled scripts under the combined skill.
 `,
@@ -1393,11 +1422,11 @@ The imported revision is dated ${checkout.date}. Flow Copilot imports a selected
 }
 
 try {
-  const args = process.argv.slice(2);
-  if (args.length && (args.length !== 2 || args[0] !== "--only" || !bundleNames.includes(args[1] as BundleName))) {
-    throw new Error(`Usage: bun run sync [--only ${bundleNames.join("|")}]`);
+  const options = args.filter((arg) => arg !== "--update");
+  if (options.length && (options.length !== 2 || options[0] !== "--only" || !bundleNames.includes(options[1] as BundleName))) {
+    throw new Error(`Usage: bun run sync [--update] [--only ${bundleNames.join("|")}]`);
   }
-  const selected = args.length ? [args[1] as BundleName] : bundleNames;
+  const selected = options.length ? [options[1] as BundleName] : bundleNames;
   const noticePath = resolve(repositoryRoot, "NOTICE.md");
   let notices = readFileSync(noticePath, "utf8");
   for (const name of selected) {

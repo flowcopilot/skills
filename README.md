@@ -53,7 +53,7 @@ See [`DEVELOPMENT.md`](DEVELOPMENT.md) to add another upstream skill source.
 
 ## Updates
 
-Run `bun run sync` to fetch all upstream repositories and regenerate the combined skills. Use `bun run sync --only expo` to update Expo alone, `bun run sync --only react-native` to update both React Native sources together, `bun run sync --only design-engineering` to update both design engineering sources, `bun run sync --only clarity` to update both clarity sources, or `bun run sync --only agent-surf` to update the three agent-surf sources. Then run the validation commands below.
+Run `bun run sync` to regenerate the combined skills at the revisions pinned in `upstreams.json`. Run `bun run sync -- --update` to move every source to its latest upstream commit. Add `--only <bundle>` to limit either command to one bundle. Use `bun run sync -- --update --only expo` to update Expo alone, `bun run sync -- --update --only react-native` to update both React Native sources together, `bun run sync -- --update --only design-engineering` to update both design engineering sources, `bun run sync -- --update --only clarity` to update both clarity sources, or `bun run sync -- --update --only agent-surf` to update the three agent-surf sources. Then run the validation commands below.
 
 The weekly GitHub Action runs the same commands. When upstream content changes, it updates `automation/sync-upstream-skills`. It opens a pull request when the repository has a `SKILLS_SYNC_TOKEN` secret with Contents and Pull requests write access. The Flow Copilot organization currently blocks pull requests from the default `GITHUB_TOKEN`, so the Action otherwise provides a manual pull-request link in its run summary. The Action does not merge the pull request.
 

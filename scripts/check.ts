@@ -125,6 +125,13 @@ for (const match of turnstileText.matchAll(
   if (!existsSync(path)) errors.push(`cloudflare: missing script ${match[0]}`);
 }
 
+for (const name of ["ax", "convex", "cloudflare"]) {
+  const license = resolve(skillsRoot, name, "licenses", `${name}-LICENSE`);
+  if (!existsSync(license) || !readFileSync(license, "utf8").includes("Apache License")) {
+    errors.push(`${name}: missing upstream Apache License 2.0 file`);
+  }
+}
+
 const expo = resolve(skillsRoot, "expo");
 const expoSkill = readSkill(resolve(expo, "SKILL.md"));
 if (expoSkill.metadata.license !== "MIT") errors.push("expo: expected MIT license metadata");
