@@ -946,14 +946,15 @@ This table sets the models for the figure-it-out workflow.
 
 | Role | Used by | Claude Code | Codex | T3 |
 | --- | --- | --- | --- | --- |
-| investigation | figure-it-out units | \`claude-opus-5-5\` | \`gpt-6.1-sol\` xhigh | \`codex/gpt-6.1-sol\` xhigh |
+| investigation | figure-it-out units | \`claude-opus-5-5\` | \`claude-opus-5-5\`, through the Claude CLI | \`claudeAgent/claude-opus-5-5\` xhigh |
+| devices and QA | units that drive a device, a browser, or QA | \`gpt-6.1-sol\`, through the Codex CLI | \`gpt-6.1-sol\` xhigh | \`codex/gpt-6.1-sol\` xhigh |
 | adversarial | figure-it-out review, debates | \`gpt-6-astra\` high, through the Codex CLI | \`claude-opus-5-5\` high, through the Claude CLI | the other family: \`codex/gpt-6-astra\` high reviews Claude work, \`claudeAgent/claude-opus-5-5\` high reviews Codex work |
 
-Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` means Codex. The \`Agent\` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column, and \`delegate_task\` otherwise. The Claude Code \`Agent\` tool sets the model only, so its subagents use the effort of the session.
+Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` means Codex. The \`Agent\` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column and the unit needs no worktree of its own. Use \`delegate_task\` otherwise. The Claude Code \`Agent\` tool sets the model only, so its subagents use the effort of the session.
 
-- Investigation edits only in its own worktree, and never commits or pushes. Claude Code: \`isolation: worktree\`. Codex: \`spawn_agent\` with agent type \`worker\`. T3: \`runtimeMode: auto-accept-edits\`. The parent session checks the result.
+- Investigation edits only in its own worktree, and never commits or pushes. T3: \`delegate_task\` with \`isolation: "worktree"\` and \`runtimeMode: auto-accept-edits\`. Claude Code: \`isolation: worktree\`. Codex: \`claude -p --model claude-opus-5-5 --permission-mode acceptEdits "<prompt>"\`, run in a new worktree. The parent session checks the result.
 - Adversarial review uses the first option that works. First, T3 \`delegate_task\`. Second, the CLI of the other harness, read-only: \`codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only "<prompt>"\` or \`claude -p --model claude-opus-5-5 --effort high --permission-mode plan "<prompt>"\`. Third, a new subagent of the same family that gets only the artifact and the goal. The reply names the reviewer model and the option used.
-- If the harness rejects a model, use the parent model and say so in the reply.
+- If the harness can't run a model, say so in the reply and ask the user. Don't swap in another model.
 
 ## Sources
 
