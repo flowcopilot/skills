@@ -33,3 +33,12 @@ jobs:
           bun test benchmarks/skills
           uv run --script scripts/validate.py
           lychee --offline --no-progress './**/*.md'
+
+      - name: Check that skills match their pinned upstream revisions
+        run: |
+          bun run sync
+          if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+            git status --short
+            echo "::error::Generated files differ from a pinned sync. Change scripts/sync-upstreams.ts, not skills/, then run bun run sync."
+            exit 1
+          fi
