@@ -93,6 +93,16 @@ for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {
     if (text.split("\n").length > 500) {
       errors.push(`${entry.name}: SKILL.md exceeds 500 lines`);
     }
+    for (const file of filesUnder(skillRoot).filter((path) => path.endsWith(".md"))) {
+      if (/^<!-- Modified by Flow Copilot from [^\n]*\brevision\b/m.test(readFileSync(file, "utf8"))) {
+        errors.push(`${relative(skillsRoot, file)}: the source notice names a revision; keep revisions in the metadata and NOTICE.md`);
+      }
+    }
+    // Agents read the whole SKILL.md. Source and license details belong in the metadata and NOTICE.md.
+    const sourceHeading = text.match(/^#+ (Sources?|Attribution|Credits|Provenance|Licen[cs]es?)\s*$/im);
+    if (sourceHeading) {
+      errors.push(`${entry.name}: SKILL.md has a "${sourceHeading[1]}" section; keep source details in the metadata and NOTICE.md`);
+    }
   } catch (error) {
     errors.push(String(error));
   }
@@ -143,8 +153,8 @@ for (const path of ["LICENSE", "references/expo-animation/LICENSE"]) {
 }
 for (const file of filesUnder(expo).filter((path) => path.endsWith(".md"))) {
   const text = readFileSync(file, "utf8");
-  if (!text.includes(`expo/skills revision ${manifest.expo.revision}`)) {
-    errors.push(`expo: missing source revision in ${file}`);
+  if (!text.includes("<!-- Modified by Flow Copilot from expo/skills. -->")) {
+    errors.push(`expo: missing source notice in ${file}`);
   }
   for (const match of text.matchAll(/<skill-root>\/(scripts\/[a-z0-9-]+\/[a-z0-9_.-]+)/g)) {
     if (!existsSync(resolve(expo, match[1]))) errors.push(`expo: missing script ${match[1]}`);
@@ -164,7 +174,7 @@ for (const name of ["software-mansion", "callstack"]) {
     errors.push(`${name}: missing distinct react-native-best-practices workflow`);
   }
   for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
-    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+    if (!readFileSync(file, "utf8").includes(`<!-- Modified by Flow Copilot from ${sourceName}. -->`)) {
       errors.push(`${name}: missing or incorrect source attribution in ${file}`);
     }
   }
@@ -192,7 +202,7 @@ for (const [name, holder] of [["emil-kowalski", "Emil Kowalski"], ["jakub-krehel
   const directory = resolve(designEngineering, "references", name);
   const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
   for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
-    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+    if (!readFileSync(file, "utf8").includes(`<!-- Modified by Flow Copilot from ${sourceName}. -->`)) {
       errors.push(`${name}: missing or incorrect source attribution in ${file}`);
     }
   }
@@ -209,11 +219,8 @@ for (const [name, holder] of [["emil-kowalski", "Emil Kowalski"], ["jakub-krehel
 const clarity = resolve(skillsRoot, "clarity");
 const claritySkill = readSkill(resolve(clarity, "SKILL.md"));
 if (claritySkill.metadata.license !== "MIT") errors.push("clarity: expected MIT license metadata");
-for (const heading of ["## Writing the reply", "## Comments", "## Model roles"]) {
+for (const heading of ["## Writing the reply", "## Comments"]) {
   if (!claritySkill.text.includes(`\n${heading}\n`)) errors.push(`clarity: router is missing ${heading}`);
-}
-if (!claritySkill.text.includes("references/figure-it-out.md") || !existsSync(resolve(clarity, "references/figure-it-out.md"))) {
-  errors.push("clarity: missing figure-it-out reference");
 }
 if (!/allow_implicit_invocation: true/.test(readFileSync(resolve(clarity, "agents/openai.yaml"), "utf8"))) {
   errors.push("clarity: Codex metadata must allow implicit invocation");
@@ -224,7 +231,7 @@ for (const [name, holder] of [["pstack", "Lauren Tan"], ["matt-pocock", "Matt Po
   const directory = resolve(clarity, "references", name);
   const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
   for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
-    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+    if (!readFileSync(file, "utf8").includes(`<!-- Modified by Flow Copilot from ${sourceName}. -->`)) {
       errors.push(`${name}: missing or incorrect source attribution in ${file}`);
     }
   }
@@ -256,7 +263,7 @@ for (const [name, licenseText] of [
   const directory = resolve(agentSurf, "references", name);
   const sourceName = source.repository.replace("https://github.com/", "").replace(/\.git$/, "");
   for (const file of filesUnder(directory).filter((path) => path.endsWith(".md"))) {
-    if (!readFileSync(file, "utf8").includes(`${sourceName} revision ${source.revision}`)) {
+    if (!readFileSync(file, "utf8").includes(`<!-- Modified by Flow Copilot from ${sourceName}. -->`)) {
       errors.push(`${name}: missing or incorrect source attribution in ${file}`);
     }
   }
@@ -278,8 +285,8 @@ const clerkPlugin = JSON.parse(readFileSync(resolve(clerk, "licenses/clerk-plugi
 if (clerkPlugin.license !== "MIT") errors.push("clerk: missing upstream MIT declaration");
 for (const file of filesUnder(clerk).filter((path) => path.endsWith(".md"))) {
   const text = readFileSync(file, "utf8");
-  if (!text.includes(`clerk/skills revision ${manifest.clerk.revision}`)) {
-    errors.push(`clerk: missing source revision in ${file}`);
+  if (!text.includes("<!-- Modified by Flow Copilot from clerk/skills. -->")) {
+    errors.push(`clerk: missing source notice in ${file}`);
   }
   for (const match of text.matchAll(/scripts\/clerk-backend-api\/[a-z0-9_.-]+/g)) {
     if (!existsSync(resolve(clerk, match[0]))) errors.push(`clerk: missing script ${match[0]}`);

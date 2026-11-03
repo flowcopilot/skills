@@ -90,7 +90,7 @@ describe("scoring", () => {
 describe("delivered reads", () => {
   const skill = "/w/.claude/skills/agent-surf/references/agent-desktop";
   const command = `cd ${skill}; cat agent-desktop/index.md | head -80; which agent-desktop`;
-  const output = "Exit code 1\n<!-- Modified by Flow Copilot from vercel-labs/agent-desktop revision abc. -->\n# agent-desktop";
+  const output = "Exit code 1\n<!-- Modified by Flow Copilot from vercel-labs/agent-desktop. -->\n# agent-desktop";
 
   test("counts reads before a failed step when the output shows bundled content", () => {
     const events = [

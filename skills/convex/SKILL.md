@@ -7,7 +7,7 @@ metadata:
   upstream: get-convex/agent-skills@bd403cb048c8bb6c1e99d898e15ed61f9ddd430b
 ---
 
-<!-- Modified by Flow Copilot from get-convex/agent-skills revision bd403cb048c8bb6c1e99d898e15ed61f9ddd430b. -->
+<!-- Modified by Flow Copilot from get-convex/agent-skills. -->
 
 # Convex
 

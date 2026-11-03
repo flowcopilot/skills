@@ -2,6 +2,12 @@
 
 Read `DEVELOPMENT.md` before you change a bundle, the sync script, or the checks. The files under `skills/` are generated. Edit `scripts/sync-upstreams.ts`, then regenerate them.
 
+## Bundle text
+
+Write a bundle's `SKILL.md` and references only for the agent that runs the task. Do not add a section about sources, attribution, or licenses. The frontmatter `upstream` metadata and `NOTICE.md` already hold that information, and an agent reads every line of the file each time the skill loads. `bun run check` fails on a `SKILL.md` heading such as `Sources` or `Attribution`.
+
+The `<!-- Modified by Flow Copilot from <source>. -->` line at the top of each generated file is the license notice for changed files. Do not add a revision or commit SHA to it, because agents read it too. `bun run check` fails when the notice names a revision.
+
 ## Bundle descriptions
 
 The `description` of each bundle is the trigger that makes an agent load the skill. Write it as two plain sentences, in this order:

@@ -8,7 +8,7 @@ metadata:
   upstream_jakub_krehel: "jakubkrehel/skills@592aedc44d7d5b3e29740984252902f3e5402a1c"
 ---
 
-<!-- Modified by Flow Copilot from emilkowalski/skills revision 2d228630ba1446365f614a108cb8252f1feda202. -->
+<!-- Modified by Flow Copilot from emilkowalski/skills. -->
 
 # Design Engineering
 

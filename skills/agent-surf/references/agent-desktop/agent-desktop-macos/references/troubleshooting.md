@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from vercel-labs/agent-desktop revision 5261b5287b5208e7c4bf3713df6f66faaaf2c4cc. -->
+<!-- Modified by Flow Copilot from vercel-labs/agent-desktop. -->
 
 # macOS troubleshooting
 

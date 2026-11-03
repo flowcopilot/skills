@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstackincubator/agent-skills revision 59e9d17446a248b21d86f078fcd0bd2d36db1ca4. -->
+<!-- Modified by Flow Copilot from callstackincubator/agent-skills. -->
 
 # Upgrading React Native
 

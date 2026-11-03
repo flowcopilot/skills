@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
+<!-- Modified by Flow Copilot from clerk/skills. -->
 
 > **Requirements:** Requires CLERK_SECRET_KEY (sk_*) for Backend API calls.
 

@@ -76,7 +76,7 @@ Use the shared helpers where they fit:
 
 Rewrite relative links after files move. A link that was relative to a sub-skill directory will usually need the sub-skill name as a prefix. Add a guard for any source-specific rewrite that depends on exact upstream text. The guard must stop the sync when that text changes.
 
-Keep the combined router short. It must tell the agent when to load each workflow reference. Shared rules can stay in the router. Detailed workflow instructions belong in references.
+Keep the combined router short. It must tell the agent when to load each workflow reference. Shared rules can stay in the router. Detailed workflow instructions belong in references. Do not write a section about sources, attribution, or licenses into the router. `frontmatter` records the upstream repository and revision, and the adapter's return value becomes the `NOTICE.md` section. `bun run check` rejects such a heading in `SKILL.md`.
 
 ### 4. Connect the adapter
 
@@ -116,7 +116,7 @@ Check these results before commit:
 - Every workflow in `upstreams.json` has a router link.
 - All local Markdown links resolve after the move.
 - Required scripts keep their executable mode.
-- Generated files name the source repository and exact commit SHA.
+- Each generated Markdown file starts with `<!-- Modified by Flow Copilot from <source>. -->`. The notice names the source repository and no revision. The frontmatter `upstream` field, `NOTICE.md`, and `upstreams.json` hold the exact commit SHA.
 - `NOTICE.md` names the source license and describes the modifications.
 - The router stays within the Agent Skills size limit.
 
@@ -176,9 +176,7 @@ The `pstack` and `matt-pocock` manifest entries both set `"bundle": "clarity"`. 
 
 The router sets the Flow Copilot invocation policy. The constant also records the upstream invocation of each skill: Claude `disable-model-invocation` and, when the skill has `agents/openai.yaml`, Codex `policy.allow_implicit_invocation`. The sync stops when the two upstream flags disagree, or when one differs from the recorded value. Review the router policy, then update the record.
 
-The pstack `how` and `why` skills name a model role line and a default model for each subagent. `clarityModelRoles` maps each line to a router role. The sync stops when upstream adds a line, removes a line, or changes a default. Map the new line in the router table before you update the constant.
-
-The router defines its own `Writing the reply` section in `scripts/sync-upstreams.ts`. Routine chat defaults to a short direct answer. Requested detail, evidence distinctions, risks, and verification limits remain required. Narrow how and why questions do not trigger a full investigation. The router imports only the `Comments` section from pstack `poteto-mode/SKILL.md`. The sync stops if that section or its opening rule cannot be found. `references/figure-it-out.md` is Flow Copilot text, not upstream content. The generator writes it and the Codex metadata in `agents/openai.yaml`.
+The router defines its own `Writing the reply` section in `scripts/sync-upstreams.ts`. Routine chat defaults to a short direct answer. Requested detail, evidence distinctions, risks, and verification limits remain required. Narrow how and why questions do not trigger a full investigation. The router imports only the `Comments` section from pstack `poteto-mode/SKILL.md`. The sync stops if that section or its opening rule cannot be found. The generator also writes the Codex metadata in `agents/openai.yaml`.
 
 Both sources ship a standalone MIT LICENSE. The sync checks each copyright holder and copies both files under `licenses/`. The upstream template link `[PR #123](url)` in `why/references/synthesizer-prompt.md` is a placeholder, so `.lycheeignore` excludes it. Run `bun run sync -- --update --only clarity` to update both sources together.
 

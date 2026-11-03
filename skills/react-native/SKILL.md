@@ -8,7 +8,7 @@ metadata:
   upstream_callstack: "callstackincubator/agent-skills@59e9d17446a248b21d86f078fcd0bd2d36db1ca4"
 ---
 
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills. -->
 
 # React Native
 

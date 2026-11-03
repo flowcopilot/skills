@@ -8,7 +8,7 @@ metadata:
   upstream_version: "25.4.6"
 ---
 
-<!-- Modified by Flow Copilot from ax-llm/ax revision 7948e19213325e41f39ba0715ad8fd2a89714210. -->
+<!-- Modified by Flow Copilot from ax-llm/ax. -->
 
 # Ax
 

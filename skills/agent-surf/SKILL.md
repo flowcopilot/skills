@@ -9,7 +9,7 @@ metadata:
   upstream_agent_desktop: "vercel-labs/agent-desktop@5261b5287b5208e7c4bf3713df6f66faaaf2c4cc"
 ---
 
-<!-- Modified by Flow Copilot from vercel-labs/agent-browser revision 5868f7c05020e047c00e68e4abf9253cce864f41. -->
+<!-- Modified by Flow Copilot from vercel-labs/agent-browser. -->
 
 # Agent Surf
 

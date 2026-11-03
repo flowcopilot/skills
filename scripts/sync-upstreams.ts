@@ -125,20 +125,20 @@ function patchGeneratedFile(path: string, changes: [string, string][]) {
   writeFileSync(path, text);
 }
 
-function notice(source: string, revision: string): string {
-  return `<!-- Modified by Flow Copilot from ${source} revision ${revision}. -->`;
+// Agents read this line, so it names only the source. The frontmatter and NOTICE.md hold the revision.
+function notice(source: string): string {
+  return `<!-- Modified by Flow Copilot from ${source}. -->`;
 }
 
 function writeMarkdown(
   path: string,
   text: string,
   source: string,
-  revision: string,
 ) {
   mkdirSync(resolve(path, ".."), { recursive: true });
-  const marker = notice(source, revision);
+  const marker = notice(source);
   const withoutOldMarker = text.replace(
-    /^<!-- Modified by Flow Copilot from .*? revision [a-f0-9]+\. -->\n*/,
+    /^<!-- Modified by Flow Copilot from [^\n]*? -->\n*/,
     "",
   );
   writeFileSync(path, normalized(`${marker}\n\n${withoutOldMarker}`));
@@ -149,12 +149,11 @@ function writeSkill(
   metadata: string,
   body: string,
   source: string,
-  revision: string,
 ) {
   mkdirSync(resolve(path, ".."), { recursive: true });
   writeFileSync(
     path,
-    normalized(`${metadata}\n\n${notice(source, revision)}\n\n${body}`),
+    normalized(`${metadata}\n\n${notice(source)}\n\n${body}`),
   );
 }
 
@@ -177,7 +176,6 @@ function copyTree(
   source: string,
   target: string,
   sourceName: string,
-  revision: string,
   transform: (text: string) => string = (text) => text,
 ) {
   for (const path of filesUnder(source)) {
@@ -188,7 +186,6 @@ function copyTree(
         destination,
         transform(readFileSync(path, "utf8")),
         sourceName,
-        revision,
       );
     } else {
       copyFileSync(path, destination);
@@ -254,14 +251,12 @@ function syncAx(checkout: Checkout): string[] {
         .replaceAll("__VERSION__", version)
         .replace(/\]\((?:\.\/)?references\//g, "](shared/"),
       sourceName,
-      checkout.revision,
     );
   }
   copyTree(
     resolve(sourceRoot, "references"),
     resolve(references, "shared"),
     sourceName,
-    checkout.revision,
     (text) => text.replaceAll("__VERSION__", version),
   );
 
@@ -292,7 +287,6 @@ ${workflowList(workflows)}
     metadata,
     body,
     sourceName,
-    checkout.revision,
   );
   return workflows.map((skill) => skill.name);
 }
@@ -316,13 +310,11 @@ function syncConvex(checkout: Checkout): string[] {
       resolve(references, `${skill.name}.md`),
       body,
       sourceName,
-      checkout.revision,
     );
     copyTree(
       resolve(skill.root, "references"),
       resolve(references, skill.name),
       sourceName,
-      checkout.revision,
     );
   }
 
@@ -355,7 +347,6 @@ ${workflowList(workflows)}
     metadata,
     body,
     sourceName,
-    checkout.revision,
   );
   return workflows.map((skill) => skill.name);
 }
@@ -388,7 +379,6 @@ function syncCloudflare(checkout: Checkout): string[] {
     productReferences,
     references,
     sourceName,
-    checkout.revision,
     (text) =>
       text
         .replace(/\.\.\/\.\.\/\.\.\/([a-z0-9-]+)\/references\//g, "../$1/")
@@ -423,19 +413,16 @@ function syncCloudflare(checkout: Checkout): string[] {
       resolve(references, `${skill.name}.md`),
       body,
       sourceName,
-      checkout.revision,
     );
     copyTree(
       resolve(skill.root, "references"),
       resolve(references, skill.name),
       sourceName,
-      checkout.revision,
     );
     copyTree(
       resolve(skill.root, "scripts"),
       resolve(target, "scripts", skill.name),
       sourceName,
-      checkout.revision,
     );
   }
 
@@ -490,7 +477,6 @@ function syncCloudflare(checkout: Checkout): string[] {
     metadata,
     rootBody,
     sourceName,
-    checkout.revision,
   );
   return workflows.map((skill) => skill.name);
 }
@@ -542,18 +528,18 @@ function syncExpo(checkout: Checkout): string[] {
     for (const entry of supportingFiles) {
       body = body.replaceAll(entry.name, `${skill.name}/${entry.name}`);
     }
-    writeMarkdown(resolve(target, "references", `${skill.name}.md`), body, sourceName, checkout.revision);
+    writeMarkdown(resolve(target, "references", `${skill.name}.md`), body, sourceName);
     patchGeneratedFile(resolve(target, "references", `${skill.name}.md`), [[
       `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" "<actionable feedback>"`,
       `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" --message "<actionable feedback>"`,
     ]]);
-    copyTree(resolve(skill.root, "references"), resolve(target, "references", skill.name), sourceName, checkout.revision, transform);
-    copyTree(resolve(skill.root, "scripts"), resolve(target, "scripts", skill.name), sourceName, checkout.revision);
+    copyTree(resolve(skill.root, "references"), resolve(target, "references", skill.name), sourceName, transform);
+    copyTree(resolve(skill.root, "scripts"), resolve(target, "scripts", skill.name), sourceName);
     for (const entry of supportingFiles) {
       const destination = resolve(target, "references", skill.name, entry.name);
       mkdirSync(resolve(destination, ".."), { recursive: true });
       if (entry.name.endsWith(".md")) {
-        writeMarkdown(destination, transform(readFileSync(resolve(skill.root, entry.name), "utf8")), sourceName, checkout.revision);
+        writeMarkdown(destination, transform(readFileSync(resolve(skill.root, entry.name), "utf8")), sourceName);
       } else {
         copyFileSync(resolve(skill.root, entry.name), destination);
       }
@@ -578,7 +564,7 @@ Former Expo and EAS skill names refer to the workflow files below. Load those re
 This package contains skill instructions and helper scripts. Plugin MCP configuration and telemetry hooks are not installed by this package.
 
 ${routes}
-`, sourceName, checkout.revision);
+`, sourceName);
   return workflows.map((skill) => skill.name);
 }
 
@@ -628,7 +614,7 @@ function writeSkillTree(
       // External URLs continue to address the original upstream SKILL.md.
       const rewritten = body.replace(/https?:\/\/[^\s<>\)]+|\bSKILL\.md\b/g,
         (match) => match.startsWith("http") ? match : "index.md");
-      writeMarkdown(destination, rewritten, sourceName, checkout.revision);
+      writeMarkdown(destination, rewritten, sourceName);
     } else {
       copyFileSync(path, destination);
       chmodSync(destination, statSync(path).mode);
@@ -701,7 +687,7 @@ Both upstream skills named react-native-best-practices are preserved. Their sour
 This bundle imports the skills directories of both repositories, including nested skills. Plugin configuration and externally hosted skills linked by upstream READMEs are not included.
 
 ${sections.join("\n\n")}
-`, "software-mansion-labs/skills", first.revision);
+`, "software-mansion-labs/skills");
   return `## React Native skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
 }
 
@@ -811,7 +797,7 @@ Upstream instructions that describe a first response for an invocation without a
 This bundle imports the skills directories of both repositories. Plugin metadata, agent UI metadata, and root-level files are not included.
 
 ${sections.join("\n\n")}
-`, "emilkowalski/skills", first.revision);
+`, "emilkowalski/skills");
   return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also initializes the teardown extrusion example and validates teardown color settings, with regression coverage in the viewer builder test.\n\n${notices.join("\n\n")}\n`;
 }
 
@@ -883,9 +869,6 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
     return tree;
   });
   const pstack = checkouts.pstack;
-  if (!existsSync(resolve(pstack.root, "pstack/skills/figure-it-out/SKILL.md"))) {
-    throw new Error("pstack: figure-it-out skill removed");
-  }
   const commentRules = clarityCommentRules(pstack);
 
   resetDirectory(target, bundle);
@@ -907,30 +890,13 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
 policy:
   allow_implicit_invocation: true
 `);
-  writeFileSync(resolve(target, "references", "figure-it-out.md"), normalized(`<!-- Flow Copilot text based on ideas from cursor/plugins pstack/skills/figure-it-out revision ${pstack.revision}. -->
-
-# Figure it out
-
-Use this workflow when the user says "figure it out yourself", or hands off a large task to finish without them. Design the plan first. Then run it as a series of experiments.
-
-1. Write the done condition before you start. It must be a check that can fail: a command, a test, or a value in the real artifact.
-2. Set the amount of checking from the risk. A change that cannot be undone, or that touches many parts, gets more checks. A small change that you can revert gets fewer.
-3. Split the work into small units that each end in a state you can check. Do the most uncertain unit first. Build the check before the work, and record its value before the change.
-4. For each unit, state a hypothesis, make the smallest change, and measure the result on the real artifact. Keep the change when it moves toward the done condition. Revert it when it does not.
-5. Give each check one verdict: VERIFIED, NOT VERIFIED, or INCONCLUSIVE. INCONCLUSIVE is not a pass. Read the artifact, not the report of a worker. When a check passes too easily, examine the check before the system.
-6. At the end, send the result and the done condition to the adversarial role in the Clarity model roles. That reviewer attacks the work against the done condition.
-7. Reply with the plan, the risk level and its reason, the decisions you made, what is verified, and what is still open.
-
-Units with defined steps go to the investigation role. The parent session keeps the plan and the verdicts.
-`));
-
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Also load it when the user says to figure it out yourself. Covers plain-language rules, technical writing, writing for agents, and explanations of how code works. Do not load it for code-only changes.",
+    "Load this skill before you write or rewrite prose for people or agents, such as docs, READMEs, announcements, PR descriptions, commit messages, product copy, skills, AGENTS.md, or CLAUDE.md, or before you explain how or why code works. Covers plain-language rules, technical writing, writing for agents, and explanations of how code works. Do not load it for code-only changes.",
     "cursor/plugins", pstack.revision,
     { upstream_matt_pocock: `mattpocock/skills@${checkouts["matt-pocock"].revision}` }, "MIT"),
     `# Clarity
 
-Write every text so that its reader understands it on the first read. Answer how and why questions with evidence. Read only the references that the task needs.
+Write every text so that its reader understands it on the first read. Answer how and why questions directly from the relevant evidence. The wording of the question alone does not require delegation or a report. Read only the references that the task needs.
 
 ## Pick the rules by reader
 
@@ -938,10 +904,7 @@ Write every text so that its reader understands it on the first read. Answer how
 - Technical text that a person reads: apply [technical-writing](references/pstack/technical-writing/index.md) to docs, READMEs, RFCs, PR descriptions, and commit messages. For technical explanations in chat, apply its sentence rules and use the reply rules below to choose length and structure.
 - Text that an agent reads: skills, \`AGENTS.md\`, \`CLAUDE.md\`, files under \`docs/agents/\`, and prompts for subagents. Apply [writing-for-agents](references/matt-pocock/writing-for-agents/index.md) and the sentence rules of technical-writing. Leading words from writing-for-agents are correct here, although unslop rules 26 and 32 remove metaphors from text for people.
 
-## Workflows
-
-- Answer a how or why question directly from the relevant evidence. The question's wording alone does not require delegation or a report.
-- [figure-it-out](references/figure-it-out.md): use only when the user says "figure it out yourself", or hands off a large task to finish alone.
+## Imported names
 
 Imported text names upstream skills. \`unslop\` and \`technical-writing\` mean the references above. Other pstack skills, such as \`how\`, \`why\`, \`poteto-mode\`, \`show-me-your-work\`, \`teach\`, \`architect\`, and \`arena\`, are not in this bundle. Continue without them. Relative paths stay relative to the imported file.
 
@@ -956,27 +919,8 @@ Answer the current question first. For a routine question or completion update, 
 - Write complete, plain sentences with one thought each. Follow unslop as you draft. Use periods instead of long dashes. A colon before a list is fine.
 
 ${commentRules}
-
-## Model roles
-
-This table sets the models for the figure-it-out workflow.
-
-| Role | Used by | Claude Code | Codex | T3 |
-| --- | --- | --- | --- | --- |
-| investigation | figure-it-out units | \`claude-opus-5-5\` | \`gpt-6.1-sol\` xhigh | \`codex/gpt-6.1-sol\` xhigh |
-| adversarial | figure-it-out review, debates | \`gpt-6-astra\` high, through the Codex CLI | \`claude-opus-5-5\` high, through the Claude CLI | the other family: \`codex/gpt-6-astra\` high reviews Claude work, \`claudeAgent/claude-opus-5-5\` high reviews Codex work |
-
-Find the harness from your tools. \`delegate_task\` means T3. \`spawn_agent\` means Codex. The \`Agent\` tool means Claude Code. In T3, use the native tool when it runs the model in the T3 column, and \`delegate_task\` otherwise. The Claude Code \`Agent\` tool sets the model only, so its subagents use the effort of the session.
-
-- Investigation edits only in its own worktree, and never commits or pushes. Claude Code: \`isolation: worktree\`. Codex: \`spawn_agent\` with agent type \`worker\`. T3: \`runtimeMode: auto-accept-edits\`. The parent session checks the result.
-- Adversarial review uses the first option that works. First, T3 \`delegate_task\`. Second, the CLI of the other harness, read-only: \`codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only "<prompt>"\` or \`claude -p --model claude-opus-5-5 --effort high --permission-mode plan "<prompt>"\`. Third, a new subagent of the same family that gets only the artifact and the goal. The reply names the reviewer model and the option used.
-- If the harness rejects a model, use the parent model and say so in the reply.
-
-## Sources
-
-This bundle imports selected skills from cursor/plugins (pstack) and mattpocock/skills. Each reference keeps its upstream text. Only this file and \`references/figure-it-out.md\` hold Flow Copilot text. Upstream metadata, plugin files, and agent UI files are not included.
-`, "cursor/plugins", pstack.revision);
-  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, keeps the comment rules from pstack \`poteto-mode\`, and holds one model role table for Claude Code, Codex, and T3. \`references/figure-it-out.md\` is Flow Copilot text based on the ideas of the pstack \`figure-it-out\` skill.\n\n${notices.join("\n\n")}\n`;
+`, "cursor/plugins");
+  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, and keeps the comment rules from pstack \`poteto-mode\`.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk publishes a flat skills/ directory. Each bundled skill is listed under its router
@@ -1096,7 +1040,7 @@ function syncClerk(checkout: Checkout): string[] {
     const compatibility = (Bun.YAML.parse(metadata[1]) as { compatibility?: unknown }).compatibility;
     if (typeof compatibility === "string") body = `> **Requirements:** ${compatibility.trim()}\n\n${body}`;
     if (/(?<!\(\.\.\/)SKILL\.md\b/.test(body)) throw new Error(`${skill.name}: unresolved SKILL.md link`);
-    writeMarkdown(resolve(references, `${skill.name}.md`), body, sourceName, checkout.revision);
+    writeMarkdown(resolve(references, `${skill.name}.md`), body, sourceName);
 
     for (const directory of supportDirectories) {
       const destination = directory === "scripts"
@@ -1111,7 +1055,7 @@ function syncClerk(checkout: Checkout): string[] {
         if (skill.name === "clerk-custom-ui") rewritten = rewritten.replace(/`core-([23])\//g, "`../core-$1/");
         return rewritten;
       };
-      copyTree(resolve(skill.root, directory), destination, sourceName, checkout.revision, transform);
+      copyTree(resolve(skill.root, directory), destination, sourceName, transform);
     }
   }
 
@@ -1175,7 +1119,7 @@ ${sections}
 - Treat the installed \`@clerk/*\` packages, their type declarations, and current Clerk documentation as the source of truth when a reference differs.
 - Load more than one reference when a task crosses areas. For example, B2B billing needs both the organizations and billing references.
 - Confirm before any write to a Clerk instance, and never use production keys for tests.
-`, sourceName, checkout.revision);
+`, sourceName);
   return selected.map((skill) => skill.name);
 }
 
@@ -1319,7 +1263,7 @@ An upstream skill name, such as \`core\` or \`ios-simulator\`, means its index.m
 This bundle imports \`skill-data/\` from agent-browser and \`skills/\` from agent-device and agent-desktop. The agent-browser discovery stub, plugin metadata, and agent UI metadata are not included.
 
 ${sections.join("\n\n")}
-`, "vercel-labs/agent-browser", first.revision);
+`, "vercel-labs/agent-browser");
   return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
 }
 

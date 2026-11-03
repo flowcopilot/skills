@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from expo/skills revision 8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db. -->
+<!-- Modified by Flow Copilot from expo/skills. -->
 
 # Lifecycle Hooks Reference
 
