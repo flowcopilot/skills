@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from cloudflare/skills revision 86505e44f87d801aa1864a3c4109e9a8ae5c409f. -->
+<!-- Modified by Flow Copilot from cloudflare/skills. -->
 
 # Basin SQL
 

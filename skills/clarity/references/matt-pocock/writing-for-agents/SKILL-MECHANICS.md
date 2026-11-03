@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from mattpocock/skills revision 4ae2317ddb22b046e26455e4f9c9b3aaaf62212d. -->
+<!-- Modified by Flow Copilot from mattpocock/skills. -->
 
 # Skill mechanics
 

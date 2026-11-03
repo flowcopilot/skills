@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from clerk/skills revision 55206a48259bb327090ec5dbd22cfb5d4fa9de25. -->
+<!-- Modified by Flow Copilot from clerk/skills. -->
 
 > **Requirements:** Requires Node.js 20.9.0 or later for current Clerk SDKs. The Clerk CLI can provision temporary development keys on supported frameworks without a Clerk account.
 

@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from software-mansion-labs/skills revision 58afa0a09b01dc47819af8fd48bb062561414108. -->
+<!-- Modified by Flow Copilot from software-mansion-labs/skills. -->
 
 # Auth Model
 

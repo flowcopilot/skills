@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from emilkowalski/skills revision 2d228630ba1446365f614a108cb8252f1feda202. -->
+<!-- Modified by Flow Copilot from emilkowalski/skills. -->
 
 # Building Animations
 

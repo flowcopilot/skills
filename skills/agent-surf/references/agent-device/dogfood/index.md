@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from callstack/agent-device revision ff8c2285c808135b592e77f53ae3ce28d31786b8. -->
+<!-- Modified by Flow Copilot from callstack/agent-device. -->
 
 # Dogfood
 

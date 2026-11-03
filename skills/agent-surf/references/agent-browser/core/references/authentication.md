@@ -1,4 +1,4 @@
-<!-- Modified by Flow Copilot from vercel-labs/agent-browser revision 5868f7c05020e047c00e68e4abf9253cce864f41. -->
+<!-- Modified by Flow Copilot from vercel-labs/agent-browser. -->
 
 # Authentication Patterns
 

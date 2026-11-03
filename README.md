@@ -36,7 +36,7 @@ The `react-native` skill combines all skills from `software-mansion-labs/skills`
 
 The `design-engineering` skill combines all skills from `emilkowalski/skills` and `jakubkrehel/skills`. Each source keeps its own reference directory and revision. The router separates the skills that were user-invoked upstream, so the agent loads them only on an explicit request.
 
-The `clarity` skill imports selected skills from pstack in `cursor/plugins` (`unslop` and `technical-writing`) and from `mattpocock/skills` (`writing-for-agents`). The router sets which rules apply to text for people and to text for agents. It also holds one model role table for Claude Code, Codex, and T3. `figure-it-out` is Flow Copilot text based on the pstack skill of that name.
+The `clarity` skill imports selected skills from pstack in `cursor/plugins` (`unslop` and `technical-writing`) and from `mattpocock/skills` (`writing-for-agents`). The router sets which rules apply to text for people and to text for agents.
 
 To apply `clarity` to every session, install it globally and add a pointer to your global agent instructions (`~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`):
 

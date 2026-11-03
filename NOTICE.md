@@ -56,7 +56,7 @@ Imported from [jakubkrehel/skills](https://github.com/jakubkrehel/skills) revisi
 
 ## Clarity skill
 
-Flow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, keeps the comment rules from pstack `poteto-mode`, and holds one model role table for Claude Code, Codex, and T3. `references/figure-it-out.md` is Flow Copilot text based on the ideas of the pstack `figure-it-out` skill.
+Flow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, and keeps the comment rules from pstack `poteto-mode`.
 
 ### pstack
 
