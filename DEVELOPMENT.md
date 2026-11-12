@@ -8,7 +8,7 @@ Do not edit generated files under `skills/` by hand. Change `scripts/sync-upstre
 
 - Git
 - [Bun](https://bun.sh/)
-- Node.js 26.12.1 for bundled Node scripts, pinned in `mise.toml`
+- Node.js 26.13.1 for bundled Node scripts, pinned in `mise.toml`
 - [uv](https://docs.astral.sh/uv/) with Python 3.11 or later
 - `actionlint` for GitHub Actions checks
 
