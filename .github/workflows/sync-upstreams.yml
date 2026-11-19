@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up toolchains
-        uses: jdx/mise-action@df8210ba1f29954aed392b1087dace56ca1d7854
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
 
       - name: Regenerate skills at the latest upstream revisions
         run: bun run sync -- --update

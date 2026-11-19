@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
 
       - name: Set up toolchains
-        uses: jdx/mise-action@df8210ba1f29954aed392b1087dace56ca1d7854
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
 
       - name: Validate all skill bundles
         run: |
