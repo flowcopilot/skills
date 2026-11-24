@@ -37,7 +37,7 @@ export default async function ProDashboard() {
 ```tsx
 // app/pro/loading.tsx
 export default function Loading() {
-	return <p>Loading...</p>
+  return <p>Loading...</p>
 }
 ```
 
@@ -50,30 +50,30 @@ import { auth } from '@clerk/nextjs/server'
 import { Suspense } from 'react'
 
 async function GatedFeatures() {
-	const { has } = await auth()
+  const { has } = await auth()
 
-	const canAnalytics = has({ feature: 'analytics' })
-	const canExport = has({ feature: 'export' })
-	const canApi = has({ feature: 'api_access' })
+  const canAnalytics = has({ feature: 'analytics' })
+  const canExport = has({ feature: 'export' })
+  const canApi = has({ feature: 'api_access' })
 
-	return (
-		<>
-			{canAnalytics && <AnalyticsDashboard />}
-			{canExport && <ExportButton />}
-			{canApi && <APIAccess />}
-		</>
-	)
+  return (
+    <>
+      {canAnalytics && <AnalyticsDashboard />}
+      {canExport && <ExportButton />}
+      {canApi && <APIAccess />}
+    </>
+  )
 }
 
 export default function AppPage() {
-	return (
-		<div>
-			<BasicFeature />
-			<Suspense>
-				<GatedFeatures />
-			</Suspense>
-		</div>
-	)
+  return (
+    <div>
+      <BasicFeature />
+      <Suspense>
+        <GatedFeatures />
+      </Suspense>
+    </div>
+  )
 }
 ```
 
@@ -100,7 +100,7 @@ export default async function BillingSuccessPage() {
 ```tsx
 // app/billing/success/loading.tsx
 export default function Loading() {
-	return <p>Loading...</p>
+  return <p>Loading...</p>
 }
 ```
 
@@ -114,11 +114,11 @@ import { UserProfile } from '@clerk/nextjs'
 import { Suspense } from 'react'
 
 export default function AccountPage() {
-	return (
-		<Suspense>
-			<UserProfile />
-		</Suspense>
-	)
+  return (
+    <Suspense>
+      <UserProfile />
+    </Suspense>
+  )
 }
 ```
 
@@ -131,14 +131,14 @@ For richer subscription details in client components (status, renewal date, tria
 import { useSubscription } from '@clerk/nextjs/experimental'
 
 export function BillingSummary() {
-	const { data, isLoading } = useSubscription()
-	if (isLoading || !data) return null
-	return (
-		<p>
-			Status: {data.status}
-			{data.nextPayment && ` (renews ${data.nextPayment.date.toLocaleDateString()})`}
-		</p>
-	)
+  const { data, isLoading } = useSubscription()
+  if (isLoading || !data) return null
+  return (
+    <p>
+      Status: {data.status}
+      {data.nextPayment && ` (renews ${data.nextPayment.date.toLocaleDateString()})`}
+    </p>
+  )
 }
 ```
 
@@ -151,17 +151,17 @@ For interactive components that need plan checks:
 import { useAuth } from '@clerk/nextjs'
 
 export function ExportButton() {
-	const { has } = useAuth()
+  const { has } = useAuth()
 
-	if (!has?.({ plan: 'pro' })) {
-		return (
-			<button disabled title="Pro plan required">
-				Export (Pro)
-			</button>
-		)
-	}
+  if (!has?.({ plan: 'pro' })) {
+    return (
+      <button disabled title="Pro plan required">
+        Export (Pro)
+      </button>
+    )
+  }
 
-	return <button onClick={handleExport}>Export</button>
+  return <button onClick={handleExport}>Export</button>
 }
 ```
 

@@ -12,6 +12,25 @@ Before citing limits, settings, API fields, category IDs, or exact UI paths, ret
 4. If account access is available, inspect existing resources before proposing or making changes: Access apps/policies/groups/IdPs, Gateway rules/lists/categories, device profiles/posture checks, tunnels/routes, DNS/resolver settings, and locations/sites.
 5. Propose the change set with prerequisites, validation, and rollback. For risky changes, stage disabled or scoped to a pilot group/site unless the user explicitly asks otherwise.
 
+### Access-Protected Webpages and APIs
+
+When an agent, script, crawler, MCP client, or other non-browser client receives a Cloudflare Access login page or interactive authentication redirect, do not assume the resource is unavailable. Check whether an Access service token is available and authorized for the application. Retrieve the current [service token](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/index.md) docs before configuring or troubleshooting authentication.
+
+Send both service-token credentials as headers on the original request:
+
+```text
+CF-Access-Client-Id: <CLIENT_ID>
+CF-Access-Client-Secret: <CLIENT_SECRET>
+```
+
+- Access service tokens are a separate credential from Cloudflare API tokens. Use the service token's Client ID and Client Secret, not an API token, to authenticate to an Access application.
+- Read the credentials from the project's configured secret store or environment variables without printing their values. Never ask the user to paste a secret into chat, and never log, commit, or expose it.
+- Only send the credentials to the intended Access-protected hostname. Do not forward them through cross-origin redirects. If the current request tool cannot set headers safely, use another available HTTP client that can.
+- A service token must be included by a policy with the **Service Auth** action. If the response still starts an interactive login, inspect the application and its policies; an **Allow** policy is not a substitute for **Service Auth**.
+- If no authorized service token exists, explain the prerequisite or, when account access and approval are available, create a narrowly scoped token and policy. Do not attempt to automate an interactive identity-provider login.
+- Some self-hosted applications are configured to accept the token in a single custom header (for example, `Authorization`) instead of the default header pair. Inspect the application's `read_service_tokens_from_header` setting before using that mode; do not guess the header format.
+- If the organization has strict service token authentication turned on, a failed service-token request returns `401` or `403` instead of redirecting to the login page, and Access returns no `CF_Authorization` cookie, so send the token headers on every request.
+
 ## Assessment Prompts
 
 Use these to avoid jumping straight to configuration. Ask only the prompts relevant to the user's task.
@@ -175,3 +194,7 @@ For writing or reviewing Workers invoked by the HTTP Forward action, use the [ga
 - Use fully qualified MCP tool names when MCP tools are available.
 - Never guess category IDs, application IDs, wirefilter fields, or API request bodies. Retrieve the current schema/docs and existing account objects.
 - Do not enable broad production policies without explicit approval.
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [cloudflare-one/skill-feedback.md](cloudflare-one/skill-feedback.md).

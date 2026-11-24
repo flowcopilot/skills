@@ -4,8 +4,8 @@ description: Load this skill before you build, change, or review UI components i
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: emilkowalski/skills@2d228630ba1446365f614a108cb8252f1feda202
-  upstream_jakub_krehel: "jakubkrehel/skills@592aedc44d7d5b3e29740984252902f3e5402a1c"
+  upstream: emilkowalski/skills@64eb3deb9a5fbfa041faf783e0bc3fd635872e9c
+  upstream_jakub_krehel: "jakubkrehel/skills@672ae44ace6aaed65b86cbb1e2fd6fbea0e79578"
 ---
 
 <!-- Modified by Flow Copilot from emilkowalski/skills. -->
@@ -16,9 +16,10 @@ Use the target project's stack, design tokens, and installed libraries to select
 
 ## Choose a source
 
-- For motion — building, reviewing, auditing, or naming animations, gestures, and transitions on the web or in Expo — start with Emil Kowalski's workflows. [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md) holds the shared philosophy.
-- For static interface quality — UI polish, typography, color, layout, accessibility, and product copy — use the matching Jakub Krehel `better-*` workflow. [better-interface](references/jakub-krehel/better-interface/index.md) combines them into one review.
-- When both sources cover a topic, such as animation in `better-ui` or typography in `apple-design`, prefer the source whose focus matches the task and keep the project's existing tokens.
+- For motion in Expo, choreography of many elements, gestures, and animation performance, use Emil Kowalski's workflows, such as `animate-expo`, `choreograph`, `gestures`, and `animation-performance`. [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md) holds the shared philosophy.
+- For web motion recipes and motion reviews, use either Emil Kowalski's `animate` and `review-animations` or Jakub Krehel's [better-motion](references/jakub-krehel/better-motion/index.md).
+- For static interface quality, such as UI polish, typography, color, layout, accessibility, and product copy, use the matching Jakub Krehel `better-*` workflow. [better-interface](references/jakub-krehel/better-interface/index.md) combines them into one review.
+- When both sources cover a topic, such as motion in `better-motion` and `animate`, or typography in `better-typography` and `apple-design`, select one workflow. Use its values, for example stagger timing and drag bounce, because the sources do not agree on them. Keep the project's existing tokens.
 
 A former upstream skill name, such as `review-animations` or `better-colors`, now refers to its index.md reference in the same source directory. Those workflows are available whenever this skill is installed; load them when an imported instruction asks for another skill. Relative paths remain relative to the imported file.
 
@@ -35,15 +36,20 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 - [apple-design](references/emil-kowalski/apple-design/index.md): Apple's approach to interface design and fluid, physical motion, translated for the web.
 - [ask-sonner](references/emil-kowalski/ask-sonner/index.md): Guide to Sonner, the React toast library — install and wire up the Toaster, pick the right toast() call, promise and loading toasts, updating, dismissing and persisting toasts, styling, theming and icons, positioning and multiple toasters.
 - [break-ui](references/emil-kowalski/break-ui/index.md): Try to break a piece of UI by feeding it worst-case data — long names, unbreakable emails, one-letter names, missing fields, huge counts, zero items, long labels, non-Latin text, emoji, extreme numbers — then render it behind a "Demo data / Worst case" toggle and report everything that broke, with the fix for each.
-- [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md): This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.
+- [choreograph](references/emil-kowalski/choreograph/index.md): Coordinate several elements that animate together — decide what moves, in what order, how much they overlap, and what stays still — so a group reads as one intentional motion instead of a pile of separate animations.
+- [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md): Emil Kowalski's design-engineering philosophy for UI polish, component design, animation decisions, and the invisible details that make software feel great.
 - [find-animation-opportunities](references/emil-kowalski/find-animation-opportunities/index.md): Search a codebase or UI for places that don't animate but should, and reject everything that shouldn't.
+- [gestures](references/emil-kowalski/gestures/index.md): Build drag, swipe, and sheet interactions that track the finger 1:1 and stay interruptible.
 - [improve-animations](references/emil-kowalski/improve-animations/index.md): Survey a codebase's animation and motion code as a senior motion advisor, then produce a prioritized audit and self-contained implementation plans for other agents (or cheaper models) to execute.
 - [mobile-native](references/emil-kowalski/mobile-native/index.md): Make a web app feel native on a phone — the small CSS and meta-tag fixes that separate "a website in a browser" from something that feels installed.
+- [remove-animations](references/emil-kowalski/remove-animations/index.md): Find the animations an interface doesn't need and remove them — motion on keyboard actions, high-frequency surfaces, functional data, and decoration with no purpose — then clean up what they leave behind.
 - [write-swift](references/emil-kowalski/write-swift/index.md): How to write modern Swift well — modeling with value types, Swift 6 data-race safety and approachable concurrency (@concurrent, main-actor-by-default, actors, task groups), protocols and generics (some vs any), API design, performance and ARC, Swift Testing, macros, and the modern language features agents don't know about yet.
 
 Only when the user explicitly asks for them by name or purpose:
 
-- [pick-ui-library](references/emil-kowalski/pick-ui-library/index.md): Pick the right library for a given frontend task from a curated, opinionated list — numbers, OTP inputs, charts, command menus, virtualization, drag and drop, toasts, state, styling, and more.
+- [ask-emil](references/emil-kowalski/ask-emil/index.md): Ask which skill or flow fits your situation.
+- [learn-taste](references/emil-kowalski/learn-taste/index.md): Turn a session's design corrections into rules, with their why, in DESIGN.md, a project skill, or a lint check.
+- [pick-ui-library](references/emil-kowalski/pick-ui-library/index.md): Pick the library for a frontend task from a curated list — primitives, toasts, drawers, command menus, OTP, numbers, charts, virtualization, drag and drop, state, styling.
 - [prototype](references/emil-kowalski/prototype/index.md): Build multiple genuinely different versions of a UI piece you describe, rendered behind a visual picker so you can flip through them live and promote the one that feels right.
 - [review-animations](references/emil-kowalski/review-animations/index.md): Reviews animation and motion code against a high craft bar derived from Emil Kowalski's design engineering philosophy.
 
@@ -51,18 +57,20 @@ Only when the user explicitly asks for them by name or purpose:
 
 - [better-accessibility](references/jakub-krehel/better-accessibility/index.md): Reviews and fixes keyboard and focus behavior, ARIA, accessible names, forms, screen-reader announcements, motion and zoom against WCAG 2.2.
 - [better-colors](references/jakub-krehel/better-colors/index.md): Builds and checks color systems by generating palettes, naming semantic tokens, converting between formats and measuring contrast.
-- [better-interface](references/jakub-krehel/better-interface/index.md): Reviews a screen, flow or whole interface across accessibility, layout, writing, typography, color and UI polish, and returns one ranked report.
+- [better-interface](references/jakub-krehel/better-interface/index.md): Reviews a screen, flow or whole interface across accessibility, layout, writing, typography, color, UI polish and motion, and returns one ranked report.
 - [better-layout](references/jakub-krehel/better-layout/index.md): Sets grouping, alignment, reading order, responsive structure and room for translated text, so a layout holds up when it is resized, translated or mirrored.
+- [better-motion](references/jakub-krehel/better-motion/index.md): Decides what should animate and builds it, with exact values for duration, easing, scale and distance and recipes for enters, exits, icon swaps, shared layout animation and drag.
 - [better-typography](references/jakub-krehel/better-typography/index.md): Sets and reviews how text renders, from the type scale and spacing to font features, wrapping, truncation and punctuation.
-- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes surfaces, icons and motion with exact values for border radius, optical alignment, shadows, icon states and animation.
+- [better-ui](references/jakub-krehel/better-ui/index.md): Polishes surfaces and icons with exact values for border radius, optical alignment, shadows and icon states.
 - [better-writing](references/jakub-krehel/better-writing/index.md): Writes and reviews interface copy, from labels and errors to empty states and confirmations, so it matches the product's voice and tells people what to do next.
 - [build-design](references/jakub-krehel/build-design/index.md): Builds UI from a Figma file or a design image so it matches the design, using the project's existing tokens and components.
-- [teardown](references/jakub-krehel/teardown/index.md): Creates technical illustrations of physical objects and of how things work, such as display pixels or interface layers, with coherent views, fine linework and part fills.
 
 Only when the user explicitly asks for them by name or purpose:
 
+- [afk](references/jakub-krehel/afk/index.md): Works through a project while you're away, finding improvements and new ideas, building the best of them on a local branch and leaving a report for when you're back.
 - [break](references/jakub-krehel/break/index.md): Renders a component you choose under every scenario that can reach it on a temporary page and stress tests it.
 - [explain-interface](references/jakub-krehel/explain-interface/index.md): Explains how a website, a visual effect or an animation was built, from a live URL or a screenshot.
-- [interface-review](references/jakub-krehel/interface-review/index.md): Reviews a branch, pull request or uncommitted change for the interface problems it introduced or regressed, across accessibility, layout, writing, typography, color and UI.
+- [interface-review](references/jakub-krehel/interface-review/index.md): Reviews a branch, pull request or uncommitted change for the interface problems it introduced or regressed, across accessibility, layout, writing, typography, color, UI and motion.
 - [state-machine](references/jakub-krehel/state-machine/index.md): Renders every state of a component you choose on a throwaway page, with mock data and a switcher, so you can work on each state.
+- [upskill](references/jakub-krehel/upskill/index.md): Studies a project and your past agent sessions on it, proposes the skills, hooks and automations that would have saved you the most time, then builds the ones you pick.
 - [variant](references/jakub-krehel/variant/index.md): Builds multiple variants of a component you're working on and helps you iterate and pick one.

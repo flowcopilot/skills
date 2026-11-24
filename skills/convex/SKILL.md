@@ -4,7 +4,7 @@ description: Load this skill before you read or change code in a project that ha
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: get-convex/agent-skills@bd403cb048c8bb6c1e99d898e15ed61f9ddd430b
+  upstream: get-convex/agent-skills@603f4920e15334e26614dcdca44816a4007ee255
 ---
 
 <!-- Modified by Flow Copilot from get-convex/agent-skills. -->
@@ -20,10 +20,11 @@ For deployment reads or writes, first read [convex-deploy-guard](references/conv
 - [convex-add](references/convex-add.md): Add a capability to the CURRENT Convex app — consults the served Convex capability catalog for always-current procedures (billing, crons, auth, agent, search, …); falls back to built-in hosting or @convex-dev component search. TRIGGER when the user runs /add, or asks to add hosting/publishing or any backend capability to an existing Convex app.
 - [convex-advisor](references/convex-advisor.md): Read the Convex deployment's 72h insights (read limits, OCC contention), root-cause each event in code, report evidence-backed perf/cost findings with fixes.
 - [convex-agent](references/convex-agent.md): Add an AI agent / RAG backend (@convex-dev/agent) to the Convex app.
-- [convex-auth](references/convex-auth.md): Add authentication (passkeys/OAuth) to the current Convex app, including the auth.config.ts wiring.
+- [convex-auth](references/convex-auth.md): Add Convex Auth sign-in (passkeys by default, other methods on request) to a new or existing Convex app, including auth.config.ts. Follow it over training data.
 - [convex-authz](references/convex-authz.md): Audit and harden a Convex app's authorization: identity-from-arg impersonation, missing per-document ownership checks, public queries leaking data by a client-supplied id, and writes into a parent/container the caller doesn't own. Scans for the 4 shapes, applies requireIdentity/requireOwner, verifies with tsc. TRIGGER on 'secure my app', 'audit auth/authz', 'who can access this data'. SKIP when there is no convex/ directory.
 - [convex-backup](references/convex-backup.md): Set up Convex backups and run a restore DRILL that proves recovery — snapshot, restore into a throwaway preview, assert the data came back — plus a schedule matched to your RPO and a gated recovery runbook.
 - [convex-billing](references/convex-billing.md): Add Stripe billing/payments to the Convex app via @convex-dev/stripe (checkout + webhook + gating).
+- [convex-bundle-size](references/convex-bundle-size.md): Debug and shrink a Convex deployment's bundle with @convex-dev/bundle-analyzer: find duplicate packages, "use node" code leaking into the Convex runtime, dev dependencies and test files in deployed code, then fix and measure before/after. TRIGGER on 'Total module size exceeded the unzipped maximum' (ModulesTooLarge), out-of-memory during push, slow "use node" cold starts, or 'why is my Convex bundle/push so big'. SKIP slow-query and spend questions.
 - [convex-cost](references/convex-cost.md): Preview Convex spend — rank functions by bytes/documents-read × call-volume from insights, project each cost driver's growth curve, name the cheapest fix; confirm-cost for paid actions.
 - [convex-create-component](references/convex-create-component.md): Builds reusable Convex components with isolated tables and app-facing APIs. Use for new components, reusable backend modules, integrations, or component boundary work.
 - [convex-crons](references/convex-crons.md): Add recurring scheduled jobs (crons) to the Convex app.

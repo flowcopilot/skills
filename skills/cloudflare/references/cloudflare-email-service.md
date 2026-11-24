@@ -68,3 +68,7 @@ Read the reference that matches your situation. You don't need all of them.
 - **[cloudflare-email-service/routing.md](cloudflare-email-service/routing.md)** — Inbound `email()` handler, forwarding, replying, parsing. For receiving emails.
 - **[cloudflare-email-service/cli-and-mcp.md](cloudflare-email-service/cli-and-mcp.md)** — Domain setup, wrangler commands, MCP tools. For first-time setup.
 - **[cloudflare-email-service/deliverability.md](cloudflare-email-service/deliverability.md)** — SPF/DKIM/DMARC, bounces, suppressions, best practices.
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [cloudflare-email-service/skill-feedback.md](cloudflare-email-service/skill-feedback.md).

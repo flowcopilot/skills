@@ -12,7 +12,7 @@ Before changing anything, inspect `package.json`, the Expo app config, `eas.json
 
 - Preserve existing dynamic or platform-specific app configuration.
 - If `eas.json` exists, preserve its profiles and existing channel assignments. The CLI adds a channel matching the profile name only to build profiles that do not already have one.
-- If `eas.json` is absent, do not create it by hand. The CLI may direct the user to run `eas build:configure` separately.
+- If `eas.json` is absent, do not create it by hand. The CLI may direct the user to run `npx --yes eas-cli@latest build:configure` separately.
 - With tracked native projects, expect the CLI to synchronize the platform's native Update configuration. Without them, expect Continuous Native Generation to apply the native configuration during a later build.
 
 Detect the Expo SDK version before installing packages or interpreting version-specific behavior.
@@ -26,10 +26,10 @@ npx expo install expo-updates
 Configure from the project root:
 
 ```bash
-npx eas-cli@latest update:configure
+npx --yes eas-cli@latest update:configure
 ```
 
-Use `eas update:configure` rather than manually inventing `updates.url`, `runtimeVersion`, native metadata, or build-profile channels. The command understands EAS project linking, Continuous Native Generation, and projects with committed native directories. Review and explain its resulting diff.
+Use `npx --yes eas-cli@latest update:configure` rather than manually inventing `updates.url`, `runtimeVersion`, native metadata, or build-profile channels. The command understands EAS project linking, Continuous Native Generation, and projects with committed native directories. Review and explain its resulting diff.
 
 If the command cannot proceed because the project is not linked or the user has not authorized the required remote operation, stop after any independently valid package installation and explain what remains. Do not partially reproduce `update:configure` by adding a runtime-version policy, config plugin, update URL, or channels by hand.
 
@@ -52,7 +52,7 @@ installed build (channel: production, runtime: 1.1.1, platform: ios)
   -> newest update for runtime 1.1.1 and ios
 ```
 
-Channels and branches commonly have the same name, but they are separate objects. `eas channel:edit` changes a channel's server-side branch mapping for every build on that channel. It does not change an individual installation's embedded channel.
+Channels and branches commonly have the same name, but they are separate objects. `npx --yes eas-cli@latest channel:edit` changes a channel's server-side branch mapping for every build on that channel. It does not change an individual installation's embedded channel.
 
 Use this model to make decisions, but explain only the concepts needed for the user's request rather than reciting the entire model every time.
 
@@ -69,13 +69,13 @@ Do not change the project's runtime-version policy as an incidental fix. Explain
 Check the current CLI help before relying on remembered flags:
 
 ```bash
-npx eas-cli@latest update --help
+npx --yes eas-cli@latest update --help
 ```
 
 For the common channel-based flow:
 
 ```bash
-npx eas-cli@latest update \
+npx --yes eas-cli@latest update \
   --channel <channel> \
   --message "<message>" \
   --environment <environment>
@@ -132,9 +132,9 @@ Never bypass a compatibility or anti-bricking safeguard merely to make an update
 - Current EAS CLI reference: https://docs.expo.dev/eas/cli.md
 
 ## Submitting Feedback
-If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+You can voluntarily report errors, misleading or outdated information in this skill, so Expo can improve it:
 ```bash
 npx --yes @expo/agent-cli@latest feedback --category skills --subject "eas-update" --message "<actionable feedback>"
 ```
-Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
-If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.
+Use `--category agent-cli` for a problem with the agent CLI, and `--category evals` when an agent repeatedly fails at an Expo task. Run `feedback --help` for subjects and the data that the command sends.
+Each report goes to Expo with project and environment details. Show the user the message, and send it only if the user agrees. If you cannot ask the user, do not send it. Do not include secrets or personal data.

@@ -33,3 +33,7 @@ Check the [response and streaming rules](https://developers.cloudflare.com/cloud
 - [cloudflare-one](cloudflare-one.md): Gateway policy design, traffic paths, identity, TLS, and rollout.
 - [workers-best-practices](workers-best-practices.md): streaming, bindings, generated environment types, background work, observability, and runtime tests.
 - [CLI selection](../SKILL.md#choose-the-cli): choose the existing `cf-cli` or [wrangler](wrangler.md) reference for project setup and deployment.
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [gateway-workers/skill-feedback.md](gateway-workers/skill-feedback.md).

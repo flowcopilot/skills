@@ -52,7 +52,7 @@ Key settings:
 Build iOS dev client and submit to TestFlight in one command:
 
 ```bash
-eas build -p ios --profile development --submit
+npx --yes eas-cli@latest build -p ios --profile development --submit
 ```
 
 This will:
@@ -73,10 +73,10 @@ Build a development client on your machine:
 
 ```bash
 # iOS (requires Xcode)
-eas build -p ios --profile development --local
+npx --yes eas-cli@latest build -p ios --profile development --local
 
 # Android
-eas build -p android --profile development --local
+npx --yes eas-cli@latest build -p android --profile development --local
 ```
 
 Local builds output:
@@ -111,23 +111,23 @@ adb install build.apk
 
 ```bash
 # iOS only
-eas build -p ios --profile development
+npx --yes eas-cli@latest build -p ios --profile development
 
 # Android only
-eas build -p android --profile development
+npx --yes eas-cli@latest build -p android --profile development
 
 # Both platforms
-eas build --profile development
+npx --yes eas-cli@latest build --profile development
 ```
 
 ## Checking Build Status
 
 ```bash
 # List recent builds
-eas build:list
+npx --yes eas-cli@latest build:list
 
 # View build details
-eas build:view
+npx --yes eas-cli@latest build:view
 ```
 
 ## Using the Dev Client
@@ -147,33 +147,32 @@ npx expo start --dev-client
 # Scan QR code with dev client or enter URL manually
 ```
 
-When you launch the dev client yourself to screenshot or drive it, skip the onboarding sheet, the dev menu at launch, and the Tools button. On SDK 58+, Expo CLI does this for launches it starts from a non-interactive shell; for a URL you open yourself, use `<scheme>://?__expo_url=<encoded dev server URL>&__expo_disable_onboarding=1&__expo_disable_fab=1&__expo_disable_auto_launch=1`. On SDK 57 and earlier, launch the iOS app with the `-EXDevMenu*` launch arguments, and on Android open `<scheme>://expo-development-client/?url=<encoded dev server URL>&disableOnboarding=1&disableFab=1&disableAutoLaunch=1`. See `../expo-overview/expo-dev-client/launch-without-dev-menu.md` for the exact commands.
+When you launch the dev client yourself to screenshot or drive it, skip the onboarding sheet, the dev menu at launch, and the Tools button. On SDK 58+, Expo CLI does this for launches it starts from a non-interactive shell; for a URL you open yourself, use `<scheme>://?__expo_url=<encoded dev server URL>&__expo_disable_onboarding=1&__expo_disable_fab=1&__expo_disable_auto_launch=1`. On SDK 57 and earlier, launch the iOS app with the `-EXDevMenu*` launch arguments, and on Android open `<scheme>://expo-development-client/?url=<encoded dev server URL>&disableOnboarding=1&disableFab=1&disableAutoLaunch=1`. See `expo-overview/launch-without-dev-menu.md` for the exact commands.
 
 ## Troubleshooting
 
 **Build fails with signing errors:**
 
 ```bash
-eas credentials
+npx --yes eas-cli@latest credentials
 ```
 
 **Clear build cache:**
 
 ```bash
-eas build -p ios --profile development --clear-cache
+npx --yes eas-cli@latest build -p ios --profile development --clear-cache
 ```
 
 **Check EAS CLI version:**
 
 ```bash
-eas --version
-eas update
+npx --yes eas-cli@latest --version
 ```
 
 ## Submitting Feedback
-If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+You can voluntarily report errors, misleading or outdated information in this skill, so Expo can improve it:
 ```bash
 npx --yes @expo/agent-cli@latest feedback --category skills --subject "expo-dev-client" --message "<actionable feedback>"
 ```
-Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
-If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.
+Use `--category agent-cli` for a problem with the agent CLI, and `--category evals` when an agent repeatedly fails at an Expo task. Run `feedback --help` for subjects and the data that the command sends.
+Each report goes to Expo with project and environment details. Show the user the message, and send it only if the user agrees. If you cannot ask the user, do not send it. Do not include secrets or personal data.

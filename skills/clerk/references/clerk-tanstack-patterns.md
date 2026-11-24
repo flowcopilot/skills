@@ -4,21 +4,21 @@
 
 ## What Do You Need?
 
-| Task | Reference |
-|------|-----------|
-| Protect routes with beforeLoad | clerk-tanstack-patterns/router-guards.md |
-| Auth in createServerFn | clerk-tanstack-patterns/server-functions.md |
-| Pass auth to loaders | clerk-tanstack-patterns/loaders.md |
-| Configure Vite + Clerk middleware | clerk-tanstack-patterns/server-setup.md |
+| Task                              | Reference                      |
+| --------------------------------- | ------------------------------ |
+| Protect routes with beforeLoad    | clerk-tanstack-patterns/router-guards.md    |
+| Auth in createServerFn            | clerk-tanstack-patterns/server-functions.md |
+| Pass auth to loaders              | clerk-tanstack-patterns/loaders.md          |
+| Configure Vite + Clerk middleware | clerk-tanstack-patterns/server-setup.md     |
 
 ## References
 
-| Reference | Description |
-|-----------|-------------|
-| `clerk-tanstack-patterns/router-guards.md` | beforeLoad auth redirect |
-| `clerk-tanstack-patterns/server-functions.md` | createServerFn with auth() |
-| `clerk-tanstack-patterns/loaders.md` | Auth context in loaders |
-| `clerk-tanstack-patterns/server-setup.md` | Vite and request middleware setup |
+| Reference                        | Description                       |
+| -------------------------------- | --------------------------------- |
+| `clerk-tanstack-patterns/router-guards.md`    | beforeLoad auth redirect          |
+| `clerk-tanstack-patterns/server-functions.md` | createServerFn with auth()        |
+| `clerk-tanstack-patterns/loaders.md`          | Auth context in loaders           |
+| `clerk-tanstack-patterns/server-setup.md`     | Vite and request middleware setup |
 
 ## Setup
 
@@ -27,12 +27,14 @@ npm install @clerk/tanstack-react-start
 ```
 
 `.env`:
+
 ```
 VITE_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
 ```
 
 `src/start.ts` (request middleware):
+
 ```typescript
 import { clerkMiddleware } from '@clerk/tanstack-react-start/server'
 import { createCsrfMiddleware, createStart } from '@tanstack/react-start'
@@ -49,6 +51,7 @@ export const startInstance = createStart(() => {
 ```
 
 `src/routes/__root.tsx` — wrap with `<ClerkProvider>`:
+
 ```tsx
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 
@@ -56,9 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <ClerkProvider>
-          {children}
-        </ClerkProvider>
+        <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>
   )
@@ -97,7 +98,7 @@ export const Route = createFileRoute('/dashboard')({
 ## Common Pitfalls
 
 | Symptom | Cause | Fix |
-|---------|-------|-----|
+| --- | --- | --- |
 | `auth()` throws "without configuring the middleware" | Missing `clerkMiddleware` in start.ts | Add it after CSRF middleware in `requestMiddleware` |
 | `redirect` not thrown | Using `return` instead of `throw` | `throw redirect(...)` in TanStack |
 | Wrong import for `auth` | Mixing client/server imports | Server: `@clerk/tanstack-react-start/server` |

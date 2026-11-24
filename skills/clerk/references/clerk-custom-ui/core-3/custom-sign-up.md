@@ -12,11 +12,11 @@ import { useSignUp } from '@clerk/nextjs' // or @clerk/react, @clerk/expo
 const { signUp, errors, fetchStatus } = useSignUp()
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `signUp` | `SignUpFuture` | Sign-up object with namespaced methods |
-| `errors` | `Errors<SignUpFields>` | Structured error object |
-| `fetchStatus` | `'idle' \| 'fetching'` | Network request status |
+| Property      | Type                   | Description                            |
+| ------------- | ---------------------- | -------------------------------------- |
+| `signUp`      | `SignUpFuture`         | Sign-up object with namespaced methods |
+| `errors`      | `Errors<SignUpFields>` | Structured error object                |
+| `fetchStatus` | `'idle' \| 'fetching'` | Network request status                 |
 
 ## Sign-Up Methods
 
@@ -26,8 +26,8 @@ const { signUp, errors, fetchStatus } = useSignUp()
 const { error } = await signUp.password({
   emailAddress: 'user@example.com',
   password: 'securePassword123',
-  firstName: 'Jane',  // optional
-  lastName: 'Doe',    // optional
+  firstName: 'Jane', // optional
+  lastName: 'Doe', // optional
 })
 ```
 
@@ -99,9 +99,7 @@ After successful sign-up and verification, call `finalize()` to activate the ses
 ```typescript
 await signUp.finalize({
   navigate: async ({ session, decorateUrl }) => {
-    const destination = session.currentTask
-      ? `/sign-up/tasks/${session.currentTask.key}`
-      : '/'
+    const destination = session.currentTask ? `/sign-up/tasks/${session.currentTask.key}` : '/'
     const url = decorateUrl(destination)
     // decorateUrl may return an absolute URL for Safari ITP
     if (url.startsWith('http')) {
@@ -134,12 +132,12 @@ const { signUp, errors } = useSignUp()
 
 // Field-level errors
 errors?.fields?.emailAddress // { code, message, longMessage? }
-errors?.fields?.password     // { code, message, longMessage? }
-errors?.fields?.firstName    // { code, message, longMessage? }
-errors?.fields?.lastName     // { code, message, longMessage? }
-errors?.fields?.phoneNumber  // { code, message, longMessage? }
-errors?.fields?.username     // { code, message, longMessage? }
-errors?.fields?.code         // { code, message, longMessage? }
+errors?.fields?.password // { code, message, longMessage? }
+errors?.fields?.firstName // { code, message, longMessage? }
+errors?.fields?.lastName // { code, message, longMessage? }
+errors?.fields?.phoneNumber // { code, message, longMessage? }
+errors?.fields?.username // { code, message, longMessage? }
+errors?.fields?.code // { code, message, longMessage? }
 
 // Global errors
 errors?.global // ClerkGlobalHookError[] | null

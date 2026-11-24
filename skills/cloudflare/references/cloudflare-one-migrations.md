@@ -105,3 +105,7 @@ Pilot plan:
 Validation:
 Rollback:
 ```
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [cloudflare-one-migrations/skill-feedback.md](cloudflare-one-migrations/skill-feedback.md).

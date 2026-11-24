@@ -7,7 +7,7 @@ Send, list, revoke. Backend API methods live on `clerkClient().organizations.*`.
 > **Framework wrappers.** Method signatures on `clerk.organizations.*` are identical across SDKs; only the wrapper that gives you the client differs:
 >
 > | SDK | Get the client | Get the auth context |
-> |---|---|---|
+> | --- | --- | --- |
 > | `@clerk/nextjs/server` | `const clerk = await clerkClient()` | `const { userId, has } = await auth()` |
 > | `@clerk/backend` (agnostic) | `const clerk = createClerkClient({ secretKey })` | n/a (verify the session token yourself with `verifyToken` imported from `@clerk/backend`) |
 > | `@clerk/astro/server` | `const clerk = clerkClient(context)` | `const { userId } = context.locals.auth()` |
@@ -45,7 +45,7 @@ export async function inviteMember(emailAddress: string, role: string) {
 **Params:**
 
 | Param | Type | Notes |
-|-------|------|-------|
+| --- | --- | --- |
 | `organizationId` | `string` | Required |
 | `inviterUserId` | `string \| null` | Required. The user sending the invite. Pass `null` only for system-originated invites (rare). |
 | `emailAddress` | `string` | Required. Target email. |
@@ -73,8 +73,8 @@ Each item accepts the same optional fields as a single `createOrganizationInvita
 ```typescript
 const { data, totalCount } = await clerk.organizations.getOrganizationInvitationList({
   organizationId,
-  status: ['pending', 'accepted', 'revoked', 'expired'],  // any subset; defaults to ['pending']
-  limit: 50,         // max 500
+  status: ['pending', 'accepted', 'revoked', 'expired'], // any subset; defaults to ['pending']
+  limit: 50, // max 500
   offset: 0,
 })
 ```
@@ -89,7 +89,7 @@ Full status enum: `'pending' | 'accepted' | 'revoked' | 'expired'`. Skipping `st
 await clerk.organizations.revokeOrganizationInvitation({
   organizationId,
   invitationId,
-  requestingUserId: userId,  // the user doing the revoking
+  requestingUserId: userId, // the user doing the revoking
 })
 ```
 

@@ -87,3 +87,7 @@ Fetch the page before implementing. Installed `@next` types win over guesses.
 - Typecheck against installed `@next` types
 - No live secrets in sandbox env
 - Production preview hostnames need wildcard DNS on a custom domain when using those URL patterns
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [sandbox-next/skill-feedback.md](sandbox-next/skill-feedback.md).

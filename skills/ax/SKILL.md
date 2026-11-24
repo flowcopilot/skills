@@ -4,8 +4,8 @@ description: Load this skill before you read or change code in a project whose p
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: ax-llm/ax@7948e19213325e41f39ba0715ad8fd2a89714210
-  upstream_version: "25.4.6"
+  upstream: ax-llm/ax@f60ce12a5a7a0de6d7bf420400ca77934ea61504
+  upstream_version: "25.4.13"
 ---
 
 <!-- Modified by Flow Copilot from ax-llm/ax. -->

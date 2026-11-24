@@ -2,16 +2,7 @@
 
 # Spacing and sizing
 
-Units, a starting type scale, the heading mapping, line-height for wrapping text and text trimming.
-
-## Units
-
-| Unit | Behavior |
-| --- | --- |
-| `px` | Fixed |
-| `em` | Scales with the current font size |
-| `rem` | Scales with the root font size |
-| `%` on `font-size` | Relative to the parent's font size, behaves like `em` |
+A starting type scale, the heading mapping, line-height for wrapping text and text trimming.
 
 ## Type scale
 
@@ -61,7 +52,7 @@ In Tailwind, centralize the per-level classes in a component or `@layer base` ra
 
 ## Text trimming with text-box
 
-`text-box` takes which edges to trim (`trim-both`, `trim-start`, `trim-end`) and where:
+`text-box` takes which edges to trim (`trim-both`, `trim-start`, `trim-end`) and where. Name both edges, start then end. `cap`, `ex` and `alphabetic` need a second edge value, so `trim-start cap` is dropped and `trim-start cap text` is not.
 
 | Keyword | Trims at |
 | --- | --- |
@@ -77,12 +68,12 @@ In Tailwind, centralize the per-level classes in a component or `@layer base` ra
 
 /* trim only the top */
 .heading {
-  text-box: trim-start cap;
+  text-box: trim-start cap text;
 }
 
 /* trim only the bottom */
 .label {
-  text-box: trim-end alphabetic;
+  text-box: trim-end text alphabetic;
 }
 ```
 

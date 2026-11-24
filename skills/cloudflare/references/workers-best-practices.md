@@ -24,6 +24,10 @@ Use today's date for new Workers. Encourage periodic updates for existing Worker
 
 Enable [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/index.md) and [Traces](https://developers.cloudflare.com/workers/observability/traces/index.md) when creating or preparing a Worker for production. Set `observability.enabled` and `observability.traces.enabled` to `true`; the top-level setting alone does not enable traces. Use structured JSON logging and configure sampling for the workload. During reviews, flag missing logs or traces. See the [configuration example](workers-best-practices/configuration.md#enable-workers-logs-and-traces).
 
+## Place Compute Near Regional Databases
+
+For Workers that make multiple sequential queries to one regional database, configure explicit placement matching the database's provider and region before deployment. Ask for missing location information, preserve existing placement choices, and verify handler eligibility and deployed request duration. See [database placement](workers-best-practices/configuration.md#place-compute-near-regional-databases).
+
 ## Anti-Patterns to Flag
 
 | Anti-pattern | Consequence and preferred pattern |
@@ -55,3 +59,7 @@ This skill covers Workers-specific best practices and code review. For related t
 - **Durable Objects**: load the [durable-objects](durable-objects.md) reference
 - **Workflows**: see [Rules of Workflows](https://developers.cloudflare.com/workflows/build/rules-of-workflows/index.md)
 - **CLI commands**: load the [cf-cli](cf-cli.md) reference, or the [wrangler](wrangler.md) reference in a project with a Wrangler configuration file
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [workers-best-practices/skill-feedback.md](workers-best-practices/skill-feedback.md).

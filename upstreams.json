@@ -1,7 +1,7 @@
 {
   "ax": {
     "repository": "https://github.com/ax-llm/ax.git",
-    "revision": "7948e19213325e41f39ba0715ad8fd2a89714210",
+    "revision": "f60ce12a5a7a0de6d7bf420400ca77934ea61504",
     "workflows": [
       "ax-agent",
       "ax-agent-context",
@@ -25,15 +25,17 @@
   },
   "cloudflare": {
     "repository": "https://github.com/cloudflare/skills.git",
-    "revision": "86505e44f87d801aa1864a3c4109e9a8ae5c409f",
+    "revision": "14472d57ac968d1a0322a568077277209b259183",
     "workflows": [
       "agents-sdk",
       "basin",
       "cf-cli",
+      "cloudflare-app-bootstrap",
       "cloudflare-email-service",
       "cloudflare-one",
       "cloudflare-one-migrations",
       "durable-objects",
+      "frameworks-on-cloudflare",
       "gateway-workers",
       "k2",
       "nextjs-on-cloudflare",
@@ -43,13 +45,14 @@
       "turnstile-spin",
       "web-perf",
       "workers-best-practices",
+      "workers-development",
       "workers-profiling",
       "wrangler"
     ]
   },
   "convex": {
     "repository": "https://github.com/get-convex/agent-skills.git",
-    "revision": "bd403cb048c8bb6c1e99d898e15ed61f9ddd430b",
+    "revision": "603f4920e15334e26614dcdca44816a4007ee255",
     "workflows": [
       "convex-add",
       "convex-advisor",
@@ -58,6 +61,7 @@
       "convex-authz",
       "convex-backup",
       "convex-billing",
+      "convex-bundle-size",
       "convex-cost",
       "convex-create-component",
       "convex-crons",
@@ -87,7 +91,7 @@
   },
   "expo": {
     "repository": "https://github.com/expo/skills.git",
-    "revision": "8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db",
+    "revision": "88d9bd79f3fa8452a778fbac65bae162c0b32ce4",
     "workflows": [
       "eas-app-stores",
       "eas-hosting",
@@ -117,7 +121,7 @@
   "software-mansion": {
     "repository": "https://github.com/software-mansion-labs/skills.git",
     "bundle": "react-native",
-    "revision": "58afa0a09b01dc47819af8fd48bb062561414108",
+    "revision": "93a1d83097245f50a61fc2ee7a85b953c4f1be1a",
     "workflows": [
       "software-mansion/detour/detour-onboarding/index",
       "software-mansion/detour/migrate-to-detour/index",
@@ -142,6 +146,7 @@
       "software-mansion/react-native-best-practices/references/on-device-ai/index",
       "software-mansion/react-native-best-practices/references/rich-text/index",
       "software-mansion/react-native-best-practices/references/svg/index",
+      "software-mansion/react-native-executorch/index",
       "software-mansion/react-native-moq/index",
       "software-mansion/rnrepo/index",
       "software-mansion/typegpu/index"
@@ -165,13 +170,14 @@
   },
   "clerk": {
     "repository": "https://github.com/clerk/skills.git",
-    "revision": "55206a48259bb327090ec5dbd22cfb5d4fa9de25",
+    "revision": "e9a94f271affdfe9325da63d3267ff29d543fd7f",
     "workflows": [
       "clerk-backend-api",
       "clerk-billing",
       "clerk-cli",
       "clerk-custom-ui",
       "clerk-expo",
+      "clerk-migrate",
       "clerk-orgs",
       "clerk-react-patterns",
       "clerk-setup",
@@ -182,21 +188,26 @@
   },
   "emil-kowalski": {
     "repository": "https://github.com/emilkowalski/skills.git",
-    "revision": "2d228630ba1446365f614a108cb8252f1feda202",
+    "revision": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
     "workflows": [
       "emil-kowalski/animate-expo/index",
       "emil-kowalski/animate/index",
       "emil-kowalski/animation-performance/index",
       "emil-kowalski/animation-vocabulary/index",
       "emil-kowalski/apple-design/index",
+      "emil-kowalski/ask-emil/index",
       "emil-kowalski/ask-sonner/index",
       "emil-kowalski/break-ui/index",
+      "emil-kowalski/choreograph/index",
       "emil-kowalski/emil-design-eng/index",
       "emil-kowalski/find-animation-opportunities/index",
+      "emil-kowalski/gestures/index",
       "emil-kowalski/improve-animations/index",
+      "emil-kowalski/learn-taste/index",
       "emil-kowalski/mobile-native/index",
       "emil-kowalski/pick-ui-library/index",
       "emil-kowalski/prototype/index",
+      "emil-kowalski/remove-animations/index",
       "emil-kowalski/review-animations/index",
       "emil-kowalski/write-swift/index"
     ],
@@ -204,12 +215,14 @@
   },
   "jakub-krehel": {
     "repository": "https://github.com/jakubkrehel/skills.git",
-    "revision": "592aedc44d7d5b3e29740984252902f3e5402a1c",
+    "revision": "672ae44ace6aaed65b86cbb1e2fd6fbea0e79578",
     "workflows": [
+      "jakub-krehel/afk/index",
       "jakub-krehel/better-accessibility/index",
       "jakub-krehel/better-colors/index",
       "jakub-krehel/better-interface/index",
       "jakub-krehel/better-layout/index",
+      "jakub-krehel/better-motion/index",
       "jakub-krehel/better-typography/index",
       "jakub-krehel/better-ui/index",
       "jakub-krehel/better-writing/index",
@@ -218,14 +231,14 @@
       "jakub-krehel/explain-interface/index",
       "jakub-krehel/interface-review/index",
       "jakub-krehel/state-machine/index",
-      "jakub-krehel/teardown/index",
+      "jakub-krehel/upskill/index",
       "jakub-krehel/variant/index"
     ],
     "bundle": "design-engineering"
   },
   "pstack": {
     "repository": "https://github.com/cursor/plugins.git",
-    "revision": "4dd1d05818d19792e7cd6e818f1667f95f7e1dbe",
+    "revision": "005d8f6e8ec057b738adcd08a08b30db0478402d",
     "workflows": [
       "pstack/technical-writing/index",
       "pstack/unslop/index"
@@ -234,7 +247,7 @@
   },
   "matt-pocock": {
     "repository": "https://github.com/mattpocock/skills.git",
-    "revision": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+    "revision": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
     "workflows": [
       "matt-pocock/writing-for-agents/index"
     ],
@@ -243,23 +256,24 @@
   "agent-browser": {
     "repository": "https://github.com/vercel-labs/agent-browser.git",
     "bundle": "agent-surf",
-    "revision": "5868f7c05020e047c00e68e4abf9253cce864f41",
+    "revision": "0a923358ea989d7602f0d06507ad3447c62ffe9b",
     "workflows": [
       "agent-browser/agentcore/index",
       "agent-browser/core/index",
       "agent-browser/derive-client/index",
       "agent-browser/dogfood/index",
       "agent-browser/electron/index",
-      "agent-browser/protected-vercel-deployments/index",
+      "agent-browser/modern-web-guidance/index",
       "agent-browser/slack/index",
       "agent-browser/vercel-sandbox/index",
+      "agent-browser/vercel/index",
       "agent-browser/webmcp-gen/index"
     ]
   },
   "agent-device": {
     "repository": "https://github.com/callstack/agent-device.git",
     "bundle": "agent-surf",
-    "revision": "ff8c2285c808135b592e77f53ae3ce28d31786b8",
+    "revision": "63fe1b6fe91f9148f0be8a73ca7c357a563011db",
     "workflows": [
       "agent-device/agent-device/index",
       "agent-device/android-emulator/index",
@@ -270,7 +284,7 @@
   "agent-desktop": {
     "repository": "https://github.com/vercel-labs/agent-desktop.git",
     "bundle": "agent-surf",
-    "revision": "5261b5287b5208e7c4bf3713df6f66faaaf2c4cc",
+    "revision": "ce2ddf07226346818de2a1c6bae9869cfad142df",
     "workflows": [
       "agent-desktop/agent-desktop-ffi/index",
       "agent-desktop/agent-desktop-linux/index",
