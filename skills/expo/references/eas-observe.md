@@ -13,7 +13,7 @@ EAS Observe tracks startup, navigation, and custom-event performance from produc
 The five reference files in `eas-observe/` cover what people typically need this skill for:
 
 - **Adding EAS Observe to a project** → [`eas-observe/setup.md`](eas-observe/setup.md). Install, wrap the root layout (`AppMetricsRoot` on SDK 55, `ObserveRoot` on SDK 56+), mark the app interactive (global `markInteractive()` on SDK 55, the `useObserve()` hook or `<ObserveInteractiveMarker />` on SDK 56+), optional per-route navigation metrics through the Expo Router / React Navigation integrations, user-defined events via `Observe.logEvent` (SDK 56+), error reporting, and runtime configuration (sampling, dispatch, environments, custom endpoint).
-- **Querying metrics from the terminal** → [`eas-observe/queries.md`](eas-observe/queries.md). The `eas observe:*` commands — `metrics-summary`, `metrics`, `routes`, `events`, `session`, `versions`, `errors`, `event` — with flags, metric aliases, table layouts, JSON shapes, and common workflows. Also the matching `observe_*` tools in the Expo MCP Server, and how their inputs differ from the CLI flags.
+- **Querying metrics from the terminal** → [`eas-observe/queries.md`](eas-observe/queries.md). The `npx --yes eas-cli@latest observe:*` commands — `metrics-summary`, `metrics`, `routes`, `events`, `session`, `versions`, `errors`, `event` — with flags, metric aliases, table layouts, JSON shapes, and common workflows. Also the matching `observe_*` tools in the Expo MCP Server, and how their inputs differ from the CLI flags.
 - **Reading a dashboard or CLI output** → [`eas-observe/metrics.md`](eas-observe/metrics.md). Target thresholds per metric, what the automatic TTI params mean (`frameRate.*`, `device.*`, `network.*`), and diagnostic patterns for telling slow-but-smooth startup apart from main-thread contention, hard blocks, or throttled devices.
 - **Reporting problems from library integrations** → [`eas-observe/library-integrations.md`](eas-observe/library-integrations.md). The current and future integrations that report problems a library detects as events or errors, with their options, limits, and how to query the reports. Currently: `expo-image` (`expo-image.oversized` events for images decoded far larger than the screen) and `react-native-reanimated` (`reanimated.error` errors and optional `reanimated.warning` events).
 - **Shipping an Observe integration in a library** → [`eas-observe/third-party.md`](eas-observe/third-party.md). For package authors only (SDK 57+): optional peer dependency, config declaration merging, `Observe.registerIntegration()`, and event naming.
@@ -37,9 +37,9 @@ The five reference files in `eas-observe/` cover what people typically need this
 - Troubleshooting: https://docs.expo.dev/eas/observe/reference/troubleshooting/
 
 ## Submitting Feedback
-If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+You can voluntarily report errors, misleading or outdated information in this skill, so Expo can improve it:
 ```bash
 npx --yes @expo/agent-cli@latest feedback --category skills --subject "eas-observe" --message "<actionable feedback>"
 ```
-Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
-If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.
+Use `--category agent-cli` for a problem with the agent CLI, and `--category evals` when an agent repeatedly fails at an Expo task. Run `feedback --help` for subjects and the data that the command sends.
+Each report goes to Expo with project and environment details. Show the user the message, and send it only if the user agrees. If you cannot ask the user, do not send it. Do not include secrets or personal data.

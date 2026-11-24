@@ -4,7 +4,7 @@
 
 > **EAS service - costs apply.** EAS Hosting is a paid Expo Application Services product with free-tier limits; production deploys use your plan's request and bandwidth allowance. See https://expo.dev/pricing. Authoring API routes and exporting the web bundle are free and open source, and you can self-host the exported server output instead of EAS Hosting.
 
-EAS Hosting deploys your Expo **web app and API routes** to Expo's managed edge (Cloudflare Workers). Export the web bundle with `npx expo export -p web` and ship it with `eas deploy` - the same command deploys any Expo Router API routes bundled alongside it. This skill covers deploying a website, authoring API routes, and the hosting runtime; see the Deployment section below for the deploy workflow.
+EAS Hosting deploys your Expo **web app and API routes** to Expo's managed edge (Cloudflare Workers). Export the web bundle with `npx expo export -p web` and ship it with `npx --yes eas-cli@latest deploy` - the same command deploys any Expo Router API routes bundled alongside it. This skill covers deploying a website, authoring API routes, and the hosting runtime; see the Deployment section below for the deploy workflow.
 
 ## When to Use API Routes
 
@@ -157,7 +157,7 @@ export async function POST(request: Request) {
 Set environment variables:
 
 - **Local**: Create `.env` file (never commit)
-- **EAS Hosting**: Use `eas env:create` or Expo dashboard
+- **EAS Hosting**: Use `npx --yes eas-cli@latest env:create` or Expo dashboard
 
 ## CORS Headers
 
@@ -216,23 +216,22 @@ curl -X POST http://localhost:8081/api/users -H "Content-Type: application/json"
 ### Prerequisites
 
 ```bash
-npm install -g eas-cli
-eas login
+npx --yes eas-cli@latest login
 ```
 
 ### Deploy
 
-Deploying ships your web bundle and any Expo Router API routes together - `eas deploy` handles both. The export runs whether you have a full website, an API-routes-only backend, or both.
+Deploying ships your web bundle and any Expo Router API routes together - `npx --yes eas-cli@latest deploy` handles both. The export runs whether you have a full website, an API-routes-only backend, or both.
 
 ```bash
 # Export the web bundle (includes any API routes)
 npx expo export -p web
 
 # Deploy a preview (PR-style URL)
-npx eas-cli@latest deploy
+npx --yes eas-cli@latest deploy
 
 # Deploy to production
-npx eas-cli@latest deploy --prod
+npx --yes eas-cli@latest deploy --prod
 ```
 
 Everything lands on EAS Hosting (Cloudflare Workers).
@@ -241,7 +240,7 @@ Everything lands on EAS Hosting (Cloudflare Workers).
 
 ```bash
 # Create a secret
-eas env:create --name OPENAI_API_KEY --value sk-xxx --environment production
+npx --yes eas-cli@latest env:create --name OPENAI_API_KEY --value sk-xxx --environment production
 
 # Or use the Expo dashboard
 ```
@@ -418,9 +417,9 @@ export async function GET(request: Request) {
 - Log errors server-side for debugging
 
 ## Submitting Feedback
-If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+You can voluntarily report errors, misleading or outdated information in this skill, so Expo can improve it:
 ```bash
 npx --yes @expo/agent-cli@latest feedback --category skills --subject "eas-hosting" --message "<actionable feedback>"
 ```
-Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
-If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.
+Use `--category agent-cli` for a problem with the agent CLI, and `--category evals` when an agent repeatedly fails at an Expo task. Run `feedback --help` for subjects and the data that the command sends.
+Each report goes to Expo with project and environment details. Show the user the message, and send it only if the user agrees. If you cannot ask the user, do not send it. Do not include secrets or personal data.

@@ -180,3 +180,7 @@ Then day-to-day work uses **`sandbox-next`**.
 - Keeping pre-cutover process/terminal IDs after deploy
 - Forcing production cutover without user agreement
 - Putting live secrets in `setEnvVars` / launch `env`
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [sandbox-migrate-to-next/skill-feedback.md](sandbox-migrate-to-next/skill-feedback.md).

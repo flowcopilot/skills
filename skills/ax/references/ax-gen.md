@@ -160,6 +160,7 @@ for await (const chunk of stream) {
 - A new version starts on a validation or refusal retry, and when a later step replaces output an earlier step already emitted (for example after a field processor's feedback); the thought so far is re-emitted in the new version. Versions never decrease.
 - In TypeScript, partial JSON repair preserves string text such as `, t`, `, n`, trailing punctuation, and commas before brackets inside strings. Structural repair applies outside strings so these fragments do not change into literals or repeat in merged deltas.
 - A streamed `code` field drops its fences wherever the chunks split: a fence that may still be incomplete is held back, as a partial label is, so the merged deltas equal the non-streaming value.
+- Text accompanying streamed tool calls is retained in the complete assistant history and in the content parsed by later text chunks.
 
 ## Stopping And Cancellation
 
@@ -249,6 +250,11 @@ Rules:
 - A streamed delta never ends in half of a surrogate pair; a trailing high surrogate waits for its low half.
 
 ## Function Calling
+
+An unregistered tool name is answered with an error result for that call alone,
+including the available names. Other calls in the batch still run. The error
+text bypasses the result formatter; the model can choose a registered tool on
+its next step. This applies to both `forward()` and `streamingForward()`.
 
 ```typescript
 const result = await gen.forward(llm, { question: '...' }, {
@@ -480,6 +486,7 @@ Rules:
 
 - `AxGenerateError` includes `details` with `model` and `signature` for debugging.
 - A failed forward throws `AxGenerateError` with the message `Generate failed: <reason>` and the error it wraps as its `cause`. Exhausted validation, assertion or refusal retries give `Generate failed: Unable to fix validation error: <last error>`, ending with `LLM Output:` and the last attempt's answer (each sample's, joined with `---`). A response cut off at its token limit gives `Generate failed: Max tokens reached before completion`, streamed or not.
+- A refusal retry sends the request again without the refused turn, even when the refusal arrived mid-stream after content was already streamed, so the retried request ends on the same user or function-result message.
 - Errors are wrapped by type: a `ValidationError` or `AxAssertionError` outside the retries surfaces as it is, and any other failure is wrapped, whatever its message says.
 - `AxAIServiceAbortedError` is thrown on cancellation via `stop()` or `abortSignal`.
 - `strictMode: true`, given to the constructor or to the call (the call wins), requires an answer to open with its first required field's label: an unlabeled answer is retried with a correction instead of being read as a single-field answer.
@@ -526,6 +533,19 @@ gen.getChatLog(): readonly AxChatLogEntry[]
 ```
 
 ### getUsage()
+
+For Anthropic document citations, a `file` input accepts
+`{ source: { type: 'text', data }, title?, context?, citations: { enabled: true } }`
+as well as the other document source forms documented in `ax-ai.md`.
+Use a text signature; native structured JSON and document citations cannot be
+combined. Each round trip's `getChatLog()[i].textBlocks` retains the original
+output passages and their citations after both `forward()` and
+`streamingForward()`. Python, Java, C++, Go, and Rust accept the same document
+values. Their per-request log entries expose `text_blocks` with `result_index`
+and a flat `usage.citations` list. Log access is `get_chat_log()` in
+Python/C++/Rust, `getChatLog()` in Java, and `ChatLog` in Go.
+The TypeScript flat citation list in `getUsage()` retains source
+locations but does not replace these passage associations.
 
 Returns token usage aggregated by `(ai, model)` across all steps. When a provider reports prompt-cache usage, `promptTokens` is the uncached input portion and `cacheReadTokens` / `cacheCreationTokens` carry the cache counters. Reset with `resetUsage()`.
 
@@ -639,3 +659,8 @@ Generated Python, C++, and Rust expose `novel_f1_score`; Go exposes
 `NovelF1Score`; Java exposes `Ax.novelF1Score`. They share the same Core metric,
 including Unicode normalization and finite empty-input scores. The optimization
 examples show scoring a rationale returned by a real provider.
+
+`AxEvalUtil.f1Score(prediction, groundTruth)` is the ordinary F1: the same
+normalization and multiset overlap, but nothing is excluded, so stopwords count.
+Generated Python, C++, and Rust expose `f1_score`; Go exposes `F1Score`; Java
+exposes `Ax.f1Score`.

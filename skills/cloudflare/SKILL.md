@@ -1,10 +1,10 @@
 ---
 name: cloudflare
-description: Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.
+description: Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config, a cloudflare.config.ts file, or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler and the cf CLI, security, and networking.
 license: Apache-2.0
 metadata:
   author: flowcopilot
-  upstream: cloudflare/skills@86505e44f87d801aa1864a3c4109e9a8ae5c409f
+  upstream: cloudflare/skills@14472d57ac968d1a0322a568077277209b259183
 ---
 
 <!-- Modified by Flow Copilot from cloudflare/skills. -->
@@ -21,18 +21,21 @@ Use the Cloudflare CLI (`cf`) unless the project already uses Wrangler or the us
 
 - **The project has `wrangler.jsonc`, `wrangler.json`, or `wrangler.toml`, and no `cloudflare.config.ts`:** use Wrangler for development and deployment, and load the [wrangler](references/wrangler.md) reference. `cf` resource commands work alongside it. Run `cf migrate` only when the user asks.
 - **Every other project, including a new project or one with no Cloudflare configuration:** use `cf`. Load the [cf-cli](references/cf-cli.md) reference if it is installed; otherwise follow [Use cf with coding agents](https://developers.cloudflare.com/cf/agents/index.md). Do not install Wrangler or create a Wrangler configuration file.
+- **A new web-framework project:** follow the [frameworks-on-cloudflare](references/frameworks-on-cloudflare.md) reference. The `cf` docs do not yet cover creating framework projects, so it uses each framework's Workers guide.
 
-The product guidance below applies with either CLI. Where it names a Wrangler command or file, find the `cf` equivalent with `cf cli search "<task>"` or the [Wrangler to cf reference](https://developers.cloudflare.com/cf/wrangler/reference/index.md) instead of translating from memory.
+The product guidance below, and the documentation it links to, applies with either CLI. Many documentation pages show only Wrangler commands and configuration; in a `cf` project, do not run them or add a Wrangler configuration file. Use one CLI per project, apart from the `npx wrangler` commands the [cf-cli](references/cf-cli.md) reference lists as not yet supported by `cf`. Where guidance names a Wrangler command or file, find the `cf` equivalent with `cf cli search "<task>"` or the [Wrangler to cf reference](https://developers.cloudflare.com/cf/wrangler/reference/index.md) instead of translating from memory.
 
 ## Specialized workflows
 
 - [agents-sdk](references/agents-sdk.md): Build, debug, or review Cloudflare Agents SDK applications using the agents package.
 - [basin](references/basin.md): Build and troubleshoot Cloudflare Basin analytics workflows with Basin Pipelines, Basin Catalog, and Basin SQL. Use for streaming data into R2 Iceberg tables, managing catalogs, or querying those tables; also use for requests using the former Data Platform, Pipelines, R2 Data Catalog, or R2 SQL names.
 - [cf-cli](references/cf-cli.md): Cloudflare's official cf CLI (beta) for the public Cloudflare API and Workers projects. Use for finding and running Cloudflare commands from the terminal — sign-in and profiles, cf cli search, cf schema, cf deploy/dev/build, resource commands for DNS, zones, D1, KV, and R2 — and for choosing between cf and Wrangler in a project.
+- [cloudflare-app-bootstrap](references/cloudflare-app-bootstrap.md): Get a Cloudflare Workers app to a working local request by connecting its bindings, secrets, and initial data, then verifying real application behavior. Use for app setup or onboarding after the project exists; use frameworks-on-cloudflare or cf-cli to create or configure the project, and wrangler or cf-cli for isolated commands.
 - [cloudflare-email-service](references/cloudflare-email-service.md): Implement or troubleshoot Cloudflare Email Sending and Email Routing integrations and their delivery configuration.
-- [cloudflare-one](references/cloudflare-one.md): Design, configure, troubleshoot, or review Cloudflare One Zero Trust and SASE deployments. Use cloudflare-one-migrations for migration planning from other vendors.
+- [cloudflare-one](references/cloudflare-one.md): Design, configure, troubleshoot, or review Cloudflare One Zero Trust and SASE deployments. Use cloudflare-one-migrations for migration planning from other vendors. Also use when an agent, script, crawler, or other non-browser client needs to reach a webpage or API protected by Cloudflare Access.
 - [cloudflare-one-migrations](references/cloudflare-one-migrations.md): Assess and plan migrations from existing VPN, SWG, or SASE platforms to Cloudflare One, including policy mapping, parity gaps, and rollout.
 - [durable-objects](references/durable-objects.md): Build, debug, or review Cloudflare Durable Objects code for persistent state and coordination.
+- [frameworks-on-cloudflare](references/frameworks-on-cloudflare.md): Build, migrate, and deploy web-framework applications on Cloudflare Workers. Use when a framework project such as Astro, SvelteKit, React Router, TanStack Start, Nuxt, Hono, or a React or Vue SPA targets Cloudflare, or when a framework repository contains Workers deployment configuration.
 - [gateway-workers](references/gateway-workers.md): Build, debug, or review Cloudflare Workers invoked by the Forward action in Gateway HTTP policies, including the GatewayMiddleware entrypoint, Gateway types, context, and continuation.
 - [k2](references/k2.md): Build and troubleshoot Cloudflare K2 or K2 Streams durable logs. Use for stream setup, producing from Workers or HTTP, configuring retention and inputs, and consuming through subscriptions.
 - [nextjs-on-cloudflare](references/nextjs-on-cloudflare.md): Build, migrate, and deploy Next.js apps on Cloudflare Workers with vinext. Use when starting a Next.js project on Cloudflare, moving an existing app to Workers, choosing between vinext and OpenNext, or setting up vinext for Workers. For setup, migration, or deployment, install vinext's upstream skills with `npx skills add cloudflare/vinext` if missing, then read and follow the applicable skill and docs.
@@ -42,6 +45,7 @@ The product guidance below applies with either CLI. Where it names a Wrangler co
 - [turnstile-spin](references/turnstile-spin.md): Set up, repair, or migrate to Cloudflare Turnstile bot verification in an existing frontend and backend, including server-side Siteverify.
 - [web-perf](references/web-perf.md): Audit, diagnose, or optimize website loading and interaction performance, Core Web Vitals, and Lighthouse performance scores.
 - [workers-best-practices](references/workers-best-practices.md): Cloudflare Workers best practices for production applications. Use when writing, reviewing, or configuring Workers.
+- [workers-development](references/workers-development.md): Run, inspect, and debug Cloudflare Workers during local development with cf dev, wrangler dev, or the Cloudflare Vite plugin, using Local Explorer to read and seed binding data and query local traces and logs. Also routes production debugging to Workers observability. Use for debugging requests whether or not the project uses Wrangler.
 - [workers-profiling](references/workers-profiling.md): Profile or debug CPU usage and memory allocation in deployed Cloudflare Workers and Durable Objects. Then use this information to optimize your code.
 - [wrangler](references/wrangler.md): Run or troubleshoot Wrangler CLI commands in projects that have a wrangler.jsonc, wrangler.json, or wrangler.toml file, including local development, Previews, deployment, and resource management. For new projects and projects without a Wrangler configuration file, use the cf CLI instead.
 ## Help the user find the right product
@@ -62,10 +66,12 @@ Find the row closest to the user's task. Products can appear in multiple rows, a
 | Choose the building blocks for an AI application | AI overview | Compare Cloudflare's AI services before choosing inference, retrieval, or agent tooling | [AI docs](https://developers.cloudflare.com/ai/index.md) |
 | Choose infrastructure for a customer-facing platform | Cloudflare for Platforms | Compare running customer code with serving an app on customer domains | [Platform overview](https://developers.cloudflare.com/cloudflare-for-platforms/index.md) |
 | Choose an approach to live audio and video | Realtime | Compare application SDKs, media infrastructure, and connectivity relays | [Realtime overview](https://developers.cloudflare.com/realtime/index.md) |
-| Start a Worker or framework project | C3 | Scaffold a project using the appropriate framework template | [C3](references/c3/README.md); [wrangler](references/wrangler.md) reference |
+| Start a Worker project | `cf` | Create a basic Worker with `cf init` | [cf-cli](references/cf-cli.md) reference; [First Worker](https://developers.cloudflare.com/cf/get-started/first-worker/index.md) |
+| Build, set up, or migrate a framework app | Framework tooling + Workers | Follow the framework's Workers guide and its own agent guidance | [frameworks-on-cloudflare](references/frameworks-on-cloudflare.md) reference; [Framework guides](https://developers.cloudflare.com/workers/framework-guides/index.md) |
 | Build or deploy a Next.js app on Cloudflare | vinext + Workers | Use vinext rather than OpenNext for new projects | [nextjs-on-cloudflare](references/nextjs-on-cloudflare.md); [Next.js docs](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/index.md) |
 | Host a new static site, SPA, or full-stack app | Workers + Workers Static Assets | Serve site files and add server-side logic where needed | [Static Assets](references/static-assets/README.md); [workers-best-practices](references/workers-best-practices.md) reference |
 | Build an API or handle webhooks | Workers | Run request handlers with access to Cloudflare services | [workers-best-practices](references/workers-best-practices.md) reference; [Workers docs](https://developers.cloudflare.com/workers/index.md) |
+| Get a new or checked-out app running locally | Bindings, secrets, and local development | Connect the resources and values the app needs, then verify a real request | [cloudflare-app-bootstrap](references/cloudflare-app-bootstrap.md) reference; [Local development](https://developers.cloudflare.com/workers/local-development/index.md) |
 | Control team, CI, or service-account access to Developer Platform resources | Roles, scopes, and permission policies | Choose the least-privilege role and a scope supported for the member, User Group, or API token | [Roles and permissions](https://developers.cloudflare.com/workers/authorization/index.md); [wrangler](references/wrangler.md) reference for CLI access |
 | Maintain an existing Pages deployment | Pages + Pages Functions | Update an existing site or its server endpoints; use Workers for new projects | [Pages](references/pages/README.md); [Pages Functions](references/pages-functions/README.md) |
 | Move a Pages project to Workers | Workers + Workers Static Assets | The task calls for migrating the hosting platform | [Pages migration guide](https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/index.md) |
@@ -106,6 +112,7 @@ Find the row closest to the user's task. Products can appear in multiple rows, a
 | Distribute traffic across origins and fail over unhealthy servers | Load Balancing | Use health checks and traffic steering for multiple origin servers | [Load Balancing docs](https://developers.cloudflare.com/load-balancing/index.md) |
 | Connect an existing server to Cloudflare | Cloudflare Tunnel | Reach an origin without a publicly routable IP address | [Tunnel](references/tunnel/README.md) |
 | Connect Workers to private services | Workers VPC | Access services in private networks from a Worker | [Workers VPC docs](https://developers.cloudflare.com/workers-vpc/index.md) |
+| Access a protected webpage or API from an agent, script, or crawler | Access service tokens | Authenticate an authorized non-browser client to an Access application | [cloudflare-one](references/cloudflare-one.md) reference; [Service token docs](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/index.md) |
 | Require employee login before accessing an internal app | Access | Put identity-based access policies in front of an internal application | [cloudflare-one](references/cloudflare-one.md) reference; [Access docs](https://developers.cloudflare.com/cloudflare-one/access-controls/index.md) |
 | Protect access to internal applications and networks | Cloudflare One | Apply identity and network access policies | [cloudflare-one](references/cloudflare-one.md) reference; [Cloudflare One docs](https://developers.cloudflare.com/cloudflare-one/index.md) |
 | Transform permitted Gateway HTTP traffic with a Worker | Gateway Forward + Workers | Apply custom request or response logic to traffic passing through Gateway | [gateway-workers](references/gateway-workers.md) |
@@ -113,7 +120,7 @@ Find the row closest to the user's task. Products can appear in multiple rows, a
 | Proxy a TCP or UDP application | Spectrum | Protect and accelerate non-HTTP application traffic | [Spectrum docs](https://developers.cloudflare.com/spectrum/index.md) |
 | Connect a network directly to Cloudflare | Network Interconnect | Dedicated network connectivity is required | [Network Interconnect docs](https://developers.cloudflare.com/network-interconnect/index.md) |
 | Improve routing across the network | Argo Smart Routing | Optimize traffic paths to the origin | [Argo Smart Routing docs](https://developers.cloudflare.com/argo-smart-routing/index.md) |
-| Reduce Worker-to-backend latency | Smart Placement | Place Worker execution closer to the backends it calls | [Smart Placement](references/smart-placement/README.md) |
+| Reduce Worker-to-backend latency | Workers placement | Use explicit region hints for known regional databases, or traffic-based Smart Placement | [Workers placement docs](https://developers.cloudflare.com/workers/configuration/placement/index.md) |
 | Redirect URLs, rewrite paths or headers, or change origin routing | Rules | Use Redirect, Transform, or Origin Rules when configuration can express the required behavior | [Rules docs](https://developers.cloudflare.com/rules/index.md) |
 | Make small HTTP request or response changes | Snippets | Lightweight edge logic meets the need | [Snippets docs](https://developers.cloudflare.com/rules/snippets/index.md) |
 | Protect forms from automated abuse | Turnstile | Add bot challenges and server-side token validation | [turnstile-spin](references/turnstile-spin.md) reference; [Turnstile docs](https://developers.cloudflare.com/turnstile/index.md) |
@@ -147,7 +154,7 @@ Find the row closest to the user's task. Products can appear in multiple rows, a
 | Release a feature gradually or target user groups | Flagship | Change feature availability with targeting and percentage rollouts | [Flagship docs](https://developers.cloudflare.com/flagship/index.md) |
 | Manage infrastructure as code | Terraform or Pulumi | Use Terraform for declarative configuration or Pulumi for infrastructure in programming languages | [Terraform docs](https://developers.cloudflare.com/terraform/index.md); [Pulumi docs](https://developers.cloudflare.com/pulumi/index.md) |
 | Automate account or product configuration through an API | Cloudflare REST API | Manage resources programmatically; prefer bindings for supported operations inside Workers | [REST API docs](https://developers.cloudflare.com/fundamentals/api/index.md) |
-| Debug failures and trace application requests | Workers Logs and Traces | Investigate runtime errors and execution paths | [Observability](references/observability/README.md) |
+| Debug failures and trace application requests | Local Explorer; Workers Logs and Traces | Inspect binding data and traces locally, or investigate deployed runtime errors | [workers-development](references/workers-development.md) reference; [Observability](references/observability/README.md) |
 | Profile CPU usage or memory allocations in deployed Workers or Durable Objects | Workers profiling | Investigate CPU and memory issues in production | [workers-profiling](references/workers-profiling.md) |
 | Process Worker execution events in code | Tail Workers | Build custom log or exception processing | [Tail Workers](references/tail-workers/README.md) |
 | Export Worker logs to another system | Workers Logpush | Deliver logs to a supported external destination | [Logpush docs](https://developers.cloudflare.com/workers/observability/logs/logpush/index.md) |
@@ -167,6 +174,17 @@ Use the [Cloudflare product directory](https://developers.cloudflare.com/directo
 
 Prefer [Workers Cache](https://developers.cloudflare.com/workers/cache/index.md) for caching, including [advanced patterns](https://developers.cloudflare.com/workers/cache/examples/index.md) using cached inner entrypoints and programmatic invalidation. Choose [Cache API](https://developers.cloudflare.com/workers/runtime-apis/cache/index.md) or KV caching only when a concrete requirement cannot be met by Workers Cache; check its [patterns](https://developers.cloudflare.com/workers/cache/examples/index.md) and [limitations](https://developers.cloudflare.com/workers/cache/limitations/index.md) first.
 
+## Troubleshoot HTTP errors on a proxied site
+
+Work out whether the fix belongs in the zone's Cloudflare configuration or at the origin before suggesting one. Retrieve the page for the specific code from [HTTP status codes](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/index.md); do not answer from memory. [Custom Errors](https://developers.cloudflare.com/rules/custom-errors/index.md) can change how error pages look and which status they return, so ask whether the zone uses them before relying on branding.
+
+- **Do not judge `502` and `504` by branding.** A Cloudflare-branded `502` or `504` usually means the origin returned that status; an unbranded blank page came from Cloudflare. Refer to [Error 502 or 504](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-502-504/index.md).
+- **Read the diagnostic headers for other errors.** A `cf-error-type` response header means Cloudflare generated the page, and its value names the category; a Cloudflare-generated page can still need a fix at the origin. Refer to [Cloudflare error diagnostic headers](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-error-headers/index.md).
+- **A 1xxx code means Cloudflare generated the response**, often because of the site's own configuration, such as a security rule, DNS record, Worker, or Tunnel. The code appears in the page body and the HTTP status differs; map them with the [HTTP status codes table](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/index.md#http-status-codes), then open that error's page. Cloudflare 10xxx codes are API errors, not proxied-site errors.
+- **`520`–`526` are Cloudflare pages for a failed origin connection**: an unexpected response, no connection, a timeout, or a TLS failure. Start at the origin: server logs, firewalls that block [Cloudflare IP ranges](https://www.cloudflare.com/ips/), and any load balancer or proxy in between. For `525` and `526`, also check the zone's SSL/TLS encryption mode. Refer to [Cloudflare 5xx errors](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/index.md).
+- **For a `403`, check the page first.** A `403` without Cloudflare branding usually comes from the origin. If the page shows a 1xxx code, open that error's page. For error 1020 or the WAF block page, search Security Events for the Ray ID or client IP to find the rule; WAF custom and managed rules serve the WAF block page, not error 1020. Security Events shows sampled logs, so a missing event does not prove the origin returned the error. Refer to [Error 403](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/4xx-client-error/error-403/index.md), [Error 1020](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/index.md), and [Security Events](https://developers.cloudflare.com/waf/analytics/security-events/index.md).
+- **Only the site owner can fix most of these.** If the user is a visitor, explain the error and send them to the site owner.
+
 ## Working principles
 
 - Inspect the existing project and its pinned package versions before choosing an API or configuration shape.
@@ -177,3 +195,7 @@ Prefer [Workers Cache](https://developers.cloudflare.com/workers/cache/index.md)
 
 Cloudflare documentation: <https://developers.cloudflare.com/llms.txt>
 Cloudflare changelog: <https://developers.cloudflare.com/changelog/index.md>
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [references/skill-feedback.md](references/skill-feedback.md).

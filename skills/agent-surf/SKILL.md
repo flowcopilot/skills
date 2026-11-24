@@ -4,9 +4,9 @@ description: Load this skill before you drive a browser, an iOS or Android devic
 license: Apache-2.0 AND MIT
 metadata:
   author: flowcopilot
-  upstream: vercel-labs/agent-browser@5868f7c05020e047c00e68e4abf9253cce864f41
-  upstream_agent_device: "callstack/agent-device@ff8c2285c808135b592e77f53ae3ce28d31786b8"
-  upstream_agent_desktop: "vercel-labs/agent-desktop@5261b5287b5208e7c4bf3713df6f66faaaf2c4cc"
+  upstream: vercel-labs/agent-browser@0a923358ea989d7602f0d06507ad3447c62ffe9b
+  upstream_agent_device: "callstack/agent-device@63fe1b6fe91f9148f0be8a73ca7c357a563011db"
+  upstream_agent_desktop: "vercel-labs/agent-desktop@ce2ddf07226346818de2a1c6bae9869cfad142df"
 ---
 
 <!-- Modified by Flow Copilot from vercel-labs/agent-browser. -->
@@ -30,9 +30,12 @@ All paths in this file are relative to the folder that contains this SKILL.md. F
 Read the bundled reference before the first command. It works when the CLI is not installed. The references are a snapshot of each upstream revision, and the installed CLI can be newer. When a command or flag from a reference fails, run the matching `skills get` command. It prints the guide for the installed version. An upstream guide that says to run `skills get` means the bundled file below:
 
 - `agent-browser skills get <name>`: `references/agent-browser/<name>/index.md`. For example, `agent-browser skills get core` is [core](references/agent-browser/core/index.md).
+- `agent-browser skills get <name> --ref <reference>`: the file with that path, name, or stem under `references/agent-browser/<name>/`. `--full` means every file in that directory.
 - `agent-desktop skills get desktop`: [agent-desktop](references/agent-desktop/agent-desktop/index.md). Its named references are [commands-interaction](references/agent-desktop/agent-desktop/references/commands-interaction.md), [commands-observation](references/agent-desktop/agent-desktop/references/commands-observation.md), [commands-system](references/agent-desktop/agent-desktop/references/commands-system.md), [workflows](references/agent-desktop/agent-desktop/references/workflows.md).
 - `agent-desktop skills get platform`: the guide for the current operating system, `references/agent-desktop/agent-desktop-<os>/index.md`, where `<os>` is `macos`, `windows`, or `linux`.
-- `agent-desktop skills get <skill> <path>`: `references/agent-desktop/<skill>/<path>`.
+- `agent-desktop skills get <skill> <path>`: `references/agent-desktop/<skill>/<path>`. The `desktop` skill name means `agent-desktop`.
+
+In the agent-desktop guides, a path such as `references/troubleshooting.md` starts at the guide's directory, `references/agent-desktop/<skill>/`, also inside a file that is already under `references/`.
 
 For agent-device, run `agent-device help <topic>` when a command shape is unclear.
 
@@ -51,14 +54,15 @@ This bundle imports `skill-data/` from agent-browser and `skills/` from agent-de
 - [derive-client](references/agent-browser/derive-client/index.md): Reverse-engineer a website's internal API by recording browser traffic into a HAR file, then generate a standalone client or CLI that calls the endpoints directly, with no browser needed after the first recording.
 - [dogfood](references/agent-browser/dogfood/index.md): Systematically explore and test a web application to find bugs, UX issues, and other problems.
 - [electron](references/agent-browser/electron/index.md): Automate Electron desktop apps (VS Code, Slack, Discord, Figma, Notion, Spotify, etc.) using agent-browser via Chrome DevTools Protocol.
-- [protected-vercel-deployments](references/agent-browser/protected-vercel-deployments/index.md): Access and test Vercel deployments protected by Vercel Authentication, SSO, or Deployment Protection with agent-browser.
+- [modern-web-guidance](references/agent-browser/modern-web-guidance/index.md): Apply Chrome's Modern Web Guidance to frontend code, then verify the built page in a real browser with agent-browser.
 - [slack](references/agent-browser/slack/index.md): Interact with Slack workspaces using browser automation.
 - [vercel-sandbox](references/agent-browser/vercel-sandbox/index.md): Run agent-browser + Chrome inside Vercel Sandbox microVMs for browser automation from any Vercel-deployed app.
+- [vercel](references/agent-browser/vercel/index.md): Access and test Vercel deployments with agent-browser, behind Deployment Protection or at a different feature flag variant.
 - [webmcp-gen](references/agent-browser/webmcp-gen/index.md): Build and validate experimental WebMCP tools for an existing web page.
 
 ## agent-device
 
-- [agent-device](references/agent-device/agent-device/index.md): Automates Apple-platform apps (iOS, tvOS, macOS), Android devices (including Android TV and Fire TV on Fire OS), and Amazon Vega OS TV apps in Vega Virtual Devices.
+- [agent-device](references/agent-device/agent-device/index.md): Automates Apple-platform apps (iOS, tvOS, macOS), Android devices (including Android TV and Fire TV on Fire OS), HarmonyOS devices, and Amazon Vega OS TV apps in Vega Virtual Devices.
 - [android-emulator](references/agent-device/android-emulator/index.md): Verify and debug native, React Native, Expo, or Flutter apps on an Android Emulator with agent-device.
 - [dogfood](references/agent-device/dogfood/index.md): Systematically explore and test a mobile app on iOS/Android with agent-device to find bugs, UX issues, and other problems.
 - [ios-simulator](references/agent-device/ios-simulator/index.md): Verify and debug native, React Native, Expo, or Flutter apps on an iOS Simulator with agent-device.

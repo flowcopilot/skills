@@ -1,10 +1,10 @@
 ---
 name: clerk
-description: Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.
+description: Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, user migration from other auth providers, and auth tests.
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: clerk/skills@55206a48259bb327090ec5dbd22cfb5d4fa9de25
+  upstream: clerk/skills@e9a94f271affdfe9325da63d3267ff29d543fd7f
 ---
 
 <!-- Modified by Flow Copilot from clerk/skills. -->
@@ -19,13 +19,13 @@ This bundle imports a subset of Clerk's skills. Not bundled: `clerk-android`, `c
 
 Check `package.json` to determine the Clerk SDK version. This determines which patterns to use:
 
-| Package | Core 2 (LTS until Jan 2027) | Current |
-|---------|----------------------------|---------|
-| `@clerk/nextjs` | v5–v6 | v7+ |
-| `@clerk/react` or `@clerk/clerk-react` | v5–v6 | v7+ |
-| `@clerk/expo` or `@clerk/clerk-expo` | v1–v2 | v3+ |
-| `@clerk/react-router` | v1–v2 | v3+ |
-| `@clerk/tanstack-react-start` | < v0.26.0 | v0.26.0+ |
+| Package                                | Core 2 (LTS until Jan 2027) | Current  |
+| -------------------------------------- | --------------------------- | -------- |
+| `@clerk/nextjs`                        | v5–v6                       | v7+      |
+| `@clerk/react` or `@clerk/clerk-react` | v5–v6                       | v7+      |
+| `@clerk/expo` or `@clerk/clerk-expo`   | v1–v2                       | v3+      |
+| `@clerk/react-router`                  | v1–v2                       | v3+      |
+| `@clerk/tanstack-react-start`          | < v0.26.0                   | v0.26.0+ |
 
 **Default to current** if the version is unclear or the project is new. Core 2 packages use `@clerk/clerk-react` and `@clerk/clerk-expo` (with `clerk-` prefix); current packages use `@clerk/react` and `@clerk/expo`.
 
@@ -36,9 +36,10 @@ All skills are written for the current SDK. When something differs in Core 2, it
 ### Core
 
 - [clerk-backend-api](references/clerk-backend-api.md): Clerk Backend REST API explorer and executor. Browse tags, inspect endpoint schemas, and execute authenticated requests. Use when listing users, managing organizations, or calling any Clerk API endpoint.
-- [clerk-cli](references/clerk-cli.md): Operate the Clerk CLI (`clerk` binary) for authentication, user/org/session management, impersonation, local webhook testing, deploy verification, instance config, env keys, feature toggles, and any Clerk Backend, Platform, or Frontend API call. Use when the user mentions Clerk management tasks, "list clerk users", "impersonate a user", "test webhooks locally", "enable orgs", "enable billing", "clerk env pull", "clerk doctor", "clerk deploy", "clerk api", or any ad-hoc Clerk API request. Prefer the CLI over raw HTTP: it handles auth, key resolution, app/instance targeting, and formatting automatically.
+- [clerk-cli](references/clerk-cli.md): Operate the Clerk CLI (`clerk` binary) for authentication, user/org/session management, impersonation, local webhook testing, deploy verification, instance config, security audits, Application Logs, env keys, feature toggles, and any Clerk Backend, Platform, or Frontend API call. Use when the user mentions Clerk management tasks, "list clerk users", "impersonate a user", "test webhooks locally", "enable orgs", "enable billing", "clerk security", "harden my Clerk instance", "clerk env pull", "clerk doctor", "clerk deploy", "clerk api", "clerk logs", "check the logs", "application logs", "why did this sign-in fail", "debug a sign-up", "what happened to this user", or any ad-hoc Clerk API request. Prefer the CLI over raw HTTP: it handles auth, key resolution, app/instance targeting, and formatting automatically.
 - [clerk-custom-ui](references/clerk-custom-ui.md): Custom authentication flows and component appearance - hooks (useSignIn, useSignUp), themes, colors, fonts, CSS. Use for custom sign-in/sign-up flows, appearance styling, visual customization, branding.
-- [clerk-setup](references/clerk-setup.md): Set up Clerk authentication in any project with the Clerk CLI and official framework quickstarts. Use when adding Clerk, initializing Clerk, scaffolding a new app with Clerk, or migrating an existing authentication system to Clerk.
+- [clerk-migrate](references/clerk-migrate.md): Migrate users into Clerk from another auth provider, or between Clerk instances, using the `clerk migrate` command family. Use when the user says "migrate my users to Clerk", "import users from Auth0 / Supabase / Firebase / Auth.js / Better Auth / WorkOS", "export my users", "move users from development to production", "undo the import", or hands over a user export file (JSON or CSV) and asks what to do with it. Covers exporting from the auth platform, choosing a source, writing one for a platform with no built-in, checking and running the import, inspecting runs, and undoing one. Don't use for adding Clerk to an app (use clerk-setup) or for general CLI tasks (use clerk-cli).
+- [clerk-setup](references/clerk-setup.md): Set up Clerk authentication in any project with the Clerk plugin, the Clerk CLI, and official framework quickstarts. Use when adding Clerk, initializing Clerk, scaffolding a new app with Clerk, or migrating an existing authentication system to Clerk.
 
 ### Features
 

@@ -1,10 +1,10 @@
 ---
 name: react-native
-description: Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.
+description: Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, on-device AI with ExecuTorch, native modules, navigation, and upgrades.
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: software-mansion-labs/skills@58afa0a09b01dc47819af8fd48bb062561414108
+  upstream: software-mansion-labs/skills@93a1d83097245f50a61fc2ee7a85b953c4f1be1a
   upstream_callstack: "callstackincubator/agent-skills@59e9d17446a248b21d86f078fcd0bd2d36db1ca4"
 ---
 
@@ -16,7 +16,8 @@ Use the target project's installed versions and the user's task to select refere
 
 ## Choose a source
 
-- For animations, gestures, audio, on-device AI, rich text, JSI, and worklets, start with [Software Mansion's best practices](references/software-mansion/react-native-best-practices/index.md).
+- For animations, gestures, audio, rich text, JSI, and worklets, start with [Software Mansion's best practices](references/software-mansion/react-native-best-practices/index.md).
+- For on-device AI, such as LLMs, speech, and vision models, use [react-native-executorch](references/software-mansion/react-native-executorch/index.md). It is already in this bundle. Do not install it as a separate skill.
 - For profiling, rendering, startup time, memory, and bundle size, start with [Callstack's best practices](references/callstack/react-native-best-practices/index.md).
 - For navigation, upgrades, TV, library creation, CI, or migration, select the matching Callstack workflow below.
 - For Software Mansion libraries and tools, select the matching Software Mansion workflow below. These workflows can also cover web or native platforms; apply only the parts relevant to the task.
@@ -47,9 +48,10 @@ This bundle imports the skills directories of both repositories, including neste
 - [gestures](references/software-mansion/react-native-best-practices/references/gestures/index.md): Software Mansion's best practices for gestures in React Native apps using React Native Gesture Handler.
 - [jsi](references/software-mansion/react-native-best-practices/references/jsi/index.md): React Native JSI (JavaScript Interface) — C++ API for interacting with the JS runtime.
 - [multithreading](references/software-mansion/react-native-best-practices/references/multithreading/index.md): Software Mansion's best practices for multithreading in React Native apps using react-native-worklets.
-- [on-device-ai](references/software-mansion/react-native-best-practices/references/on-device-ai/index.md): Build on-device AI features in React Native and Expo apps with React Native ExecuTorch.
+- [on-device-ai](references/software-mansion/react-native-best-practices/references/on-device-ai/index.md): Routes on-device AI tasks in React Native and Expo apps to the react-native-executorch skill.
 - [rich-text](references/software-mansion/react-native-best-practices/references/rich-text/index.md): Software Mansion's best practices for rich text in React Native using react-native-enriched-html (formerly react-native-enriched) and react-native-enriched-markdown.
 - [svg](references/software-mansion/react-native-best-practices/references/svg/index.md): Software Mansion's best practices for SVG rendering in React Native apps using React Native SVG.
+- [react-native-executorch](references/software-mansion/react-native-executorch/index.md): Build React Native apps with react-native-executorch: use pre-exported AI models and task hooks, integrate custom ExecuTorch .pte models, or build TypeScript inference pipelines from PyTorch model contracts.
 - [react-native-moq](references/software-mansion/react-native-moq/index.md): Software Mansion's react-native-moq — Media over QUIC (MoQ) live streaming for React Native: sub-second-latency video/audio playback, camera/mic/screen publishing, and realtime data tracks over a MoQ relay.
 - [rnrepo](references/software-mansion/rnrepo/index.md): Best practices for integrating and using RNRepo — Software Mansion's infrastructure for pre-built React Native library artifacts that reduces native build times by up to 2×.
 - [typegpu](references/software-mansion/typegpu/index.md): TypeGPU is type-safe WebGPU in TypeScript.

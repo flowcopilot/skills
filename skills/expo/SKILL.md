@@ -4,7 +4,7 @@ description: Load this skill before you read or change code in a project whose p
 license: MIT
 metadata:
   author: flowcopilot
-  upstream: expo/skills@8a0dc4fa57ae345923c357e1451cbcd8b6f2a7db
+  upstream: expo/skills@88d9bd79f3fa8452a778fbac65bae162c0b32ce4
 ---
 
 <!-- Modified by Flow Copilot from expo/skills. -->
@@ -59,4 +59,4 @@ Skills whose core purpose uses paid Expo Application Services (EAS). Each `SKILL
 | [eas-observe](references/eas-observe.md) | EAS Observe setup and launch, route, event, and version metrics. | EAS Observe usage |
 | [eas-update](references/eas-update.md) | EAS Update setup, OTA publishing, runtime compatibility, testing, and debugging. | EAS Update usage |
 | [eas-update-insights](references/eas-update-insights.md) | EAS Update health, crash rates, launch counts, payload size, and rollout gates. | EAS Update usage |
-| [eas-simulator](references/eas-simulator.md) | Remote iOS/Android simulators on EAS cloud, driven from the CLI or an agent, with browser preview. | EAS Simulator usage |
+| [eas-simulator](references/eas-simulator.md) | Remote iOS/Android simulators with Expo Simulators, driven from the CLI or an agent, with browser preview. | Expo Simulators (EAS Simulator) usage |

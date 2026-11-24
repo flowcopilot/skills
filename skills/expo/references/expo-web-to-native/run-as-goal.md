@@ -21,7 +21,7 @@ Fill the two `<…>` slots, then run or hand off verbatim. It is written to surv
 ```
 Goal: migrate <APP NAME> from web to a native Expo app by following the expo-web-to-native skill, one screen per iteration, until done.
 
-Each iteration, FIRST re-read the playbook - references/expo-web-to-native.md (and its references) - then:
+Each iteration, FIRST re-read the playbook - <skill-root>/references/expo-web-to-native.md (and its references) - then:
 1. If migration-progress.md doesn't exist yet, do the skill's step 1 (Assess) to
    create the worklist, then stop. Otherwise open it and take the top unchecked
    item under "nativize-now"; if none are left unresolved (every nativize-now is
@@ -29,9 +29,9 @@ Each iteration, FIRST re-read the playbook - references/expo-web-to-native.md (a
 2. Redesign that screen native per the skill's step 4 — reach for @expo/ui FIRST
    (real SwiftUI/Compose), then expo-router (NativeTabs, large titles);
    RN primitives only for custom layouts. NEVER a webview port.
-   Use references/native-patterns.md (UX patterns) and references/false-friends.md
+   Use <skill-root>/references/expo-web-to-native/native-patterns.md (UX patterns) and <skill-root>/references/expo-web-to-native/false-friends.md
    (idioms). Match the web screen's content and behavior.
-3. Verify per references/verify-on-device.md: compare the running web original
+3. Verify per <skill-root>/references/expo-web-to-native/verify-on-device.md: compare the running web original
    (browser agent) against the native screen (simulator / argent) — content and
    behavior parity, NOT pixels (it should look more native). If it's off for reasons
    IN the code, fix it this iteration. If it's blocked by something OUTSIDE the code

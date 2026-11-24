@@ -197,3 +197,7 @@ Read [client-sdk.md](agents-sdk/client-sdk.md) for client selection and current 
 - **[agents-sdk/voice.md](agents-sdk/voice.md)** — `@cloudflare/voice` STT/TTS
 - **[agents-sdk/codemode.md](agents-sdk/codemode.md)** — Code Mode for tool orchestration
 - **[agents-sdk/browse-the-web.md](agents-sdk/browse-the-web.md)** — CDP browser tools
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [agents-sdk/skill-feedback.md](agents-sdk/skill-feedback.md).

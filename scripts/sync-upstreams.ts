@@ -468,7 +468,7 @@ function syncCloudflare(checkout: Checkout): string[] {
   rootBody = `${rootBody.slice(0, insertion).trimEnd()}\n\n## Specialized workflows\n\n${workflowList(workflows)}${rootBody.slice(insertion)}`;
   const metadata = frontmatter(
     "cloudflare",
-    "Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler, security, and networking.",
+    "Load this skill before you read or change code in a Cloudflare Workers or Pages project, such as one with a wrangler config, a cloudflare.config.ts file, or a wrangler dependency, or when the task names a Cloudflare product. Covers Workers, Pages, D1, KV, R2, Queues, Durable Objects, the Agents SDK, Wrangler and the cf CLI, security, and networking.",
     sourceName,
     checkout.revision,
   );
@@ -521,18 +521,18 @@ function syncExpo(checkout: Checkout): string[] {
     const transform = (text: string) => text
       .replaceAll(`plugins/expo/skills/${skill.name}/SKILL.md`, `references/${skill.name}.md`)
       .replaceAll("../SKILL.md", `../${skill.name}.md`)
-      .replace(/<skill-(?:dir|root)>\/scripts\//g, `<skill-root>/scripts/${skill.name}/`)
-      .replaceAll("${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/", "<skill-root>/scripts/expo-skill-feedback/");
+      .replace(/<(?:skill-(?:dir|root)|absolute skill directory)>\/scripts\//g, `<skill-root>/scripts/${skill.name}/`)
+      .replaceAll("${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/", "<skill-root>/scripts/expo-skill-feedback/")
+      // A supporting file moves from <skill>/references/ to references/<skill>/.
+      .replace(/\.\.\/\.\.\/([a-z0-9-]+)\/references\//g, (match, name: string) => names.has(name) ? `../${name}/` : match);
     let body = transform(skill.body)
+      // Another skill's references/ directory is now references/<skill>/, next to this file.
+      .replace(/(?:\.\.\/)?([a-z0-9-]+)\/references\//g, (match, name: string) => names.has(name) ? `${name}/` : match)
       .replace(/(?:\.\/)?references\//g, `${skill.name}/`);
     for (const entry of supportingFiles) {
       body = body.replaceAll(entry.name, `${skill.name}/${entry.name}`);
     }
     writeMarkdown(resolve(target, "references", `${skill.name}.md`), body, sourceName);
-    patchGeneratedFile(resolve(target, "references", `${skill.name}.md`), [[
-      `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" "<actionable feedback>"`,
-      `npx --yes @expo/agent-cli@latest feedback --category skills --subject "${skill.name}" --message "<actionable feedback>"`,
-    ]]);
     copyTree(resolve(skill.root, "references"), resolve(target, "references", skill.name), sourceName, transform);
     copyTree(resolve(skill.root, "scripts"), resolve(target, "scripts", skill.name), sourceName);
     for (const entry of supportingFiles) {
@@ -551,6 +551,20 @@ function syncExpo(checkout: Checkout): string[] {
   patchGeneratedFile(resolve(target, "references/eas-observe/queries.md"), [[
     "https://docs.expo.dev/eas/observe/mcp/", "https://docs.expo.dev/eas/ai/mcp/",
   ]]);
+  // Upstream names files by paths that are wrong in the combined layout, or in the upstream one.
+  patchGeneratedFile(resolve(target, "references/expo-overview.md"), [[
+    "`expo-overview/native-ios.md` covers", "`eas-app-stores/native-ios.md` covers",
+  ]]);
+  patchGeneratedFile(resolve(target, "references/eas-app-stores/testflight.md"), [[
+    "bundled `scripts/status-summary.cjs`", "bundled `<skill-root>/scripts/eas-app-stores/status-summary.cjs`",
+  ]]);
+  // The migration goal runs from the app directory, so its paths start at the skill root.
+  patchGeneratedFile(resolve(target, "references/expo-web-to-native/run-as-goal.md"), [
+    ["references/expo-web-to-native.md", "<skill-root>/references/expo-web-to-native.md"],
+    ["references/native-patterns.md", "<skill-root>/references/expo-web-to-native/native-patterns.md"],
+    ["references/false-friends.md", "<skill-root>/references/expo-web-to-native/false-friends.md"],
+    ["references/verify-on-device.md", "<skill-root>/references/expo-web-to-native/verify-on-device.md"],
+  ]);
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "expo",
     "Load this skill before you read or change code in a project whose package.json lists expo, or when the task names Expo or EAS. Covers routes and navigation, data fetching, native UI, native modules, SDK upgrades, EAS builds, hosting, and OTA updates.",
@@ -668,7 +682,7 @@ function syncReactNative(checkouts: Record<typeof reactNativeSources[number], Ch
   }
   const first = checkouts["software-mansion"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
-    "Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, native modules, navigation, and upgrades.",
+    "Load this skill before you read or change code in a project whose package.json lists react-native. Covers crashes, slow screens and long lists, animations and gestures with Reanimated or Gesture Handler, on-device AI with ExecuTorch, native modules, navigation, and upgrades.",
     "software-mansion-labs/skills", first.revision,
     { upstream_callstack: `callstackincubator/agent-skills@${checkouts.callstack.revision}` }, "MIT"),
     `# React Native
@@ -677,7 +691,8 @@ Use the target project's installed versions and the user's task to select refere
 
 ## Choose a source
 
-- For animations, gestures, audio, on-device AI, rich text, JSI, and worklets, start with [Software Mansion's best practices](references/software-mansion/react-native-best-practices/index.md).
+- For animations, gestures, audio, rich text, JSI, and worklets, start with [Software Mansion's best practices](references/software-mansion/react-native-best-practices/index.md).
+- For on-device AI, such as LLMs, speech, and vision models, use [react-native-executorch](references/software-mansion/react-native-executorch/index.md). It is already in this bundle. Do not install it as a separate skill.
 - For profiling, rendering, startup time, memory, and bundle size, start with [Callstack's best practices](references/callstack/react-native-best-practices/index.md).
 - For navigation, upgrades, TV, library creation, CI, or migration, select the matching Callstack workflow below.
 - For Software Mansion libraries and tools, select the matching Software Mansion workflow below. These workflows can also cover web or native platforms; apply only the parts relevant to the task.
@@ -728,53 +743,6 @@ function syncDesignEngineering(checkouts: Record<typeof designEngineeringSources
     copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", licenseFile));
     notices.push(`### ${label}\n\nImported from [${sourceName}](https://github.com/${sourceName}) revision \`${checkout.revision}\`, dated ${checkout.date}. The upstream MIT license and copyright notice are retained in \`skills/${bundle}/licenses/${licenseFile}\`.`);
   }
-  const teardown = resolve(target, "references/jakub-krehel/teardown");
-  patchGeneratedFile(resolve(teardown, "geometry-library.md"), [[
-    "```js\nconst disc = (cx, r) =>", "```js\nconst lever = G.part('lever', 'Lever');\nconst disc = (cx, r) =>",
-  ]]);
-  patchGeneratedFile(resolve(teardown, "scripts/config.cjs"), [[
-    "      parts.add(p.id);\n    }\n    const keys = new Set();",
-    `      parts.add(p.id);
-    }
-    for (const hue of Object.values(d.colors?.hues ?? {})) {
-      if (!Number.isFinite(hue) || hue < 0 || hue > 360) throw Error('Color hues must be finite numbers from 0 to 360');
-    }
-    if (d.colors?.fills !== undefined) {
-      if (!Array.isArray(d.colors.fills)) throw Error('Color fills must be an array');
-      d.colors.fills = d.colors.fills.map(String);
-      if (!d.colors.fills.every(id => parts.has(id))) throw Error('Color fills must reference existing part IDs');
-    }
-    const keys = new Set();`,
-  ]]);
-  patchGeneratedFile(resolve(teardown, "scripts/test-viewer-builder.cjs"), [[
-    "  config.drawings[0].initialView = 'assembled';",
-    `  config.drawings[0].parts = [{id: 1, name: 'One'}];
-  config.drawings[0].colors = {hues: {'1': 250}, fills: [1]};
-  fs.writeFileSync(configPath, JSON.stringify(config));
-  build(configPath, output);
-  const coloredHtml = fs.readFileSync(output, 'utf8');
-  const coloredData = JSON.parse(coloredHtml.match(/<script[^>]*id="drawing-data"[^>]*>([\\s\\S]*?)<\\/script>/)[1]);
-  assert.equal(coloredData[0].parts[0].id, '1');
-  assert.deepEqual(coloredData[0].colors, {hues: {'1': 250}, fills: ['1']});
-  for (const hue of [0, 360]) {
-    config.drawings[0].colors = {hues: {'1': hue}};
-    fs.writeFileSync(configPath, JSON.stringify(config));
-    assert.doesNotThrow(() => build(configPath, output));
-  }
-  for (const hue of ['blue', null, true, -1, 361, 1e308]) {
-    config.drawings[0].colors = {hues: {'1': hue}};
-    fs.writeFileSync(configPath, JSON.stringify(config));
-    assert.throws(() => build(configPath, output), /Color hues must be finite numbers from 0 to 360/);
-  }
-  config.drawings[0].colors = {fills: ['missing']};
-  fs.writeFileSync(configPath, JSON.stringify(config));
-  assert.throws(() => build(configPath, output), /Color fills must reference existing part IDs/);
-  config.drawings[0].colors = {fills: '1'};
-  fs.writeFileSync(configPath, JSON.stringify(config));
-  assert.throws(() => build(configPath, output), /Color fills must be an array/);
-  delete config.drawings[0].colors;
-  config.drawings[0].initialView = 'assembled';`,
-  ]]);
   const first = checkouts["emil-kowalski"];
   writeSkill(resolve(target, "SKILL.md"), frontmatter(bundle,
     "Load this skill before you build, change, or review UI components in a web or React Native app. Covers forms and accessibility, toasts and notifications, animation and motion, typography, color, layout, and product copy.",
@@ -786,9 +754,10 @@ Use the target project's stack, design tokens, and installed libraries to select
 
 ## Choose a source
 
-- For motion — building, reviewing, auditing, or naming animations, gestures, and transitions on the web or in Expo — start with Emil Kowalski's workflows. [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md) holds the shared philosophy.
-- For static interface quality — UI polish, typography, color, layout, accessibility, and product copy — use the matching Jakub Krehel \`better-*\` workflow. [better-interface](references/jakub-krehel/better-interface/index.md) combines them into one review.
-- When both sources cover a topic, such as animation in \`better-ui\` or typography in \`apple-design\`, prefer the source whose focus matches the task and keep the project's existing tokens.
+- For motion in Expo, choreography of many elements, gestures, and animation performance, use Emil Kowalski's workflows, such as \`animate-expo\`, \`choreograph\`, \`gestures\`, and \`animation-performance\`. [emil-design-eng](references/emil-kowalski/emil-design-eng/index.md) holds the shared philosophy.
+- For web motion recipes and motion reviews, use either Emil Kowalski's \`animate\` and \`review-animations\` or Jakub Krehel's [better-motion](references/jakub-krehel/better-motion/index.md).
+- For static interface quality, such as UI polish, typography, color, layout, accessibility, and product copy, use the matching Jakub Krehel \`better-*\` workflow. [better-interface](references/jakub-krehel/better-interface/index.md) combines them into one review.
+- When both sources cover a topic, such as motion in \`better-motion\` and \`animate\`, or typography in \`better-typography\` and \`apple-design\`, select one workflow. Use its values, for example stagger timing and drag bounce, because the sources do not agree on them. Keep the project's existing tokens.
 
 A former upstream skill name, such as \`review-animations\` or \`better-colors\`, now refers to its index.md reference in the same source directory. Those workflows are available whenever this skill is installed; load them when an imported instruction asks for another skill. Relative paths remain relative to the imported file.
 
@@ -798,7 +767,7 @@ This bundle imports the skills directories of both repositories. Plugin metadata
 
 ${sections.join("\n\n")}
 `, "emilkowalski/skills");
-  return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also initializes the teardown extrusion example and validates teardown color settings, with regression coverage in the viewer builder test.\n\n${notices.join("\n\n")}\n`;
+  return `## Design Engineering skill\n\nFlow Copilot combines both collections into one skill, replaces skill entry filenames with index.md references, groups user-invoked skills in the router, preserves source-specific directories and supporting files, and adjusts local entry-file links.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clarity imports selected skills. `userOnly` records the upstream invocation
@@ -836,15 +805,11 @@ function upstreamUserOnly(skillRoot: string): boolean {
   return flag;
 }
 
-// Reply rules are local so upstream sync cannot restore the longer chat format.
-function clarityCommentRules(checkout: Checkout): string {
-  const body = parseSkill(resolve(checkout.root, "pstack/skills/poteto-mode/SKILL.md")).body;
-  const section = body.match(/^## Comments\n[\s\S]*?(?=^## Playbooks\n)/m)?.[0];
-  if (!section?.trim().startsWith("## Comments\n\nComments follow the same rule as the reply.")) {
-    throw new Error("pstack: poteto-mode comment rules changed");
-  }
-  return section.trim();
-}
+// Reply and comment rules are local so upstream sync cannot restore the longer chat format.
+// The comment rules come from an earlier pstack poteto-mode, which no longer has a Comments section.
+const clarityCommentRules = `## Comments
+
+Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as \`// Phase 1: add cards\`. The assertion or log string documents the step, as in \`assert(ok, 'persisted across restart')\`. This applies to every file you produce, including the delegate's diff.`;
 
 function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>): string {
   const bundle = "clarity";
@@ -869,7 +834,7 @@ function syncClarity(checkouts: Record<typeof claritySources[number], Checkout>)
     return tree;
   });
   const pstack = checkouts.pstack;
-  const commentRules = clarityCommentRules(pstack);
+  const commentRules = clarityCommentRules;
 
   resetDirectory(target, bundle);
   const notices: string[] = [];
@@ -920,13 +885,13 @@ Answer the current question first. For a routine question or completion update, 
 
 ${commentRules}
 `, "cursor/plugins");
-  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, and keeps the comment rules from pstack \`poteto-mode\`.\n\n${notices.join("\n\n")}\n`;
+  return `## Clarity skill\n\nFlow Copilot combines selected skills from both sources into one skill. It replaces skill entry filenames with index.md references, keeps each source in its own directory, and records each upstream invocation flag. The router defines local reply rules for concise chat, and keeps the comment rules from an earlier pstack \`poteto-mode\`.\n\n${notices.join("\n\n")}\n`;
 }
 
 // Clerk publishes a flat skills/ directory. Each bundled skill is listed under its router
 // section; each skipped skill is listed in clerkExcluded. An unlisted skill stops the sync.
 const clerkSections: Record<string, string[]> = {
-  Core: ["clerk-backend-api", "clerk-cli", "clerk-custom-ui", "clerk-setup"],
+  Core: ["clerk-backend-api", "clerk-cli", "clerk-custom-ui", "clerk-migrate", "clerk-setup"],
   Features: ["clerk-billing", "clerk-orgs", "clerk-testing", "clerk-webhooks"],
   Frameworks: ["clerk-react-patterns", "clerk-tanstack-patterns"],
   Mobile: ["clerk-expo"],
@@ -995,6 +960,9 @@ function syncClerk(checkout: Checkout): string[] {
   const linkSkills = (text: string, prefix: string) =>
     outsideCode(text, (prose) =>
       prose
+        .replace(/\(https:\/\/clerk\.com\/\.well-known\/skills\/(clerk-[a-z-]+)\/(?:SKILL\.md|references\/([^)\s]+))\)/g,
+          (match, name: string, file?: string) =>
+            !names.has(name) ? match : file ? `(${prefix}${name}/${file})` : `(${prefix}${name}.md)`)
         .replace(/`clerk` skill\b/g, `[Clerk router](${prefix}../SKILL.md)`)
         .replace(/(?<!\[)`(clerk-[a-z-]+)`/g, (match, name: string) =>
           names.has(name) ? `[${name}](${prefix}${name}.md)` : match));
@@ -1048,8 +1016,11 @@ function syncClerk(checkout: Checkout): string[] {
         : resolve(references, destinationOf(directory));
       const depth = directory === "references" ? 1 : 2;
       const transform = (text: string) => {
-        // A bare SKILL.md in a supporting file means its own skill's instructions.
-        let rewritten = linkSkills(text, "../".repeat(depth))
+        // A bare SKILL.md, or ../SKILL.md, in a supporting file means its own skill's instructions.
+        const ownSkill = text
+          .replaceAll("](../SKILL.md", `](${"../".repeat(depth)}${skill.name}.md`)
+          .replace(/\[SKILL\.md\b/g, `[${skill.name}`);
+        let rewritten = linkSkills(ownSkill, "../".repeat(depth))
           .replace(/(?<!\]\()(?<![\w./])SKILL\.md\b/g, `[${skill.name}](${"../".repeat(depth)}${skill.name}.md)`);
         // Custom UI version files name their sibling directory from the skill root.
         if (skill.name === "clerk-custom-ui") rewritten = rewritten.replace(/`core-([23])\//g, "`../core-$1/");
@@ -1059,6 +1030,7 @@ function syncClerk(checkout: Checkout): string[] {
     }
   }
 
+  // create-next-app does not enable Cache Components by default.
   for (const file of [
     "clerk-billing/billing-components.md",
     "clerk-custom-ui/core-3/show-component.md",
@@ -1080,8 +1052,8 @@ function syncClerk(checkout: Checkout): string[] {
     ]]);
   }
   patchGeneratedFile(resolve(references, "clerk-billing.md"), [
-    ["Cache Components rules (`cacheComponents: true`, the `create-next-app` default)",
-      "Cache Components rules when enabled (`cacheComponents: true`)"],
+    ["With Cache Components (`cacheComponents: true`, the `create-next-app` default)",
+      "With Cache Components enabled (`cacheComponents: true`)"],
     [
       "Let users manage their subscription from inside the app by rendering `<PricingTable />` on a billing page. It renders differently for subscribed users: it shows the current plan and allows upgrades or cancellations, all through Clerk's in-app checkout drawer.",
       "Let users choose or change plans by rendering `<PricingTable />` on a billing page. For cancellations and full subscription management, use `<UserProfile />` or `<OrganizationProfile />`.",
@@ -1100,7 +1072,7 @@ function syncClerk(checkout: Checkout): string[] {
   }).join("\n\n");
   writeSkill(resolve(target, "SKILL.md"), frontmatter(
     "clerk",
-    "Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, and auth tests.",
+    "Load this skill before you read or change code in a project whose package.json lists @clerk packages, or when the task names Clerk. Covers sign-in, protected routes, sessions, organizations, billing, webhooks, the Clerk CLI and Backend API, user migration from other auth providers, and auth tests.",
     sourceName, checkout.revision, {}, "MIT",
   ), `# Clerk
 
@@ -1209,9 +1181,6 @@ function syncAgentSurf(checkouts: Record<typeof agentSurfSources[number], Checko
     "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    rm -f \"$STATE_FILE\"\nfi\n",
     "        echo \"Failed to load state, re-authenticating...\"\n    fi\n    # Keep the old state. The login flow overwrites it when it runs state save.\nfi\n",
   ]]);
-  patchGeneratedFile(resolve(target, "references/agent-desktop/jev-desktop/index.md"), [[
-    "Which of the 16 interaction verbs it asks for.", "Which of the 12 interaction verbs it asks for.",
-  ]]);
   for (const path of ["references/agent-browser/slack/references/slack-tasks.md", "references/agent-browser/slack/templates/slack-report-template.md"]) {
     if (!existsSync(resolve(target, path))) throw new Error(`agent-surf: router links missing slack file ${path}`);
   }
@@ -1248,9 +1217,12 @@ All paths in this file are relative to the folder that contains this SKILL.md. F
 Read the bundled reference before the first command. It works when the CLI is not installed. The references are a snapshot of each upstream revision, and the installed CLI can be newer. When a command or flag from a reference fails, run the matching \`skills get\` command. It prints the guide for the installed version. An upstream guide that says to run \`skills get\` means the bundled file below:
 
 - \`agent-browser skills get <name>\`: \`references/agent-browser/<name>/index.md\`. For example, \`agent-browser skills get core\` is [core](references/agent-browser/core/index.md).
+- \`agent-browser skills get <name> --ref <reference>\`: the file with that path, name, or stem under \`references/agent-browser/<name>/\`. \`--full\` means every file in that directory.
 - \`agent-desktop skills get desktop\`: [agent-desktop](references/agent-desktop/agent-desktop/index.md). Its named references are ${desktopReferences}.
 - \`agent-desktop skills get platform\`: the guide for the current operating system, \`references/agent-desktop/agent-desktop-<os>/index.md\`, where \`<os>\` is \`macos\`, \`windows\`, or \`linux\`.
-- \`agent-desktop skills get <skill> <path>\`: \`references/agent-desktop/<skill>/<path>\`.
+- \`agent-desktop skills get <skill> <path>\`: \`references/agent-desktop/<skill>/<path>\`. The \`desktop\` skill name means \`agent-desktop\`.
+
+In the agent-desktop guides, a path such as \`references/troubleshooting.md\` starts at the guide's directory, \`references/agent-desktop/<skill>/\`, also inside a file that is already under \`references/\`.
 
 For agent-device, run \`agent-device help <topic>\` when a command shape is unclear.
 
@@ -1264,7 +1236,7 @@ This bundle imports \`skill-data/\` from agent-browser and \`skills/\` from agen
 
 ${sections.join("\n\n")}
 `, "vercel-labs/agent-browser");
-  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, the jev-desktop verb count, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
+  return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
 }
 
 function assertApacheLicense(checkout: Checkout, name: string) {

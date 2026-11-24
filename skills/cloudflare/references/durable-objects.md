@@ -31,7 +31,7 @@ Fetch the relevant doc page when implementing features.
 
 - `durable-objects/rules.md` - Core rules, storage, concurrency, RPC, alarms
 - [Testing reference](durable-objects/testing.md) - Current Vitest documentation, migration choices, and test selection
-- `durable-objects/workers.md` - Workers handlers, types, wrangler config, observability
+- [Workers reference](durable-objects/workers.md) - Workers handlers, types, configuration, tracing, and local debugging
 
 Search: `blockConcurrencyWhile`, `idFromName`, `getByName`, `setAlarm`, `sql.exec`
 
@@ -175,3 +175,7 @@ await this.ctx.storage.deleteAlarm();
 ## Testing
 
 Read the [testing reference](durable-objects/testing.md) before configuring a suite or writing Durable Object tests. It routes to current setup, APIs, and examples and identifies the behavior to cover.
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [durable-objects/skill-feedback.md](durable-objects/skill-feedback.md).

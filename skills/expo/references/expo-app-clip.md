@@ -168,7 +168,7 @@ The AASA file must be live before iOS will trust the association. Use [EAS Hosti
 
 ```sh
 bunx expo export -p web
-eas deploy --prod
+npx --yes eas-cli@latest deploy --prod
 ```
 
 This publishes the site (including `/.well-known/apple-app-site-association`) at `https://<slug>.expo.app`. Verify:
@@ -219,7 +219,7 @@ This will:
 Pull existing App Store metadata to local:
 
 ```sh
-eas metadata:pull
+npx --yes eas-cli@latest metadata:pull
 ```
 
 Add `apple.appClip` to `store.config.json`. Up to 3 invocation URLs can launch the Clip from a web page:
@@ -252,7 +252,7 @@ The `headerImage` must be a 1800x1200 PNG with no opacity.
 Push back to the store:
 
 ```sh
-eas metadata:push
+npx --yes eas-cli@latest metadata:push
 ```
 
 Apple's recommended App Clip metadata guidelines: https://sosumi.ai/documentation/appclip/configuring-the-launch-experience-of-your-app-clip
@@ -279,9 +279,9 @@ See [expo-app-clip/native-module.md](expo-app-clip/native-module.md) for the Swi
 - expo-app-clip/native-module.md — Local Expo module to detect App Clip context and present the SKOverlay install prompt
 
 ## Submitting Feedback
-If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+You can voluntarily report errors, misleading or outdated information in this skill, so Expo can improve it:
 ```bash
 npx --yes @expo/agent-cli@latest feedback --category skills --subject "expo-app-clip" --message "<actionable feedback>"
 ```
-Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
-If an agent repeatedly fails at an Expo task or the user has to step in, submit a brief report of the task, expected result, and what went wrong using `--category evals` and the relevant Expo package or command as `--subject`.
+Use `--category agent-cli` for a problem with the agent CLI, and `--category evals` when an agent repeatedly fails at an Expo task. Run `feedback --help` for subjects and the data that the command sends.
+Each report goes to Expo with project and environment details. Show the user the message, and send it only if the user agrees. If you cannot ask the user, do not send it. Do not include secrets or personal data.
