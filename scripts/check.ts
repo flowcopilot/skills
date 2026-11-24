@@ -293,6 +293,23 @@ for (const file of filesUnder(clerk).filter((path) => path.endsWith(".md"))) {
   }
 }
 
+const ghStack = resolve(skillsRoot, "gh-stack");
+const ghStackSkill = readSkill(resolve(ghStack, "SKILL.md"));
+if (ghStackSkill.metadata.license !== "MIT") errors.push("gh-stack: expected MIT license metadata");
+if (!readFileSync(resolve(ghStack, "licenses/gh-stack-LICENSE"), "utf8").includes("Copyright GitHub, Inc.")) {
+  errors.push("gh-stack: missing upstream copyright notice");
+}
+// `gh stack <command> --help` replaces the upstream command reference.
+if (existsSync(resolve(ghStack, "references/commands.md"))) errors.push("gh-stack: the command reference must stay excluded");
+for (const command of ["gh stack view --json", "gh stack submit --auto", "gh stack merge <target> --yes"]) {
+  if (!ghStackSkill.text.includes(command)) errors.push(`gh-stack: router is missing \`${command}\``);
+}
+for (const file of filesUnder(ghStack).filter((path) => path.endsWith(".md"))) {
+  if (!readFileSync(file, "utf8").includes("<!-- Modified by Flow Copilot from github/gh-stack. -->")) {
+    errors.push(`gh-stack: missing source notice in ${file}`);
+  }
+}
+
 if (errors.length > 0) {
   for (const error of errors) console.error(error);
   process.exit(1);

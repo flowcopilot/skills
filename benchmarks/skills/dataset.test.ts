@@ -115,8 +115,8 @@ test("defines the published upstream layout from every pinned source", () => {
   }
 });
 
-test("defines 936 scheduled runs across the applicable conditions", () => {
+test("defines 1008 scheduled runs across the applicable conditions", () => {
   const taskConditions = config.conditions.reduce((total: number, condition: { taskIds?: string[] }) =>
     total + (condition.taskIds?.length ?? tasks.length), 0);
-  expect(taskConditions * config.models.length * config.repeats).toBe(936);
+  expect(taskConditions * config.models.length * config.repeats).toBe(1008);
 });

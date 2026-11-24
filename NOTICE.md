@@ -81,3 +81,9 @@ Imported from [callstack/agent-device](https://github.com/callstack/agent-device
 ### agent-desktop
 
 Imported from [vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop) revision `ce2ddf07226346818de2a1c6bae9869cfad142df`, dated 2026-11-23, from its `skills/` directory. The upstream Apache License 2.0 is retained in `skills/agent-surf/licenses/agent-desktop-LICENSE`.
+
+## gh-stack skill
+
+The files under `skills/gh-stack/` derive from [github/gh-stack](https://github.com/github/gh-stack) revision `80b6d6e910cc1b7eaa26b961d7721ade21084fed`, licensed under the MIT License, retained in `skills/gh-stack/licenses/gh-stack-LICENSE`.
+
+The imported revision is dated 2026-11-16. Flow Copilot replaces the upstream skill entry with a shorter router that it writes itself, and moves the upstream `SKILL.md` into `references/gh-stack.md`. It imports the stack design and troubleshooting references, turns their code paths into links, and replaces the pointer to the command reference with `gh stack <command> --help`. The command reference is not imported.

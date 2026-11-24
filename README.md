@@ -14,6 +14,8 @@ Agent skills maintained by Flow Copilot.
 
 - [`expo`](skills/expo/SKILL.md): Build, debug, upgrade, and deploy Expo apps and operate EAS through one progressively disclosed skill.
 
+- [`gh-stack`](skills/gh-stack/SKILL.md): Create, update, and merge stacked pull requests with the `gh stack` GitHub CLI extension.
+
 - [`react-native`](skills/react-native/SKILL.md): Build, profile, upgrade, and migrate React Native apps with Software Mansion and Callstack community skills.
 
 Each directory under `skills/` follows the [Agent Skills specification](https://agentskills.io/specification). Install the whole skill directory, not an individual file from `references/`.
@@ -31,6 +33,8 @@ The `cloudflare` skill applies the same structure to the upstream `cloudflare/sk
 The `clerk` skill imports a selected subset of `clerk/skills`: every core and feature skill, the React and TanStack Start framework skills, and the Expo mobile skill. Other framework and native mobile skills are excluded until Flow Copilot uses them. The router keeps Clerk's SDK version table and names the excluded skills.
 
 The `expo` skill tracks all skills in `expo/skills` under `plugins/expo/skills`. Its router uses that directory’s README index and preserves the framework and paid-service groups. Experimental skills in other plugins are outside this source.
+
+The `gh-stack` skill imports the `gh-stack` skill from `github/gh-stack`. The upstream skill is written for every setup, so a shorter router replaces its entry file. The router keeps the commands that do not prompt, adopting existing branches, changes to a lower layer, sync after a squash merge, the exit codes that need an action, and worktrees. The upstream `SKILL.md`, the stack design guide, and the troubleshooting guide are references. The command reference is not imported, because `gh stack <command> --help` is the authority.
 
 The `react-native` skill combines all skills from `software-mansion-labs/skills` and `callstackincubator/agent-skills`, including nested skills. Each source has its own reference directory and revision, so duplicate names such as `react-native-best-practices` remain separate. More community sources can join this bundle.
 

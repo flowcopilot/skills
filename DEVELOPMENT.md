@@ -188,6 +188,16 @@ agent-browser publishes only a discovery stub in `skills/agent-browser/SKILL.md`
 
 agent-browser and agent-desktop use Apache License 2.0. agent-device uses MIT. The sync checks each license and copies it under `licenses/`. The bundle license is `Apache-2.0 AND MIT`. The dogfood report template has placeholder screenshot paths, so `.lycheeignore` excludes them. Run `bun run sync -- --update --only agent-surf` to update the three sources together.
 
+## gh-stack source
+
+gh-stack imports the one skill in `skills/gh-stack` from `github/gh-stack`. The adapter writes its own router, because the upstream skill is long and covers every setup. The upstream `SKILL.md` becomes `references/gh-stack.md`, and its code paths to the bundled references become links.
+
+`ghStackReferences` lists the bundled references, `stack-design` and `troubleshooting`. `ghStackExcluded` lists `commands`, because the router sends agents to `gh stack <command> --help`. The sync stops when upstream adds a file that neither constant lists, removes a listed file, adds another skill directory, or links a bundled reference to `commands.md` or `SKILL.md`.
+
+The router repeats upstream text: the table of commands that do not prompt, the exit-code table and its recovery steps, the core loop, the lower-layer recipe, the sync and squash-merge behavior, the JSON fields `needsRebase` and `pr.state`, and the worktree rules. `ghStackGuards` holds that text. The sync collapses whitespace before it compares, so a rewrap passes. A changed word, row, or heading stops the sync. Each table guard ends with the text after the table, so an added row also stops it. Review the router against the new upstream text, then update the guard.
+
+The upstream LICENSE is MIT. The sync checks the GitHub copyright line and copies the file to `licenses/`. Run `bun run sync -- --update --only gh-stack` to update this source.
+
 ## Repository validation
 
 Run `bun run check` and `uv run --script scripts/validate.py` to run every validation layer without fetching or regenerating skill sources. The Python script declares its pinned dependencies. `uv` installs them when it runs the script.
