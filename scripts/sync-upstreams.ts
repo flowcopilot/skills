@@ -20,7 +20,7 @@ type SourceConfig = {
   workflows: string[];
   bundle?: string;
 };
-type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock" | "agent-browser" | "agent-device" | "agent-desktop", SourceConfig>;
+type Manifest = Record<"ax" | "cloudflare" | "convex" | "expo" | "software-mansion" | "callstack" | "clerk" | "emil-kowalski" | "jakub-krehel" | "pstack" | "matt-pocock" | "agent-browser" | "agent-device" | "agent-desktop" | "gh-stack", SourceConfig>;
 type SkillSource = { name: string; description: string; body: string; root: string };
 type Checkout = { root: string; revision: string; date: string };
 
@@ -1239,6 +1239,216 @@ ${sections.join("\n\n")}
   return `## Agent Surf skill\n\nFlow Copilot combines the skills of agent-browser, agent-device, and agent-desktop into one skill. It replaces the agent-browser discovery stub with one router that maps each CLI guide command to its bundled reference, replaces skill entry filenames with index.md references, preserves source-specific directories and supporting files, and adjusts local entry-file links. It also corrects upstream examples that contradict the upstream reference: Electron tab IDs, a ref reused after navigation, the proxy region parser, the state encryption key and its .gitignore pattern, named sessions in the browser templates, and a saved state that the authentication template deleted before it saved a new one.\n\n${notices.join("\n\n")}\n`;
 }
 
+// gh-stack publishes one skill. The router is local, and the upstream SKILL.md becomes references/gh-stack.md.
+// Each upstream reference is bundled or excluded. An unlisted reference stops the sync.
+const ghStackReferences = ["stack-design", "troubleshooting"];
+// `gh stack <command> --help` is the authority for flags, so the router sends agents there instead.
+const ghStackExcluded = ["commands"];
+
+// The router repeats these upstream statements. Whitespace is collapsed before the comparison,
+// so a rewrap passes, and a changed word, row, or heading stops the sync for a review of the router.
+// Each table guard ends with the text after the table, so an added row also stops the sync.
+const ghStackGuards: Record<string, string[]> = {
+  "SKILL.md": [
+    "Left is the **bottom**, right is the **top**. `auth` is based on `main` and merges first; `frontend` merges last. `up` moves toward the top, away from trunk; `down` moves toward it.",
+    "`gh stack` branches on whether **stdout is a TTY**. Piped, most commands error cleanly or print static text; under a PTY the same commands open a prompt or a full-screen TUI and block forever.",
+    "| Always run | Never run bare | Why | |---|---|---| | `gh stack view --json` | `gh stack view` | opens a TUI under a PTY | | `gh stack submit --auto` | `gh stack submit` | prompts for a title per new PR | | `gh stack merge <target> --yes` | `gh pr merge` | `gh pr merge` cannot merge a stack | | `gh stack init <branch>...` | `gh stack init` | prompts for branch names | | `gh stack add <branch>` | `gh stack add` | prompts for a name, and fails even when piped | | `gh stack checkout <target>` | `gh stack checkout` | opens a selection menu | | `gh stack up` / `down` / `top` / `bottom` | `gh stack switch` | `switch` is menu-only | | — | `gh stack modify` | TUI-only, no non-interactive path | - `view --short`",
+    "**Worktrees:** local stacks share one common-directory catalog. Use `--print-path` with navigation or explicit-target `checkout` to locate a foreign-owned branch without stealing its checkout. Unoccupied targets are checked out here first. Check the exit status before changing directories; parse only successful path-mode stdout, never status messages.",
+    "- **Starting multi-part work:** create the stack before writing files. Do not implement every concern on trunk and split it later. Put one dependent concern in each layer, bottom to top.",
+    "- **Editing an existing stack:** check out the layer that owns the change before editing. Never commit a lower layer's concern on the current top branch. Run `gh stack view --json`; if ownership is unclear, inspect `git log --all -- <path>`. Then check out the owner, edit, commit, rebase upstack, and return to top.",
+    "gh stack down # or: gh stack checkout api git add ... && git commit -m \"Add get-user endpoint\" gh stack rebase --upstack # replay every branch above onto the change gh stack top # return to where you were gh stack push",
+    "gh stack init auth # create the stack and check out its branch git add ... && git commit -m \"Add auth middleware\" gh stack add api # next layer, branched from the current one git add ... && git commit -m \"Add API routes\" gh stack submit --auto # push every branch and open draft PRs gh stack view --json # confirm",
+    "gh stack sync # fetch, reconcile with GitHub, rebase, push, refresh PR state gh stack sync --prune # also delete local branches for merged PRs",
+    "If the local and remote stacks have diverged, `sync` prints both chains, makes no changes, and exits 0 with `Sync aborted`",
+    "Pass a PR number to merge that PR and every unmerged PR below it, or a stack number to merge every unmerged PR in that stack. The operation is all-or-nothing: if any PR in that set cannot merge, none do. Without a method flag the last-used method is reused.",
+    "`gh stack view --json` writes JSON to **stdout**. Status messages go to **stderr** — do not parse them, branch on exit codes instead.",
+    "branches[] name, head, base, isCurrent, isMerged, isQueued, needsRebase branches[].pr number, url, state (\"OPEN\" | \"MERGED\" | \"QUEUED\"); absent when no PR exists",
+    "`needsRebase` is true when the current parent tip is no longer an ancestor of the branch.",
+    "## Exit codes | Code | Meaning | Recovery | |---|---|---| | 0 | Success | — | | 1 | Generic error | Read stderr | | 2 | Not in a stack | `gh stack init`, or `gh stack checkout <target>` | | 3 | Rebase conflict | Follow the Exit 3 recovery below | | 4 | GitHub API failure | Check `gh auth status`, retry | | 5 | Invalid arguments | Fix the invocation; see `<command> --help` | | 6 | Disambiguation required | Branch is in several stacks; check out a non-shared branch | | 7 | Rebase already in progress | `gh stack rebase --continue` or `--abort` | | 8 | Stack file locked | Another `gh stack` process is writing; retry after ~5s | | 9 | Stacked PRs unavailable | Not enabled on the repository; tell the user | | 10 | Modify recovery required | `gh stack modify --abort` | **Exit 3 recovery:** - After `gh stack rebase`: resolve the files, run `git add`, then `gh stack rebase --continue`; use `gh stack rebase --abort` to restore the stack. - After `gh stack sync`: the stack has already been restored. Run `gh stack rebase` to recreate the conflict, then resolve and continue as above. ## Constraints",
+    "- `rebase` and `sync` automatically update affected clean worktrees; they never auto-stash or create/remove worktrees.",
+    "There is no non-interactive reorder or removal. Errors may suggest `gh stack modify`, but it is TUI-only — restructure with `unstack` then `init` instead.",
+    "`gh stack <command> --help` is authoritative for flags and arguments. Note that `gh stack help <command>` does **not** work — it prints the top-level help.",
+  ],
+  "references/troubleshooting.md": [
+    "## After a squash merge A squash merge replaces the branch's commits with one new commit, so the originals no longer exist in the trunk's history and an ordinary rebase would try to replay them again. `gh stack sync` detects this and rebases with `--onto` against the correct target, skipping the merged branch: ```bash gh stack sync gh stack view --json # merged branch reports \"isMerged\": true, \"state\": \"MERGED\" ``` No manual action is needed. If the replay conflicts, `sync` restores all branches and exits 3. Run `gh stack rebase` to rerun the rebase, which will stop at the conflict and allow you to resolve and then `--continue` until complete. Use `gh stack sync --prune` to also delete local branches for merged PRs. ## Local and remote stacks have diverged",
+    "When non-interactive, `sync` prints both chains, changes nothing, and exits **0** with `Sync aborted`.",
+    "gh stack unstack # removes the grouping; PRs and branches survive gh stack init --base main branch-1 branch-2 # use your trunk and desired branch order gh stack submit --auto",
+    "## Restructuring a stack There is no non-interactive reorder, rename, or removal.",
+    "`init` adopts branches that already exist, so the rebuild reuses them rather than creating new ones. Existing PRs survive. Once Git ancestry is correct, `submit` updates their base branches and re-links the stack on GitHub. Changing metadata does **not** change Git ancestry.",
+    "Commands exit 6 when the current branch cannot identify a single stack — typically because it is the trunk of more than one stack.",
+    "Commands that take an explicit stack number (`merge 7`, `unstack 7`) sidestep the problem entirely",
+    "Linked worktrees themselves are supported: they share `<common-dir>/gh-stack` and do not require `link`.",
+    "Navigation does not take over another worktree's checkout. Use `--print-path` with an explicit target, check the exit status, and change directory to the quoted output. Only affected clean owners are updated by rebase/sync; commit or stash manually when those owners are dirty. gh-stack does not automatically stash or create/remove worktrees.",
+    "Wait and retry; read-only views remain available. Do not delete lock files to bypass coordination.",
+  ],
+};
+
+function syncGhStack(checkout: Checkout): string[] {
+  const sourceName = "github/gh-stack";
+  const skills = readdirSync(resolve(checkout.root, "skills"), { withFileTypes: true }).map((entry) => entry.name);
+  if (skills.join() !== "gh-stack") throw new Error(`gh-stack: expected only skills/gh-stack, found ${skills.join(", ")}`);
+  const skillRoot = resolve(checkout.root, "skills", "gh-stack");
+  const files = filesUnder(skillRoot).map((path) => relativePath(path, skillRoot));
+  const listed = [...ghStackReferences, ...ghStackExcluded].map((name) => `references/${name}.md`);
+  for (const file of files) {
+    if (file !== "SKILL.md" && !listed.includes(file)) {
+      throw new Error(`gh-stack added ${file}; add it to ghStackReferences or ghStackExcluded`);
+    }
+  }
+  for (const file of listed) {
+    if (!files.includes(file)) throw new Error(`gh-stack no longer has ${file}`);
+  }
+  const collapse = (text: string) => text.replace(/\s+/g, " ");
+  for (const [file, guards] of Object.entries(ghStackGuards)) {
+    const text = collapse(readFileSync(resolve(skillRoot, file), "utf8"));
+    for (const guard of guards) {
+      if (!text.includes(guard)) {
+        throw new Error(`gh-stack: upstream changed ${file} text that the router repeats. Review the router, then update the guard:\n${guard}`);
+      }
+    }
+  }
+  const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
+  if (!license.includes("MIT License") || !license.includes("Permission is hereby granted") ||
+      !license.includes("Copyright GitHub, Inc.")) {
+    throw new Error("gh-stack: upstream license changed");
+  }
+  const skill = parseSkill(resolve(skillRoot, "SKILL.md"));
+  const version = (Bun.YAML.parse(readFileSync(resolve(skillRoot, "SKILL.md"), "utf8").match(/^---\n([\s\S]*?)\n---\n/)![1]) as
+    { metadata?: { version?: unknown } }).metadata?.version;
+  if (typeof version !== "string" || version.length === 0) throw new Error("gh-stack: skill version is missing");
+
+  const target = resolve(repositoryRoot, "skills", "gh-stack");
+  resetDirectory(target, "gh-stack");
+  mkdirSync(resolve(target, "licenses"), { recursive: true });
+  copyFileSync(resolve(checkout.root, "LICENSE"), resolve(target, "licenses", "gh-stack-LICENSE"));
+
+  // Upstream names its references as code paths from the skill root. They become links next to the imported file.
+  let body = skill.body.replace(/`references\/([a-z-]+)\.md`/g, (match, name: string) =>
+    ghStackReferences.includes(name) ? `[${name}](${name}.md)` : match);
+  for (const [from, to] of [
+    ["Open the reference whose trigger matches the task; no need to preload all three.",
+      "Open the reference whose trigger matches the task."],
+    ["- `references/commands.md` — read when a command fails unexpectedly or you need its preconditions,\n  side effects, atomicity, or ordering guarantees.",
+      "- `gh stack <command> --help` — run when a command fails unexpectedly or you need its flags."],
+  ]) {
+    if (!body.includes(from)) throw new Error(`gh-stack text changed upstream: ${from}`);
+    body = body.replace(from, to);
+  }
+  if (body.includes("references/")) throw new Error("gh-stack: SKILL.md still names an unbundled reference path");
+  writeMarkdown(resolve(target, "references", "gh-stack.md"), body, sourceName);
+  for (const name of ghStackReferences) {
+    const text = readFileSync(resolve(skillRoot, "references", `${name}.md`), "utf8");
+    // A link to the excluded command reference, or to SKILL.md, needs a rewrite in this adapter.
+    if (/\b(?:commands|SKILL)\.md\b/.test(text)) throw new Error(`gh-stack: references/${name}.md names a file this bundle moves or excludes`);
+    writeMarkdown(resolve(target, "references", `${name}.md`), text, sourceName);
+  }
+
+  writeSkill(resolve(target, "SKILL.md"), frontmatter(
+    "gh-stack",
+    "Load this skill before you create, update, or merge pull requests that depend on each other, such as a pull request whose base is another pull request's branch, before you split work into several pull requests for review, or when the Git directory has a gh-stack file or the task names gh stack or stacked PRs. Covers creating a stack, adopting existing branches, adding layers, changes to a lower layer, submit, sync after a squash merge, merging a stack, rebase conflicts, worktrees, and exit codes.",
+    sourceName, checkout.revision, { upstream_version: version }, "MIT",
+  ), `# gh stack
+
+\`gh stack\` is a GitHub CLI extension for stacked pull requests. A stack is a chain of branches on a trunk. Each branch has one pull request, and the base of that pull request is the branch below it. \`gh stack\` prints a stack bottom first: \`(main) <- auth <- api\`. \`auth\` is the bottom. It is based on \`main\` and merges first. \`api\` is the top. \`gh stack up\` moves toward the top, and \`gh stack down\` moves toward the trunk.
+
+Let \`gh stack\` set the base of each pull request and rebase each layer. Do not set a base to another pull request's branch with \`gh pr create\` or \`gh pr edit\`, and do not rebase or cherry-pick the layers by hand.
+
+## Run the forms that do not prompt
+
+Under a terminal, a bare command opens a prompt or a full-screen TUI and waits forever. Always run the form in the first column.
+
+| Run | Never run | Why |
+|---|---|---|
+| \`gh stack view --json\` | \`gh stack view\` | Opens a TUI. |
+| \`gh stack submit --auto\` | \`gh stack submit\` | Prompts for the title of each new pull request. |
+| \`gh stack merge <target> --yes\` | \`gh pr merge\` | \`gh pr merge\` cannot merge a stack. |
+| \`gh stack init <branch>...\` | \`gh stack init\` | Prompts for branch names. |
+| \`gh stack add <branch>\` | \`gh stack add\` | Prompts for a name. |
+| \`gh stack checkout <target>\` | \`gh stack checkout\` | Opens a menu. |
+| \`gh stack up\`, \`down\`, \`top\`, or \`bottom\` | \`gh stack switch\` | Menu only. |
+| None | \`gh stack modify\` | TUI only. |
+
+\`gh stack <command> --help\` is the authority for flags. \`gh stack help <command>\` prints only the top-level help.
+
+\`gh stack view --json\` writes JSON to stdout and status messages to stderr. Parse only the JSON, and use the exit code to find a failure. \`branches[].needsRebase\` is true when a branch no longer contains the tip of its parent. \`branches[].pr.state\` is \`OPEN\`, \`MERGED\`, or \`QUEUED\`.
+
+## Start a stack
+
+Create the stack before you write code. Put one dependent concern in each layer, bottom to top. Read [stack-design](references/stack-design.md) to choose the layers.
+
+\`\`\`bash
+gh stack init auth          # create the stack and check out auth
+git add <paths> && git commit -m "Add auth middleware"
+gh stack add api            # next layer, branched from auth
+git add <paths> && git commit -m "Add API routes"
+gh stack submit --auto      # push every branch and open draft pull requests
+gh stack view --json        # confirm the order and the pull requests
+\`\`\`
+
+## Adopt existing branches
+
+A pull request whose base is another pull request's branch is a stack that \`gh stack\` does not track yet. Adopt the branches bottom to top, then let \`submit\` set each base and link the stack on GitHub:
+
+\`\`\`bash
+gh stack init [--base <trunk>] <bottom> ... <top>
+gh stack submit --auto
+\`\`\`
+
+\`init\` adopts branches that exist, and the open pull requests stay. \`init\` changes only the stack metadata, not Git ancestry. When \`gh stack view --json\` shows \`needsRebase\` for a branch, run \`gh stack rebase\` before \`submit\`.
+
+To reorder or rename layers, run \`gh stack unstack\`, fix the branches and their Git ancestry, then run \`init\` and \`submit --auto\` again. \`gh stack modify\` is TUI only. The full recipe is in [troubleshooting](references/troubleshooting.md#restructuring-a-stack).
+
+## Change a lower layer
+
+Commit a change on the layer that owns it, not on the top branch. Find the owner with \`gh stack view --json\`, or with \`git log --all -- <path>\`.
+
+\`\`\`bash
+gh stack checkout auth      # or gh stack down
+git add <paths> && git commit -m "Fix token expiry"
+gh stack rebase --upstack   # replay every branch above onto the change
+gh stack top
+gh stack push
+\`\`\`
+
+## Sync and merge
+
+\`\`\`bash
+gh stack sync               # fetch, rebase onto the trunk, push, refresh pull request state
+gh stack sync --prune       # also delete local branches of merged pull requests
+gh stack merge 42 --yes     # merge pull request 42 and every unmerged pull request below it
+\`\`\`
+
+- After a squash merge on GitHub, run \`gh stack sync\`. It skips the merged branch and rebases the layers above it.
+- When the local stack and the stack on GitHub diverge, \`sync\` changes nothing and exits 0 with \`Sync aborted\`. Look for that message in the output. Then follow [troubleshooting](references/troubleshooting.md#local-and-remote-stacks-have-diverged).
+- \`gh stack merge\` merges all of its pull requests or none. A stack number as the target merges the whole stack. Without \`--squash\`, \`--merge\`, or \`--rebase\`, it uses the last merge method again.
+
+## Act on these exit codes
+
+| Code | Meaning | Action |
+|---|---|---|
+| 3 | Rebase conflict | After \`gh stack rebase\`: resolve the files, run \`git add\`, then run \`gh stack rebase --continue\`. \`gh stack rebase --abort\` restores every branch. After \`gh stack sync\`: the stack is already restored. Run \`gh stack rebase\` to get the conflict again, then resolve it the same way. |
+| 6 | The branch is in more than one stack, usually as their trunk. | Check out a branch that only one stack has, or give a stack number, as in \`gh stack merge 7 --yes\`. |
+| 7 | A rebase is in progress. | Run \`gh stack rebase --continue\` or \`gh stack rebase --abort\`. |
+| 8 | Another \`gh stack\` process has the lock on the stack file. | Wait about 5 seconds, then try again. Do not delete the lock files. |
+| 9 | Stacked pull requests are not enabled on the repository. | Stop and tell the user. |
+
+For another code, read stderr and the exit codes in [gh-stack](references/gh-stack.md#exit-codes).
+
+## Worktrees
+
+- All linked worktrees of a clone share one stack catalog.
+- Navigation does not take over a branch that another worktree has checked out. To find that worktree, add \`--print-path\` and use stdout only on success: \`path=$(gh stack checkout api --print-path) && cd -- "$path"\`.
+- \`rebase\` and \`sync\` update only clean worktrees, and they never stash. Commit the changes in a dirty worktree first.
+
+## References
+
+- [stack-design](references/stack-design.md): read before you plan a new stack, to choose the layers, name the branches, and decide when work needs its own stack.
+- [troubleshooting](references/troubleshooting.md): read on a rebase conflict, after a squash merge, when the local and remote stacks diverge, before you restructure a stack, or when jj, Sapling, or git-town manage the branches.
+- [gh-stack](references/gh-stack.md): the complete upstream skill. Read it for setup, more than one remote, merge queues, the full JSON fields, and the other exit codes.
+`, sourceName);
+  return ["gh-stack", ...ghStackReferences];
+}
+
 function assertApacheLicense(checkout: Checkout, name: string) {
   const license = readFileSync(resolve(checkout.root, "LICENSE"), "utf8");
   if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
@@ -1257,7 +1467,7 @@ function copyApacheLicense(checkout: Checkout, name: "ax" | "convex" | "cloudfla
   return `retained in \`skills/${name}/licenses/${name}-LICENSE\`, with the upstream notice in \`skills/${name}/licenses/${name}-NOTICE\``;
 }
 
-const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf"] as const;
+const bundleNames = ["ax", "convex", "cloudflare", "expo", "clerk", "react-native", "design-engineering", "clarity", "agent-surf", "gh-stack"] as const;
 type BundleName = typeof bundleNames[number];
 
 function syncBundle(name: BundleName): string {
@@ -1296,8 +1506,8 @@ function syncBundle(name: BundleName): string {
     return notice;
   }
   const checkout = clone(name);
-  if (name !== "expo" && name !== "clerk") assertApacheLicense(checkout, name);
-  const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk };
+  if (name !== "expo" && name !== "clerk" && name !== "gh-stack") assertApacheLicense(checkout, name);
+  const adapters = { ax: syncAx, convex: syncConvex, cloudflare: syncCloudflare, expo: syncExpo, clerk: syncClerk, "gh-stack": syncGhStack };
   manifest[name].workflows = adapters[name](checkout);
   const apacheLicense = name === "ax" || name === "convex" || name === "cloudflare" ? copyApacheLicense(checkout, name) : "";
   manifest[name].revision = checkout.revision;
@@ -1332,6 +1542,12 @@ The imported revision is dated ${checkout.date}. Flow Copilot combines all skill
 The files under \`skills/clerk/\` derive from [clerk/skills](https://github.com/clerk/skills) revision \`${checkout.revision}\`, licensed under the MIT License. The upstream repository has no standalone LICENSE file; its plugin metadata declaring MIT is retained in \`skills/clerk/licenses/clerk-plugin.json\`.
 
 The imported revision is dated ${checkout.date}. Flow Copilot imports a selected subset of the skills: all core and feature skills, the React and TanStack Start framework skills, and the Expo mobile skill. It replaces the upstream router with one router that keeps its version table, moves skill instructions and supporting files into references, adjusts links and script paths, and links former skill names to their references. It also removes Cache Components default claims and directs subscription cancellation to the profile components. Evaluation fixtures, starter templates, and plugin metadata are not imported.
+`,
+    "gh-stack": `## gh-stack skill
+
+The files under \`skills/gh-stack/\` derive from [github/gh-stack](https://github.com/github/gh-stack) revision \`${checkout.revision}\`, licensed under the MIT License, retained in \`skills/gh-stack/licenses/gh-stack-LICENSE\`.
+
+The imported revision is dated ${checkout.date}. Flow Copilot replaces the upstream skill entry with a shorter router that it writes itself, and moves the upstream \`SKILL.md\` into \`references/gh-stack.md\`. It imports the stack design and troubleshooting references, turns their code paths into links, and replaces the pointer to the command reference with \`gh stack <command> --help\`. The command reference is not imported.
 `,
   };
   return notices[name];

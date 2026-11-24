@@ -1,6 +1,6 @@
 # Skill benchmark inputs
 
-This directory has 25 tasks, project fixtures, model conditions, transcript parsers, a trigger runner, and tests. Task prompts do not name a skill to load. The full task runner, the task check runner, and the aggregate report are still missing. No code comes from `expo/eval-experiments`.
+This directory has 27 tasks, project fixtures, model conditions, transcript parsers, a trigger runner, and tests. Task prompts do not name a skill to load. The full task runner, the task check runner, and the aggregate report are still missing. No code comes from `expo/eval-experiments`.
 
 ## Run the checks
 
@@ -103,10 +103,12 @@ Each new code fixture has a `package.json` with real dependency names and only t
 | `agent-surf-web-price` | agent-surf | Read a price that JavaScript renders, with no CLI in `package.json`. |
 | `agent-surf-android-expo` | agent-surf | Check an Expo app on an Android Emulator, with no CLI in `package.json`. |
 | `agent-surf-desktop-calculator` | agent-surf | Use the macOS Calculator app, with no CLI in `package.json`. |
+| `gh-stack-split-invoices` | gh-stack | Plan one pull request per concern, merged in order. |
+| `gh-stack-dependent-prs` | gh-stack | Plan updates and merges for a pull request whose base is another pull request's branch. |
 | `agent-surf-near-playwright` | none | Write a Playwright test. agent-surf must not load. |
 | `typescript-unique-values` | none | Remove exact duplicates without sorting or mutating the input. |
 
-All nine bundles have at least two tasks. The two React Native tasks and the two design engineering tasks each cover one task per upstream source. The six agent-surf tasks cover each upstream source twice: `agent-surf-web-signup` and `agent-surf-web-price` for agent-browser, `agent-surf-ios-note` and `agent-surf-android-expo` for agent-device, and `agent-surf-desktop-export` and `agent-surf-desktop-calculator` for agent-desktop. Three agent-surf fixtures list only their CLI in `package.json`, so they test the package signal in the description. Three give only the intent. `agent-surf-near-playwright` is a second negative control for browser work that belongs to a test framework. New tasks use the existing `exists`, `unchanged`, and `rubric` checks. No check type was added. Rubric checks require a later reviewer or grader; the dataset tests do not grade agent solutions.
+All ten bundles have at least two tasks. The two React Native tasks and the two design engineering tasks each cover one task per upstream source. The six agent-surf tasks cover each upstream source twice: `agent-surf-web-signup` and `agent-surf-web-price` for agent-browser, `agent-surf-ios-note` and `agent-surf-android-expo` for agent-device, and `agent-surf-desktop-export` and `agent-surf-desktop-calculator` for agent-desktop. Three agent-surf fixtures list only their CLI in `package.json`, so they test the package signal in the description. Three give only the intent. `agent-surf-near-playwright` is a second negative control for browser work that belongs to a test framework. The two gh-stack tasks do not name `gh stack`. One asks for dependent pull requests for new work, and the other describes a pull request whose base is another pull request's branch. New tasks use the existing `exists`, `unchanged`, and `rubric` checks. No check type was added. Rubric checks require a later reviewer or grader; the dataset tests do not grade agent solutions.
 
 ## Conditions and run count
 
@@ -114,14 +116,14 @@ All nine bundles have at least two tasks. The two React Native tasks and the two
 
 | Condition | Applicable tasks | Installed skills |
 | --- | --- | --- |
-| `no-skills` | All 25 | None. |
-| `all-bundles` | All 25 | All nine Flow Copilot bundles. |
-| `upstream-layout` | All 25 | Each published upstream skill from all 14 pinned sources. |
-| `expo-overview-entry` | The three Expo tasks | All nine bundles, with the Expo entry variant. |
+| `no-skills` | All 27 | None. |
+| `all-bundles` | All 27 | All ten Flow Copilot bundles. |
+| `upstream-layout` | All 27 | Each published upstream skill from all 15 pinned sources. |
+| `expo-overview-entry` | The three Expo tasks | All ten bundles, with the Expo entry variant. |
 
 The Expo entry variant replaces the Expo entry body with `references/expo-overview.md` and preserves `name` and `description`. Transform only the installed test copy. The future runner must isolate global skills and agent instructions in every condition.
 
-The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(25 × 3 + 3 × 1) × 4 × 3 = 936` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
+The formula is **tasks × conditions that apply × models × repeats**. For this dataset, the count is `(27 × 3 + 3 × 1) × 4 × 3 = 1008` runs. The extra three task-condition pairs are the Expo entry variant. This is a planned run count, not a completed benchmark result.
 
 ## Upstream layout
 

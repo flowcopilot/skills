@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "express": "5.1.0",
+    "react": "19.1.0"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}
